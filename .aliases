@@ -1,0 +1,16 @@
+
+# git aliases
+alias gt='git status --short --branch'
+alias gol='git log --graph --decorate --pretty=oneline --abbrev-commit'
+alias gomit='git commit'
+alias gull='git pull'
+alias gush='git push'
+alias ginfo='git remote show origin'
+alias getch='git fetch; gt | grep "^##"'
+alias gup='git merge $(gracking)'
+
+alias gitcheck='ssh -T git@github.com'
+
+# cleanorig
+# to clean *.orig files that are created when merging with git mergetool
+alias gleanorig='find . -name *.orig -delete'
