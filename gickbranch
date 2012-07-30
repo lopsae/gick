@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Prings the first matching line from the git branches
+
+if [ $# -le 0 ]; then
+	echo 'No branch found' >&2
+	exit 1
+fi
+
+git branch | cut -c 3- | grep --max-count 1 $@
+

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Adds files by providing partial names by using gick.
+
+
+# Dot special case
+if [ $# -eq 1 ]; then
+	if [ $@ = '.' ]; then
+		git add -v .
+		exit $?
+	fi
+fi
+
+
+# Normal case
+fileFound=`gick $@`
+
+if [ $? -ne 0 ]; then
+	echo 'No file found' >&2
+	exit 1
+fi
+
+git add -v $fileFound
+

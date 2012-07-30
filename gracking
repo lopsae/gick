@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Outputs to stdout the current remote branch being tracked
+
+branch=`granch 2>/dev/null`
+if [ $? -ne 0 ]; then
+	echo 'Not in a branch' >&2
+	exit 1
+fi
+
+mergeBranch=`git config branch.$branch.merge`
+if [ $? -ne 0 ]; then
+	echo 'No tracking branch' >&2
+	exit 2
+fi
+
+remote=`git config branch.$branch.remote`
+if [ $? -ne 0 ]; then
+	echo 'No tracking branch' >&2
+	exit 3
+fi
+
+mergeBranch=${mergeBranch##**/}
+
+echo "$remote/$mergeBranch"
+

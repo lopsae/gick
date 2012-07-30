@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Checkout a branch found through gickbrach
+
+branchFound=`gickbranch $@`
+
+if [ $? -ne 0 ]; then
+	echo 'No branch found'
+	exit 1
+fi
+
+echo "Switching to branch '$branchFound'"
+git checkout $branchFound
+

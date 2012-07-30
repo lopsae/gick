@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Unstages a file found with gick.
+
+fileFound=`gick $@`
+
+if [ $? -ne 0 ]; then
+	echo 'No file found'
+	exit 1
+fi
+
+echo reset \'$fileFound\'
+git reset HEAD --quiet $fileFound
+

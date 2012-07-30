@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Run a git merge using the first matching file found using gick
+
+fileFound=`gick $@`
+
+if [ $? -ne 0 ]; then
+	echo 'No file found'
+	exit 1
+fi
+
+echo merge \'$fileFound\'
+git mergetool -t araxis -y $fileFound
+

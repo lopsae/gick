@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Deletes all local branches except for the current one.
+
+branchesNames=`mktemp /tmp/gleanbranches_XXXX`
+git branch | grep -v '^*' > $branchesNames
+
+while read branchName; do
+	echo "Deleting branch $branchName"
+	git branch -d $branchName
+done < $branchesNames
+
+

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Checkout a remote branch found through gickremote
+
+branchFound=`gickremote $@`
+
+if [ $? -ne 0 ]; then
+	echo 'No branch found' >&2
+	exit 1
+fi
+
+read -p "Switch to branch '$branchFound'? (y) " switchConfirm
+
+if [ "$switchConfirm" = 'y' ]; then
+	echo "Switching to branch '$branchFound'"
+	git checkout $branchFound
+else
+	echo 'Aborted' >&2
+	exit 1
+fi
+
