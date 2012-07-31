@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Adds files by providing partial names by using gick.
+# Adds and removes files just with a partial name.
 
 
 # Dot special case
 if [ $# -eq 1 ]; then
-	if [ $@ = '.' ]; then
+	if [ $1 = '.' ]; then
 		git add -v .
 		exit $?
 	fi
@@ -13,12 +13,40 @@ fi
 
 
 # Normal case
-fileFound=`gick $@`
+
+# Find the file with gick
+fileFound=`gick $@ 2>/dev/null`
 
 if [ $? -ne 0 ]; then
 	echo 'No file found' >&2
 	exit 1
 fi
 
-git add -v $fileFound
+# Retrieve the status of the file
+fileStatus=`git status --short $fileFound`
+indexStatus=${fileStatus:0:1}
+workStatus=${fileStatus:1:1}
+
+case $workStatus in
+	' ')
+		case $indexStatus in
+			[MA])
+				echo "Already staged '$fileFound'" >&2
+				;;
+			'D')
+				echo "Already removed '$fileFound'" >&2
+				;;
+			esac
+		;;
+	[MA?])
+		git add -v $fileFound
+		;;
+	'D')
+		git rm $fileFound
+		;;
+	*)
+		echo "Unknown status '$workStatus'" >&2
+		echo 'Nothing done' >&2
+		;;
+esac
 
