@@ -20,6 +20,7 @@ if [ $? -ne 0 ]; then
 	exit 3
 fi
 
+# TODO should cut only refs/heads, not all subdirectories?
 mergeBranch=${mergeBranch##**/}
 
 echo "$remote/$mergeBranch"
