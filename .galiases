@@ -1,6 +1,7 @@
 
 # git aliases
 alias gt='git status --short --branch'
+alias gb='git branch -v'
 alias gol='git log --graph --decorate --pretty=oneline --abbrev-commit'
 alias gomit='git commit'
 alias gull='git pull'
