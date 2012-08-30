@@ -10,6 +10,7 @@ alias ginfo='git remote show origin'
 alias getch='git fetch; gt | grep "^##"'
 alias gup='git merge $(gracking)'
 
+alias guser='git config user.name; git config user.email'
 alias gitcheck='ssh -T git@github.com'
 
 # cleanorig
