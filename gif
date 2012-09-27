@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Run a git difference using the first matching file found using gick
+
+fileFound=`gick $@ 2> /dev/null`
+
+if [ $? -ne 0 ]; then
+	echo 'No file found' >&2
+	exit 1
+fi
+
+echo diff \'$fileFound\'
+sleep 1
+git difftool -t $GOOLS_DIFFTOOL -y HEAD $fileFound &
+
