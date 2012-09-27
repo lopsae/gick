@@ -11,5 +11,5 @@ fi
 
 echo diff \'$fileFound\'
 sleep 1
-git difftool -t $GOOLS_DIFFTOOL -y HEAD $fileFound &
+git difftool --tool $GOOLS_DIFFTOOL --no-prompt HEAD $fileFound &
 

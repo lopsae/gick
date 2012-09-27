@@ -10,5 +10,5 @@ if [ $? -ne 0 ]; then
 fi
 
 echo merge \'$fileFound\'
-git mergetool -t $GOOLS_DIFFTOOL -y $fileFound
+git mergetool --tool $GOOLS_DIFFTOOL --no-prompt $fileFound
 
