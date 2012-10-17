@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Prints a single line from the content piped in, this line will contain
+# all the strings passed in as parameters to the script.
+
+# If no arguments or no content piped in is given the script will end
+# with a non-zero value. Samewise if no match is found in the content
+# piped in.
+
+if [[ -t 0 ]]; then
+	echo 'No stdin given' >&2
+	exit 1
+fi
+
+if [[ "$@" = '' ]]; then
+	echo 'No parameters given' >&2
+	exit 2
+fi
+
+piped=`cat`
+
+search=''
+for param in $@; do
+	search=$search$param.*
+done
+
+# Remove the trailing wildcard
+search=${search%'.*'}
+
+match=`echo "$piped" | grep --max-count 1 $search`
+
+if [[ $? != 0 ]]; then
+	echo 'No match found' >&2
+	exit 3
+fi
+
+echo "$match"
+
