@@ -7,9 +7,9 @@ if [[ $# = 0 ]]; then
 	exit 1
 fi
 
-found=`git status --porcelain | cut -c 4- | pick $@ 2> /dev/null`
+found=`git status --porcelain | cut -c 4- | pick $@ 2>/dev/null`
 if [[ $? != 0 ]]; then
-	echo 'No match found' >&2
+	echo 'No file found' >&2
 	exit 2
 fi
 
