@@ -2,16 +2,17 @@
 
 # Prints the first matching file from the git status
 
-if [ $# -le 0 ]; then
-	echo "No file found" >&2
+if [[ $# = 0 ]]; then
+	echo 'No parameters given' >&2
 	exit 1
 fi
 
-found=`git status --porcelain | cut -c 4- | grep --max-count 1 $@`
-if [ $? -ne 0 ]; then
-	exit 1
+found=`git status --porcelain | cut -c 4- | pick $@ 2> /dev/null`
+if [[ $? != 0 ]]; then
+	echo 'No match found' >&2
+	exit 2
 fi
 
 relativePath=`git rev-parse --show-cdup`
-echo "${relativePath}${found}"
+echo "$relativePath$found"
 

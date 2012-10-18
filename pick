@@ -12,7 +12,7 @@ if [[ -t 0 ]]; then
 	exit 1
 fi
 
-if [[ "$@" = '' ]]; then
+if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
 	exit 2
 fi
@@ -21,12 +21,14 @@ piped=`cat`
 
 search=''
 for param in $@; do
+	# Append a wildcard between each param
 	search=$search$param.*
 done
 
 # Remove the trailing wildcard
 search=${search%'.*'}
 
+# Piped needs to be between quotes as to not loose the newlines
 match=`echo "$piped" | grep --max-count 1 $search`
 
 if [[ $? != 0 ]]; then
