@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# If no parameter is given and there is a single git remote, that is 
+# printed. Otherwise a non-zero value is returned if no remotes or more
+# that one remote exits. If parameters are provided they are used to
+# pick a remote from the remotes list.
+
+list=`git remote`
+count=`echo "$list" | wc -l | tr -d ' '`
+
+# No parameters option
+if [[ $# = 0 ]]; then
+	if [[ $count = 1 ]]; then
+		echo $list
+		exit
+	else
+		echo 'No single remote found' >&2
+		exit 1
+	fi
+fi
+
+echo "$list" | pick $@
+
