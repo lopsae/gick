@@ -7,33 +7,51 @@
 # with a non-zero value. Samewise if no match is found in the content
 # piped in.
 
+error_noStdin=1
+error_noParams=2
+error_invalidParams=3
+error_noMatch=4
+
+
 if [[ -t 0 ]]; then
 	echo 'No stdin given' >&2
-	exit 1
+	exit $error_noStdin
 fi
 
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
-	exit 2
+	exit $error_noParams
+fi
+
+params=`getopt a $*`
+paramsCode=$?
+set -- $params
+
+shift
+
+if [[ $paramsCode != 0 ]];then
+	echo 'Invalid parameters' >&2
+	exit $error_invalidParams
 fi
 
 piped=`cat`
 
 search=''
+wildcard='.*'
 for param in $@; do
 	# Append a wildcard between each param
-	search=$search$param.*
+	search=$search$param$wildcard
 done
 
 # Remove the trailing wildcard
-search=${search%'.*'}
+search=${search%"$wildCard"}
 
 # Piped needs to be between quotes as to not loose the newlines
 match=`echo "$piped" | grep --max-count 1 $search`
 
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2
-	exit 3
+	exit $error_noMatch
 fi
 
 echo "$match"
