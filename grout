@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Checkout a remote branch found through gickremote
+# Checkout a remote branch found through gickbranch
 
 branchMatch=`gickbranch -r $@`
 
