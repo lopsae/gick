@@ -10,6 +10,5 @@ if [ $? -ne 0 ]; then
 fi
 
 echo diff \'$fileFound\'
-sleep 1
 git difftool --tool $GOOLS_DIFFTOOL --no-prompt HEAD $fileFound &
 

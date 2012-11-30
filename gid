@@ -10,7 +10,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo diff \'$fileFound\'
-sleep 1
 
 echo 'Waiting for diff tool to return...'
 
