@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Commits the current index. If used with parameters all are used as the
+# commit message.
+
+if [[ $# = 0 ]]; then
+	git commit
+else
+	message="$@"
+	git commit -m "$message"
+fi
+
+
