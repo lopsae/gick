@@ -5,13 +5,11 @@
 # that one remote exits. If parameters are provided they are used to
 # pick a remote from the remotes list.
 
-list=`git remote`
-count=`echo "$list" | wc -l | tr -d ' '`
-
 # No parameters option
 if [[ $# = 0 ]]; then
+	count=`git remote | wc -l | tr -d ' '`
 	if [[ $count = 1 ]]; then
-		echo $list
+		git remote
 		exit
 	else
 		echo 'No single remote found' >&2
@@ -19,5 +17,5 @@ if [[ $# = 0 ]]; then
 	fi
 fi
 
-echo "$list" | pick $@
+git remote | pick $@
 
