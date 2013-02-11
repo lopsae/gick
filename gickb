@@ -7,7 +7,7 @@
 
 params=`getopt r $*`
 paramsCode=$?
-set --  $params
+set -- $params
 
 if [[ $paramsCode != 0 ]]; then
 	echo 'Incorrect parameters given' >&2

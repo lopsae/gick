@@ -2,7 +2,7 @@
 
 # Checkout a branch found through gickbrach
 
-branchFound=`gickbranch $@`
+branchFound=`gickb $@ 2>/dev/null`
 
 if [ $? -ne 0 ]; then
 	echo 'No branch found'
