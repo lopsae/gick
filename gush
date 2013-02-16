@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Gush performs various push operations.
+
+# If the current branch is already tracking a remote branch and gush
+# is used without parameters it will just push the pending changes into
+# the remote branch.
+# If parameters are given these will be used to pick a single remote
+# from the available ones and gush will attempt to push into a branch
+# of the same name. In this cases the tracking information of the branch
+# remains unchanged.
+
+# If the current branch is not tracking any remote branch gush will
+# attempt to push the branch into a remote branch of the same name.
+# If there is a single remote it will be picked without using
+# parameters, otherwise the parameters will be used to pick a single
+# remote from the available ones. The branch created in the remote will
+# be saved as the current tracking branch.
+
+
+# Error codes
+errorNotInBranch=1
+errorNoDefaultRemote=2
+errorNoRemoteMatch=3
+errorRemoteBranchExists=4
+
+# If headless nothing to do here
+branchName=$(granch 2>/dev/null)
+if [[ $? != 0 ]]; then
+	echo 'Not in a branch' >&2
+	exit $errorNotInBranch
+fi
+
+# First check for the tracking branch
+setUpstream=''
+trackingBranch=`gracking 2>/dev/null`
+if [[ $? = 0 ]]; then
+	# Tracking and no parameters, simply push
+	if [[ $# = 0 ]]; then
+		git push
+		exit
+	fi
+else
+	# Having no tracking means we will set it
+	setUpstream='--set-upstream'
+fi
+
+# Get what remote will be used
+if [[ $# = 0 ]]; then
+	remote=$(gremote 2>/dev/null)
+	if [[ $? != 0 ]]; then
+		echo 'No default remote found' >&2
+		exit $errorNoDefaultRemote
+	fi
+else
+	remote=$(gremote $@ 2>/dev/null)
+	if [[ $? != 0 ]]; then
+		echo 'No remote match found' >&2
+		exit $errorNoRemoteMatch
+	fi
+fi
+
+# If the upstream will be set,
+# check the branch does not exist remotely
+if [[ $setUpstream != '' ]]; then
+	remoteBranchName="$remote/$branchName"
+	git branch -r | tr -d [:blank:] | grep "^$remoteBranchName$" >/dev/null
+	if [[ $? = 0 ]]; then
+		echo "Remote branch already exists '$remoteBranchName'" >&2
+		exit $errorRemoteBranchExists
+	fi
+fi
+
+# All good so beam it up
+git push $setUpstream $remote $branchName
+
