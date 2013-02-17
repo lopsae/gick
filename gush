@@ -23,20 +23,20 @@
 
 
 # Error codes
-error_incorrectParams=1
+error_invalidOptions=1
 error_notInBranch=2
 error_noSingleRemote=3
 error_noRemoteMatch=4
 error_remoteBranchExists=5
 
-# Option parsing
+# Options parsing
 params=$(getopt d $*)
 getoptStatus=$?
 set -- $params
 
 if [[ $getoptStatus != 0 ]]; then
-	echo 'Incorrect parameters given' >&2
-	exit $error_incorrectParams
+	echo 'Invalid options' >&2
+	exit $error_invalidOptions
 fi
 
 dryrun=false
