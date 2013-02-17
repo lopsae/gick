@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# Prints a single line from the content piped in, this line will contain
-# all the strings passed in as parameters to the script.
+# Prints, from the content piped in, the line or lines that contain in
+# order all the strings given as parameters.
 
-# If no arguments or no content piped in is given the script will end
-# with a non-zero value. Samewise if no match is found in the content
+# Used without options only the first match is displayed, if the -a
+# option is used all the matches are printed.
+
+# If no arguments or no content is piped in the script will end
+# with a non-zero value, samewise if no match is found in the content
 # piped in.
 
 
