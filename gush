@@ -19,16 +19,16 @@
 
 
 # Error codes
-errorNotInBranch=1
-errorNoDefaultRemote=2
-errorNoRemoteMatch=3
-errorRemoteBranchExists=4
+error_notInBranch=1
+error_noDefaultRemote=2
+error_noRemoteMatch=3
+error_remoteBranchExists=4
 
 # If headless nothing to do here
 branchName=$(granch 2>/dev/null)
 if [[ $? != 0 ]]; then
 	echo 'Not in a branch' >&2
-	exit $errorNotInBranch
+	exit $error_notInBranch
 fi
 
 # First check for the tracking branch
@@ -50,13 +50,13 @@ if [[ $# = 0 ]]; then
 	remote=$(gremote 2>/dev/null)
 	if [[ $? != 0 ]]; then
 		echo 'No default remote found' >&2
-		exit $errorNoDefaultRemote
+		exit $error_noDefaultRemote
 	fi
 else
 	remote=$(gremote $@ 2>/dev/null)
 	if [[ $? != 0 ]]; then
 		echo 'No remote match found' >&2
-		exit $errorNoRemoteMatch
+		exit $error_noRemoteMatch
 	fi
 fi
 
@@ -67,7 +67,7 @@ if [[ $setUpstream != '' ]]; then
 	git branch -r | tr -d [:blank:] | grep "^$remoteBranchName$" >/dev/null
 	if [[ $? = 0 ]]; then
 		echo "Remote branch already exists '$remoteBranchName'" >&2
-		exit $errorRemoteBranchExists
+		exit $error_remoteBranchExists
 	fi
 fi
 
