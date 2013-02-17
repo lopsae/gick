@@ -23,13 +23,16 @@ if [[ $# = 0 ]]; then
 	exit $error_noParams
 fi
 
+# TODO -a option will print all found matches
 params=`getopt a $*`
-paramsCode=$?
+getoptStatus=$?
+
 set -- $params
 
+# Shifting out the "--" that gets placed always at the start
 shift
 
-if [[ $paramsCode != 0 ]];then
+if [[ $getoptStatus != 0 ]];then
 	echo 'Invalid parameters' >&2
 	exit $error_invalidParams
 fi
