@@ -17,12 +17,42 @@
 # remote from the available ones. The branch created in the remote will
 # be saved as the current tracking branch.
 
+# If the -d option is used the command will execute in dry run mode and
+# no git push command will happen. Whatever would be run will be
+# printed instead.
+
 
 # Error codes
-error_notInBranch=1
-error_noDefaultRemote=2
-error_noRemoteMatch=3
-error_remoteBranchExists=4
+error_incorrectParams=1
+error_notInBranch=2
+error_noSingleRemote=3
+error_noRemoteMatch=4
+error_remoteBranchExists=5
+
+# Option parsing
+params=$(getopt d $*)
+getoptStatus=$?
+set -- $params
+
+if [[ $getoptStatus != 0 ]]; then
+	echo 'Incorrect parameters given' >&2
+	exit $error_incorrectParams
+fi
+
+dryrun=false
+
+for param; do
+	case "$param" in
+		-d)
+			dryrun=true
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+	esac
+done
 
 # If headless nothing to do here
 branchName=$(granch 2>/dev/null)
@@ -37,7 +67,11 @@ trackingBranch=`gracking 2>/dev/null`
 if [[ $? = 0 ]]; then
 	# Tracking and no parameters, simply push
 	if [[ $# = 0 ]]; then
-		git push
+		if [[ $dryrun = true ]]; then
+			echo git push
+		else
+			git push
+		fi
 		exit
 	fi
 else
@@ -49,8 +83,8 @@ fi
 if [[ $# = 0 ]]; then
 	remote=$(gremote 2>/dev/null)
 	if [[ $? != 0 ]]; then
-		echo 'No default remote found' >&2
-		exit $error_noDefaultRemote
+		echo 'No single remote found' >&2
+		exit $error_noSingleRemote
 	fi
 else
 	remote=$(gremote $@ 2>/dev/null)
@@ -72,5 +106,9 @@ if [[ $setUpstream != '' ]]; then
 fi
 
 # All good so beam it up
-git push $setUpstream $remote $branchName
+if [[ $dryrun = true ]]; then
+	echo git push $setUpstream $remote $branchName
+else
+	git push $setUpstream $remote $branchName
+fi
 
