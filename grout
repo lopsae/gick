@@ -2,7 +2,7 @@
 
 # Checkout a remote branch found through gickbranch
 
-branchMatch=`gickbranch -r $@ 2>/dev/null`
+branchMatch=`gickb -r $@ 2>/dev/null`
 
 if [[ $? != 0 ]]; then
 	echo 'No branch found' >&2
