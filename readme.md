@@ -11,7 +11,7 @@ In your shell session run the following:
 	source /path/to/gools/.galiases
 	export PATH="$PATH:/path/to/gools"
 
-In any git repository you have try
+In any git repository you may try:
 
 	# See the status
 	> gt
@@ -19,17 +19,17 @@ In any git repository you have try
 	 M some/folder/file
 	 M some/folder/otherFile
 	
-	# Display the tracking branch
+	# Display the tracking branch, but none yet
 	> gracking
 	No tracking branch
 	
-	# Add some files, you only need one or more pieces of the path
+	# Add some files, you only need one or more substrings of the path displayed in git status
 	> gad file
 	add 'some/folder/file'
 	> gad oth File
 	add 'some/folder/otherFile'
 	
-	# Reset again a file, also just with any piece of the path
+	# Reset a file, also just with any piece of the path
 	> geset her
 	reset 'some/folder/otherFile'
 	
@@ -40,8 +40,9 @@ In any git repository you have try
 	
 	# Create a tracking branch and push
 	> gush
+	...
 	to origin
-	 * [new branch]      someBranch -> someBranch
+	 * [new branch] someBranch -> someBranch
 	Branch someBranch set up to track remote branch someBranch from origin.
 	
 	# Now we are tracking something
