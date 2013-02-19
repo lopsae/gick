@@ -12,6 +12,7 @@ In your shell session run the following:
 	export PATH="$PATH:/path/to/gools"
 
 In any git repository you have try
+
 	# See the status
 	> gt
 	## someBranch
