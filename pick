@@ -6,6 +6,11 @@
 # Used without options only the first match is displayed, if the -a
 # option is used all the matches are printed.
 
+# Pick uses grep -E to search for the given patters, that means that regular
+# expressions can be used. However, dots are treated specialy, being slashed
+# so that they are searched as dots. Using the -d option will let dots pass
+# unescaped to the grep command.
+
 # If no arguments or no content is piped in the script will end
 # with a non-zero value, samewise if no match is found in the content
 # piped in.
