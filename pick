@@ -30,7 +30,7 @@ if [[ $# = 0 ]]; then
 fi
 
 # Options parsing
-params=`getopt a $*`
+params=`getopt ac $*`
 getoptStatus=$?
 set -- $params
 
@@ -40,11 +40,18 @@ if [[ $getoptStatus != 0 ]]; then
 fi
 
 maxCount='--max-count 1'
+ignoreCase='--ignore-case'
 
 for param; do
 	case "$param" in
 		-a)
+			# display all matches
 			maxCount=''
+			shift
+			;;
+		-c)
+			# force to not ignore case
+			ignoreCase=''
 			shift
 			;;
 		--)
@@ -55,6 +62,14 @@ for param; do
 done
 
 piped=$(cat)
+
+# Check for smart case
+echo "$@" | grep [A-Z] >/dev/null 2>/dev/null
+
+if [[ $? = 0 ]]; then
+	# Any capital case triggers ignore case
+	ignoreCase=''
+fi
 
 search=''
 wildcard='.*'
@@ -73,7 +88,7 @@ done
 search=${search%"$wildCard"}
 
 # Piped needs to be between quotes as to not loose the newlines
-match=$(echo "$piped" | grep $maxCount $search)
+match=$(echo "$piped" | grep $ignoreCase $maxCount $search)
 
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2
