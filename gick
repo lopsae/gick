@@ -1,18 +1,21 @@
 #!/bin/bash
 
-# Prints the first matching file from the git status
+# Using the pick command prints the matching files that appear in git status.
 
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
 	exit 1
 fi
 
-found=`git status --porcelain | cut -c 4- | pick $@ 2>/dev/null`
+# We search only in the filenames returned by status
+matches=$(git status --porcelain | cut -c 4- | pick $@ 2>/dev/null)
 if [[ $? != 0 ]]; then
-	echo 'No file found' >&2
+	echo 'No files found' >&2
 	exit 2
 fi
 
-relativePath=`git rev-parse --show-cdup`
-echo "$relativePath$found"
+relativePath=$(git rev-parse --show-cdup)
+for match in $matches; do
+	echo "$relativePath$match"
+done
 
