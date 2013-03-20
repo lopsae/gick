@@ -29,8 +29,14 @@ if [[ $# = 0 ]]; then
 	exit $error_noParams
 fi
 
+# Values modified by options
+maxCount='--max-count 1'
+ignoreCase='--ignore-case'
+keepDots=false
+debugSearch=false
+
 # Options parsing
-params=`getopt ac $*`
+params=$(getopt acdS $*)
 getoptStatus=$?
 set -- $params
 
@@ -39,19 +45,26 @@ if [[ $getoptStatus != 0 ]]; then
 	exit $error_invalidOptions
 fi
 
-maxCount='--max-count 1'
-ignoreCase='--ignore-case'
-
 for param; do
 	case "$param" in
 		-a)
-			# display all matches
+			# Display all matches
 			maxCount=''
 			shift
 			;;
 		-c)
-			# force to not ignore case
+			# Force to not ignore case
 			ignoreCase=''
+			shift
+			;;
+		-d) 
+			# Leave dots unescaped
+			keepDots=true
+			shift
+			;;
+		-S)
+			# Display search string instead of results, for debugging
+			debugSearch=true
 			shift
 			;;
 		--)
@@ -74,26 +87,35 @@ fi
 search=''
 wildcard='.*'
 for param in $@; do
-	# treat dots since they are usual in filenames
-	param=${param/./\\.}
 	
-	# if for any reason we do want a dot, appending it with \ will turn it back
-	param=${param/\\\\./.}
+	if [[ $keepDots = false ]]; then
+		# treat dots since they are usual in filenames
+		param=${param/./\\.}
+		
+		# if for any reason we do want a dot, appending it with \ will turn it back
+		param=${param/\\\\./.}
+	fi
 	
 	# Append a wildcard between each param
 	search=$search$param$wildcard
 done
 
 # Remove the trailing wildcard
-search=${search%"$wildCard"}
+search=${search%"$wildcard"}
+
+# Bailing out for debugging
+if [[ $debugSearch = true ]]; then
+	echo $search
+	exit
+fi
 
 # Piped needs to be between quotes as to not loose the newlines
-match=$(echo "$piped" | grep $ignoreCase $maxCount $search)
+matches=$(echo "$piped" | grep -E $ignoreCase $maxCount $search)
 
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2
 	exit $error_noMatch
 fi
 
-echo "$match"
+echo "$matches"
 
