@@ -15,7 +15,9 @@ if [[ $? != 0 ]]; then
 fi
 
 relativePath=$(git rev-parse --show-cdup)
+
+IFS=$'\n'
 for match in $matches; do
 	echo "$relativePath$match"
 done
-
+unset IFS
