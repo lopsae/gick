@@ -13,7 +13,7 @@ fi
 # Normal case
 
 # Find the file with gick
-fileFound=`gick $@ 2>/dev/null`
+fileFound=$(gick $@ 2>/dev/null)
 
 if [[ $? != 0 ]]; then
 	echo 'No file found' >&2
@@ -21,17 +21,17 @@ if [[ $? != 0 ]]; then
 fi
 
 # Retrieve both status of the file
-fileStatus=`git status --short $fileFound`
-indexStatus=${fileStatus:0:1}
+fileStatus=$(git status --porcelain $fileFound)
+stageStatus=${fileStatus:0:1}
 workStatus=${fileStatus:1:1}
 
 case $workStatus in
 	' ')
-		case $indexStatus in
-			[MA])
+		case $stageStatus in
+			[MAR])
 				echo "Already staged '$fileFound'" >&2
 				;;
-			'D')
+			[D])
 				echo "Already removed '$fileFound'" >&2
 				;;
 			esac
