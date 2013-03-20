@@ -54,11 +54,17 @@ for param; do
 	esac
 done
 
-piped=`cat`
+piped=$(cat)
 
 search=''
 wildcard='.*'
 for param in $@; do
+	# treat dots since they are usual in filenames
+	param=${param/./\\.}
+	
+	# if for any reason we do want a dot, appending it with \ will turn it back
+	param=${param/\\\\./.}
+	
 	# Append a wildcard between each param
 	search=$search$param$wildcard
 done
@@ -67,7 +73,7 @@ done
 search=${search%"$wildCard"}
 
 # Piped needs to be between quotes as to not loose the newlines
-match=`echo "$piped" | grep $maxCount $search`
+match=$(echo "$piped" | grep $maxCount $search)
 
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2
