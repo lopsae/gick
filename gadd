@@ -1,50 +1,82 @@
 #!/bin/bash
 
-# Adds and removes files just with a partial name.
+# Adds and removes files using gick. Any option passed is given directly to
+# gick.
 
+# If the -P options is given stdin is read to retrieve a list of files, each
+# in a single line, over which gadd acts directly. Any other option given
+# to the command is ignored.
+
+
+# Error codes
+error_noStdin=1
+error_noFilesFound=2
+
+
+# Options values
+usePiped=false
+piped=''
+
+# -P special case for use piped filenames directly
+if [[ $# > 0 && $1 = '-P' ]]; then
+	if [[ -t 0 ]]; then
+		echo 'No stdin given' >&2
+		exit $error_noStdin
+	fi
+	
+	usePiped=true
+	piped=$(cat)
+fi
 
 # Dot special case
 if [[ $# = 1 && $1 = '.' ]]; then
-	git status --porcelain | cut -c 4- | xargs -L 1 gad
+	git status --porcelain | cut -c 4- | gadd -P
 	exit $?
 fi
 
+fileList=''
+if [[ $usePiped = true ]]; then
+	# Use piped list
+	fileList="$piped"
+else
+	# Find the file with gick
+	fileList=$(gick $@ 2>/dev/null)
 
-# Normal case
-
-# Find the file with gick
-fileFound=$(gick $@ 2>/dev/null)
-
-if [[ $? != 0 ]]; then
-	echo 'No file found' >&2
-	exit 1
+	if [[ $? != 0 ]]; then
+		echo 'No files found' >&2
+		exit $error_noFilesFound
+	fi
 fi
 
-# Retrieve both status of the file
-fileStatus=$(git status --porcelain $fileFound)
-stageStatus=${fileStatus:0:1}
-workStatus=${fileStatus:1:1}
+IFS=$'\n'
+for fileName in $fileList; do
+	# Retrieve both status of the file
+	fileStatus=$(git status --porcelain $fileName)
+	stageStatus=${fileStatus:0:1}
+	workStatus=${fileStatus:1:1}
 
-case $workStatus in
-	' ')
-		case $stageStatus in
-			[MAR])
-				echo "Already staged '$fileFound'" >&2
-				;;
-			[D])
-				echo "Already removed '$fileFound'" >&2
-				;;
-			esac
-		;;
-	[MA?])
-		git add -v $fileFound
-		;;
-	[D])
-		git rm $fileFound
-		;;
-	*)
-		echo "Unknown status '$workStatus'" >&2
-		echo 'Nothing done' >&2
-		;;
-esac
+	case $workStatus in
+		' ')
+			case $stageStatus in
+				[MAR])
+					echo "Already staged '$fileName'" >&2
+					;;
+				[D])
+					echo "Already removed '$fileName'" >&2
+					;;
+				esac
+			;;
+		[MA?])
+			git add -v $fileName
+			;;
+		[D])
+			git rm $fileName
+			;;
+		*)
+			echo "Unknown status '$workStatus' for '$fileName'"  >&2
+			echo 'No operation done' >&2
+			;;
+	esac
+done
+unset IFS
 
