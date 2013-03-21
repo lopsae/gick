@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Adds and removes files using gick. Any option passed is given directly to
-# gick.
+# Adds and removes files using gick. Any option passed is given directly to the
+# gick command.
 
-# If content is given through stdin it is used a file list, separated by
-# newlines, instead of using gick. In this case any option given to gadd is
-# ignored.
+# If content is given through stdin it is interpreted as a list of files
+# separated by newlines over which the command will act. In this case any
+# option given to gadd is ignored.
 
 
 # Error codes

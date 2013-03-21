@@ -34,7 +34,7 @@ if [[ $# = 0 ]]; then
 	exit $error_noParams
 fi
 
-# Values modified by options
+# Options values
 maxCount='--max-count 1'
 ignoreCase='--ignore-case'
 keepDots=false
