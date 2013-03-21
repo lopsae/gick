@@ -1,18 +1,21 @@
 #!/bin/bash
 
-# Adds and removes files using gick. Any option passed is given directly to the
-# gick command.
+read -d '' helpDoc <<"helpDoc"
+Adds and removes files using gick. Any option passed is given directly to the
+gick command.
 
-# If dot is used as the single option the command acts over all the files
-# that appear in git status.
+If dot is used as the single option the command acts over all the files that
+appear in "git status".
 
-# If content is given through stdin it is interpreted as a list of files
-# separated by newlines over which the command will act. In this case any
-# option given to the command is ignored.
+If content is given through stdin it is interpreted as a list of files, one on
+each line, over which the command will act. In this case any option given to
+the command is ignored.
+helpDoc
 
 
 # Error codes
-error_noFilesFound=1
+error_noParameters=1
+error_noFilesFound=2
 
 
 # Options values
@@ -28,6 +31,11 @@ if [[ ! -t 0 ]]; then
 elif [[ $# = 1 && $1 = '.' ]]; then
 	git status --porcelain | cut -c 4- | gadd
 	exit $?
+
+# Nothing? print help
+elif [[ $# = 0 ]]; then
+	echo "$helpDoc" >&2
+	exit $error_noParameters
 fi
 
 # Getting the list of files to use
