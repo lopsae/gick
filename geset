@@ -3,9 +3,12 @@
 # Unstages files using gick. Any option passed is given directly to the
 # gick command.
 
+# If dot is used as the single option the command acts over all the files
+# that appear in git status.
+
 # If content is given through stdin it is interpreted as a list of files
 # separated by newlines over which the command will act. In this case any
-# option given to gadd is ignored.
+# option given to the command is ignored.
 
 
 # Error codes
@@ -43,11 +46,11 @@ else
 fi
 
 
-# Properly adding each thing
+# Reseting the files
 IFS=$'\n'
 for fileName in $fileList; do
 	echo "reset '$fileName'"
-	git reset HEAD --quiet $fileName
+	git reset --quiet HEAD -- $fileName
 done
 unset IFS
 

@@ -1,32 +1,69 @@
 #!/bin/bash
 
-# Reverts a file in the working tree to its head state.
+# Reverts files using gick to head state. Any option passed is given directly
+# to the gick command.
 
-fileFound=`gick $@ 2>/dev/null`
+# For any file reverted a backup file is copied in /tmp/geverts. The file is
+# printed as the command is run.
 
-if [ $? -ne 0 ]; then
-	echo 'No file found' >&2
-	exit 1
+# If content is given through stdin it is interpreted as a list of files
+# separated by newlines over which the command will act. In this case any
+# option given to the command is ignored.
+
+
+# Error codes
+error_noFilesFound=1
+
+
+# Options values
+usePiped=false
+piped=''
+
+# If there is piped content it is used and any option is ignored
+if [[ ! -t 0 ]]; then
+	usePiped=true
+	piped=$(cat)
 fi
 
-# Generating a path to backup the file
+# Getting the list of files to use
+fileList=''
+if [[ $usePiped = true ]]; then
+	# Use piped list
+	fileList="$piped"
+else
+	# Find the file with gick
+	fileList=$(gick $@ 2>/dev/null)
+
+	if [[ $? != 0 ]]; then
+		echo 'No files found' >&2
+		exit $error_noFilesFound
+	fi
+fi
+
+# Generating a the data for backups
 backupPath="/tmp/geverts/"
 mkdir -p $backupPath
 
 # Creating a time stamp for the file
 # year, month, day, hour, minute, second
-timeStamp=`date +"%Y%m%d_%H%M%S"`
-basenameFile=`basename $fileFound`
-backupFile="${backupPath}${timeStamp}_${basenameFile}_XXXX"
-backupFile=`mktemp $backupFile`
+timeStamp=$(date +"%Y%m%d_%H%M%S")
 
-# Make a backup of the file if it exists
-if [ -f $fileFound ]; then
-	cp $fileFound $backupFile
-	echo "backup in '$backupFile'"
-fi
-
-echo "revert '$fileFound'"
-
-git checkout HEAD $fileFound
+# Reverting the files
+IFS=$'\n'
+for fileName in $fileList; do
+	baseFileName=$(basename $fileName)
+	backupFile="${backupPath}${timeStamp}_${baseFileName}_XXXX"
+	backupFile=$(mktemp $backupFile)
+	
+	echo "revert '$fileName'"
+	
+	# Make a backup of the file if it exists
+	if [[ -f $fileName ]]; then
+		cp $fileName $backupFile
+		echo "backup in '$backupFile'"
+	fi
+	
+	git checkout HEAD -- $fileName
+done
+unset IFS
 

@@ -3,9 +3,12 @@
 # Adds and removes files using gick. Any option passed is given directly to the
 # gick command.
 
+# If dot is used as the single option the command acts over all the files
+# that appear in git status.
+
 # If content is given through stdin it is interpreted as a list of files
 # separated by newlines over which the command will act. In this case any
-# option given to gadd is ignored.
+# option given to the command is ignored.
 
 
 # Error codes
@@ -46,7 +49,7 @@ fi
 IFS=$'\n'
 for fileName in $fileList; do
 	# Retrieve both status of the file
-	fileStatus=$(git status --porcelain $fileName)
+	fileStatus=$(git status --porcelain -- $fileName)
 	stageStatus=${fileStatus:0:1}
 	workStatus=${fileStatus:1:1}
 
