@@ -1,34 +1,45 @@
 #!/bin/bash
 
-# Prints the first matching line from the git branches
+# Prints matching branches using pick.
 
 # By default it seeks for a match in the local branches, if -r is
 # provided, it prints the first matching branch on remote branches. 
 
-params=`getopt r $*`
+
+# Error codes
+error_invalidOptions=1
+error_noParameters=2
+
+
+# Option values
+useRemotes=''
+
+# Options parsing
+params=$(getopt r $*)
 getoptStatus=$?
 set -- $params
 
 if [[ $getoptStatus != 0 ]]; then
 	echo 'Invalid options' >&2
-	exit 1
+	exit $error_invalidOptions
 fi
-
-useRemotes=''
 
 for param; do
 	case "$param" in
 		-r)
 			useRemotes='-r'
-			shift;;
+			shift
+			;;
 		--)
-			shift; break;;
+			shift
+			break
+			;;
 	esac
 done
 
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
-	exit 2
+	exit $error_noParameters
 fi
 
 git branch $useRemotes | tr -d [:blank:] | tr -d '*' | pick $@
