@@ -1,13 +1,31 @@
 #!/bin/bash
 
-# Commits the current index. If used with parameters all are used as the
-# commit message.
+read -d '' helpDoc <<"helpDoc"
+Commits the current index.
 
-if [[ $# = 0 ]]; then
+If used without parameters "git commit" is simply invoked.
+
+If present, any parameter passed is used as the commit message.
+
+If any content is piped in it is used as the commit message.
+helpDoc
+
+if [[ $1 = '-h' || $1 = '--help' ]]; then
+	echo "$helpDoc" >&2
+	exit
+fi
+
+# Piped in
+if [[ ! -t 0 ]]; then
+	git commit -F <(cat)
+	
+# No parameters
+elif [[ $# = 0 ]]; then
 	git commit
+	
+# Message in parameters
 else
 	message="$@"
 	git commit -m "$message"
 fi
-
 
