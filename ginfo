@@ -1,0 +1,37 @@
+#!/bin/bash
+
+read -d '' helpDoc <<"helpDoc"
+Displays helpfull information about the git repository
+helpDoc
+
+
+# Error codes
+error_helpDoc=1
+error_unknowInfo=2
+
+
+if [[ $# = 0 || $1 = '-h' || $1 = '--help' ]]; then
+	echo "$helpDoc" >&2
+	exit $error_helpDoc
+fi
+
+case $1 in
+	url|urls)
+		git remote show -n origin
+		exit
+		;;
+	user)
+		git config user.name; git config user.email
+		;;
+	tracking)
+		echo tracking
+		;;
+	branch)
+		echo branch
+		;;
+	*)
+		echo 'Unknown info' >&2
+		exit $error_unknowInfo
+		;;
+esac
+
