@@ -8,6 +8,8 @@ helpDoc
 # Error codes
 error_helpDoc=1
 error_unknowInfo=2
+error_notInABranch=3
+error_noTrackingBranch=4
 
 
 if [[ $# = 0 || $1 = '-h' || $1 = '--help' ]]; then
@@ -20,15 +22,32 @@ case $1 in
 		git remote show -n origin
 		exit
 		;;
+		
 	user)
-		git config user.name; git config user.email
+		echo $(git config user.name) $(git config user.email)
 		;;
-	tracking)
-		echo tracking
-		;;
+		
 	branch)
-		echo branch
+		branchRef=$(git symbolic-ref HEAD 2>/dev/null)
+		if [ $? -ne 0 ]; then
+			echo 'Not in a branch' >&2
+			exit $error_notInABranch
+		fi
+		# Removing the initial "refs/heads/"
+		echo ${branchRef#refs/heads/}
 		;;
+		
+	tracking|upstream)
+		upstream=$(git rev-parse --symbolic-full-name @{upstream} 2>/dev/null)
+		if [[ $? != 0 ]]; then
+			echo 'No tracking branch' >&2
+			exit $error_noTrackingBranch
+		fi
+		
+		# Removing the initial "refs/remotes/""
+		echo ${upstream#refs/remotes/}
+		;;
+		
 	*)
 		echo 'Unknown info' >&2
 		exit $error_unknowInfo

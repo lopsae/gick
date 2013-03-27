@@ -62,7 +62,7 @@ for param; do
 	esac
 done
 
-branches=$(gickb $useRemote -- $allMatches $@)
+branches=$(gickb $useRemote -- $allMatches $@ 2>/dev/null)
 
 if [[ $? != 0 ]]; then
 	echo 'No branch found' >&2
