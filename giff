@@ -9,6 +9,9 @@ if [[ $? != 0 ]]; then
 	exit 1
 fi
 
+# Get just the first file
+fileFound=$(echo "$fileFound" | head -n 1)
+
 # Check that GOOLS_DIFFTOOL is defined
 
 echo "diff '$fileFound'"

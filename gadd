@@ -14,7 +14,7 @@ helpDoc
 
 
 # Error codes
-error_noParameters=1
+error_helpDoc=1
 error_noFilesFound=2
 
 
@@ -32,10 +32,10 @@ elif [[ $# = 1 && $1 = '.' ]]; then
 	git status --porcelain | cut -c 4- | gadd
 	exit $?
 
-# Nothing? print help
-elif [[ $# = 0 ]]; then
+# Print help
+elif [[ $# = 0 || $1 = '-h' || $1 = '--help' ]]; then
 	echo "$helpDoc" >&2
-	exit $error_noParameters
+	exit $error_helpDoc
 fi
 
 # Getting the list of files to use
