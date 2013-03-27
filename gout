@@ -1,14 +1,88 @@
 #!/bin/bash
 
-# Checkout a branch found through gickbrach
+read -d '' helpDoc <<"helpDoc"
+Checkout a branch found through gickb.
+helpDoc
 
-branchFound=`gickb $@ 2>/dev/null`
 
-if [ $? -ne 0 ]; then
-	echo 'No branch found'
-	exit 1
+# gout cosa
+# normal checkout
+# if ambiguou print
+
+# gout -r cosa
+# checkout remote branch
+# if ambiguous print
+
+# gout -f cosa
+# checkout to first match, remote or local
+
+# Error codes
+error_helpDoc=1
+error_noFilesFound=2
+error_noMatches=3
+error_ambiguousMatch=4
+
+
+# Print help
+if [[ $# = 0 || $1 = '-h' || $1 = '--help' ]]; then
+	echo "$helpDoc" >&2
+	exit $error_helpDoc
 fi
 
-echo "Switching to branch '$branchFound'"
-git checkout $branchFound
+# Options values
+useRemote=''
+allMatches='-a'
+
+# Options parsing
+params=$(getopt rf $*)
+getoptStatus=$?
+set -- $params
+
+if [[ $getoptStatus != 0 ]]; then
+	echo 'Invalid options' >&2
+	exit $error_invalidOptions
+fi
+
+for param; do
+	case "$param" in
+		-r)
+			# Check remote branches
+			useRemote='-r'
+			shift
+			;;
+		-f)
+			# Use only first match
+			allMatches=''
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+	esac
+done
+
+branches=$(gickb $useRemote -- $allMatches $@)
+
+if [[ $? != 0 ]]; then
+	echo 'No branch found' >&2
+	exit $error_noMatches
+fi
+
+resultCount=$(echo "$branches" | wc -l | tr -d [:blank:])
+
+if [[ $resultCount > 1 ]]; then
+	echo 'More that one matching branch found' >&2
+	echo 'Use -f to use the first match' >&2
+	echo "$branches" >&2
+	exit $error_ambiguousMatch
+fi
+
+# Clean up remote 
+branchName=$branches
+if [[ $useRemote != '' ]]; then
+	branchName=${branchName#*/}
+fi
+
+git checkout $branchName
 
