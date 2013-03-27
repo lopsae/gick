@@ -55,7 +55,7 @@ for param; do
 done
 
 # If headless nothing to do here
-branchName=$(granch 2>/dev/null)
+branchName=$(ginfo branch 2>/dev/null)
 if [[ $? != 0 ]]; then
 	echo 'Not in a branch' >&2
 	exit $error_notInBranch
@@ -63,7 +63,7 @@ fi
 
 # First check for the tracking branch
 setUpstream=''
-trackingBranch=`gracking 2>/dev/null`
+trackingBranch=$(ginfo tracking 2>/dev/null)
 if [[ $? = 0 ]]; then
 	# Tracking and no parameters, simply push
 	if [[ $# = 0 ]]; then
