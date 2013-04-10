@@ -21,6 +21,9 @@ case $1 in
 	url|urls)
 		git remote show -n origin
 		exit
+		# cleaner way is with `git config remote.origin.url`
+		# but we need the name of the remote
+		# get single default, or pick it
 		;;
 		
 	user)

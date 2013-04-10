@@ -26,14 +26,6 @@ if [[ $? != 0 ]]; then
 	exit 2
 fi
 
-# TODO
-# there should be a check for status, if it is R then it needs to be
-# treated as two separate lines, one for each file
-
-# git porcelain needs to be saved and checked for any R file
-# if it is clean we cut it and pick it
-# else we retrieve both files and replace that line with the two filenames
-
 relativePath=$(git rev-parse --show-cdup)
 
 IFS=$'\n'

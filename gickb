@@ -5,6 +5,8 @@
 # By default it seeks for a match in the local branches, if -r is
 # provided, it prints the first matching branch on remote branches. 
 
+# Options given after "--" will be passed directly to pick.
+
 
 # Error codes
 error_invalidOptions=1
