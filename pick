@@ -62,7 +62,7 @@ for param; do
 			ignoreCase=''
 			shift
 			;;
-		-d) 
+		-d)
 			# Leave dots unescaped
 			keepDots=true
 			shift
@@ -85,7 +85,7 @@ piped=$(cat)
 echo "$@" | grep [A-Z] >/dev/null 2>/dev/null
 
 if [[ $? = 0 ]]; then
-	# Any capital case triggers ignore case
+	# Any capital case triggers not ignoring case
 	ignoreCase=''
 fi
 

@@ -30,6 +30,9 @@ case $1 in
 		fi
 		
 		git remote show -n $remotes
+		# filter everything and only leave the url
+		# or see if there is a way to cleanly retrieve just the url
+		# perhaps in the config?
 		exit
 		;;
 		
