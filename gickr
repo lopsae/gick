@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# If no parameter is given and there is a single git remote, that is 
+# If no parameter is given and there is a single git remote it is
 # printed. Otherwise a non-zero value is returned if no remotes or more
 # that one remote exits. If parameters are provided they are used to
 # pick a remote from the remotes list.
 
 # No parameters option
 if [[ $# = 0 ]]; then
-	count=`git remote | wc -l | tr -d ' '`
+	count=$(git remote | wc -l | tr -d [:blank:])
 	if [[ $count = 1 ]]; then
 		git remote
 		exit
