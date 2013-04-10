@@ -7,12 +7,32 @@ if [[ $# = 0 ]]; then
 	exit 1
 fi
 
+fileList=$(git status --porcelain | cut -c 4-)
+
+# OSX and other NIX have different option for extended regex
+if [[ $(uname) == 'Darwin' ]]; then
+	extendedOption="-E"
+else
+	extendedOption="-r"
+fi
+
+# Looks for " -> " and replaces it with a newline to split both paths
+fileList=$(echo "$fileList" | sed $extendedOption "s/(.*) -> (.*)/\1|\2/" | tr "|" "\n")
+
 # We search only in the filenames returned by status
-matches=$(git status --porcelain | cut -c 4- | pick $@ 2>/dev/null)
+matches=$(echo "$fileList" | pick $@ 2>/dev/null)
 if [[ $? != 0 ]]; then
 	echo 'No files found' >&2
 	exit 2
 fi
+
+# TODO
+# there should be a check for status, if it is R then it needs to be
+# treated as two separate lines, one for each file
+
+# git porcelain needs to be saved and checked for any R file
+# if it is clean we cut it and pick it
+# else we retrieve both files and replace that line with the two filenames
 
 relativePath=$(git rev-parse --show-cdup)
 
