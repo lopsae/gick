@@ -13,14 +13,17 @@ helpDoc
 # checkout remote branch
 # if ambiguous print
 
-# gout -f cosa
-# checkout to first match, remote or local
+# gout -n 2 cosa
+# checkout the given specific match, usefull when there is more that one
+# match
 
 # Error codes
 error_helpDoc=1
-error_noFilesFound=2
-error_noMatches=3
-error_ambiguousMatch=4
+error_invalidOptions=2
+error_invalidForceIndex=3
+error_noMatches=4
+error_ambiguousMatch=5
+error_forceIndexOverBound=6
 
 
 # Print help
@@ -31,10 +34,10 @@ fi
 
 # Options values
 useRemote=''
-allMatches='-a'
+forceIndex=0
 
 # Options parsing
-params=$(getopt rf $*)
+params=$(getopt rn: $*)
 getoptStatus=$?
 set -- $params
 
@@ -50,10 +53,17 @@ for param; do
 			useRemote='-r'
 			shift
 			;;
-		-f)
-			# Use only first match
-			allMatches=''
+		-n)
+			# Use an specific match
 			shift
+			forceIndex=$1
+			shift
+			# For some reason \d does not work inside with [[ =~ ]]
+			if [[ ! $forceIndex =~ ^[0-9]+$ || $forceIndex < 1 ]]; then
+				# forceIndex is not a number or lower that zero
+				echo "Invalid argument with flag '-n': should be an integer greater that 0" >&2
+				exit $error_invalidForceIndex
+			fi
 			;;
 		--)
 			shift
@@ -62,24 +72,43 @@ for param; do
 	esac
 done
 
-branches=$(gickb $useRemote -- $allMatches $@ 2>/dev/null)
+# Always get all matching branches with -a
+branches=$(gickb $useRemote -- -a $@ 2>/dev/null)
 
 if [[ $? != 0 ]]; then
 	echo 'No branch found' >&2
 	exit $error_noMatches
 fi
 
-resultCount=$(echo "$branches" | wc -l | tr -d [:blank:])
+matchesCount=$(echo "$branches" | wc -l | tr -d [:blank:])
 
-if [[ $resultCount > 1 ]]; then
-	echo 'More that one matching branch found' >&2
-	echo 'Use -f to use the first match' >&2
-	echo "$branches" >&2
-	exit $error_ambiguousMatch
+if [[ $forceIndex = 0 ]]; then
+	# No option -n, there mist be a single match
+	if [[ $matchesCount > 1 ]]; then
+		echo 'More that one matching branch found' >&2
+		echo 'Use "-n #" to use an specific match' >&2
+
+		# Print all the matches numbered by line
+		echo "$branches" | awk '{printf "%d: %s\n", NR, $0}' >&2
+		exit $error_ambiguousMatch
+	fi
+	
+	# If there is a single match we are cool
+	branchName=$branches
+else
+	# There is a forced index, grab that specific one
+	if [[ $forceIndex -gt $matchesCount ]]; then
+		echo "Invalid argument with flag '-n': out of bounds" >&2
+		# Print all the matches numbered by line
+		echo "$branches" | awk '{printf "%d: %s\n", NR, $0}' >&2
+		exit $error_forceIndexOverBound
+	fi
+	
+	# Get the specific line
+	branchName=$(echo "$branches" | sed -n "${forceIndex}{p;q;}")
 fi
 
-# Clean up remote 
-branchName=$branches
+# Clean up remote
 if [[ $useRemote != '' ]]; then
 	branchName=${branchName#*/}
 fi
