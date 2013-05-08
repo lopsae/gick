@@ -15,5 +15,5 @@ fileFound=$(echo "$fileFound" | head -n 1)
 # Check that GOOLS_DIFFTOOL is defined
 
 echo "diff '$fileFound'"
-git difftool --tool $GOOLS_DIFFTOOL --no-prompt HEAD $fileFound
+git difftool --tool $GOOLS_DIFFTOOL --patience --no-prompt HEAD $fileFound
 
