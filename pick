@@ -20,8 +20,7 @@
 error_noStdin=1
 error_noParams=2
 error_invalidOptions=3
-error_invalidParams=4
-error_noMatch=5
+error_noMatch=4
 
 # Basic checks
 if [[ -t 0 ]]; then
