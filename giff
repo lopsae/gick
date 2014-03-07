@@ -1,19 +1,28 @@
 #!/bin/bash
 
 # Run a git difference using the first matching file found using gick
+# 
+# -n if used as the first argument will prevent any matching to happen
+# through gick, and next parameter will be interpreted as the file itself
 
-fileFound=$(gick $@ 2> /dev/null)
+fileFound=''
 
-if [[ $? != 0 ]]; then
-	echo 'No file found' >&2
-	exit 1
+if [[ $1 = '-n' ]]; then
+	fileFound="$2"
+else
+	fileFound=$(gick "$@" 2> /dev/null)
+	
+	if [[ $? != 0 ]]; then
+		echo 'No file found' >&2
+		exit 1
+	fi
 fi
 
 # Get just the first file
-fileFound=$(echo "$fileFound" | head -n 1)
+fileFound="$(echo "$fileFound" | head -n 1)"
 
-# Check that GOOLS_DIFFTOOL is defined
+# TODO Check that GOOLS_DIFFTOOL is defined
 
 echo "diff '$fileFound'"
-git difftool --tool $GOOLS_DIFFTOOL --patience --no-prompt HEAD $fileFound
+git difftool --tool $GOOLS_DIFFTOOL --patience --no-prompt HEAD "$fileFound"
 
