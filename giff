@@ -24,5 +24,11 @@ fileFound="$(echo "$fileFound" | head -n 1)"
 # TODO Check that GOOLS_DIFFTOOL is defined
 
 echo "diff '$fileFound'"
-git difftool --tool $GOOLS_DIFFTOOL --patience --no-prompt HEAD "$fileFound"
+
+if [[ "$GOOLS_DIFFTOOL" = '' ]]; then
+	git diff HEAD "$fileFound"
+else
+	git difftool --tool $GOOLS_DIFFTOOL --patience --no-prompt HEAD "$fileFound"
+fi
+
 
