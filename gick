@@ -2,12 +2,24 @@
 
 # Using the pick command prints the matching files that appear in git status.
 
+# gick will only check for the -w option with which it will ignore any files
+# that only have a staging status, thus only files that have workspace changes
+# will be considered.
+
+# Any other option passed to gick is passed through to pick.
+
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
 	exit 1
 fi
 
-fileList=$(git status --porcelain | cut -c 4-)
+if [[ $1 = '-w' ]]; then
+	shift;
+	# Ignores any files without workspace status
+	fileList=$(git status --porcelain | grep --invert-match '^. ' | cut -c 4-)
+else
+	fileList=$(git status --porcelain | cut -c 4-)
+fi
 
 # OSX and other NIX have different option for extended regex
 if [[ $(uname) == 'Darwin' ]]; then
