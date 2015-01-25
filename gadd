@@ -73,6 +73,13 @@ for fileName in $fileList; do
 				esac
 			;;
 		[MA?])
+			# TODO
+			# file name in here might contain spaces since gick will
+			# return the whole name, per line, without any quotes
+			# THIS WORKS BECAUSE IFS IS SET TO \n
+			# if IFS is unset, the command stops working because 
+			# the spaces in the file name break the command.
+			# One solution is to quote the file?
 			git add -v $fileName
 			;;
 		[D])
