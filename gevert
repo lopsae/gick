@@ -42,7 +42,7 @@ fi
 
 # Generating a the data for backups
 backupPath="/tmp/geverts/"
-mkdir -p $backupPath
+mkdir -p "$backupPath"
 
 # Creating a time stamp for the file
 # year, month, day, hour, minute, second
@@ -63,7 +63,10 @@ for fileName in $fileList; do
 		echo "backup in '$backupFile'"
 	fi
 	
-	git checkout HEAD -- $fileName
+	# TODO
+	# new added files (with a A status) need to be reset and removed
+	# checkout fails because there is nothing to checkout
+	git checkout HEAD -- "$fileName"
 done
 unset IFS
 
