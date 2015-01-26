@@ -37,7 +37,7 @@ if [[ $usePiped = true ]]; then
 	fileList="$piped"
 else
 	# Find the file with gick
-	fileList=$(gick $@ 2>/dev/null)
+	fileList=$(gick "$@" 2>/dev/null)
 
 	if [[ $? != 0 ]]; then
 		echo 'No files found' >&2
@@ -49,8 +49,8 @@ fi
 # Reseting the files
 IFS=$'\n'
 for fileName in $fileList; do
-	echo "reset '$fileName'"
 	git reset --quiet HEAD -- "$fileName"
+	echo "reset '$fileName'"
 done
 unset IFS
 
