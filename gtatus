@@ -61,10 +61,16 @@ for statusLine in $porcelainStatus; do
 	workspaceStatus=${statusLine:1:1}
 	
 	fileName=${statusLine:3}
+	# Cleaning quotes in files with spaces
 	fileName=${fileName#'"'}
 	fileName=${fileName%'"'}
 	
-	echo "$stageStatus$workspaceStatus $relativePath$fileName"
+	if [[ $cutStatusMode = 'true' ]]; then
+		echo "$relativePath$fileName"
+	else
+		echo "$stageStatus$workspaceStatus $relativePath$fileName"
+	fi
+	
 done
 unset IFS
 
