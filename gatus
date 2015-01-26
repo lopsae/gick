@@ -1,0 +1,71 @@
+#!/bin/bash
+
+read -d '' helpDoc <<"helpDoc"
+Prints the status of git files using the porcelain output of git status,
+but appending the relative path if run in a subdirectory and removing any
+quotes added to files with spaces.
+helpDoc
+
+
+# Error codes
+error_helpDoc=1
+error_invalidOptions=2
+
+
+# Options values
+cutStatusMode='false'
+
+
+# Options parsing
+params=$(getopt hc $*)
+getoptStatus=$?
+set -- $params
+
+if [[ $getoptStatus != 0 ]]; then
+	echo 'Invalid options' >&2
+	exit $error_invalidOptions
+fi
+
+for param; do
+	case "$param" in
+		-h)
+			# Print help
+			echo "$helpDoc" >&2
+			exit $error_helpDoc
+			;;
+		-c)
+			# Cut status from output
+			cutStatusMode='true'
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+	esac
+done
+
+
+# Options validation
+# None right now
+
+
+relativePath=$(git rev-parse --show-cdup)
+porcelainStatus=$(git status --porcelain)
+
+
+IFS=$'\n'
+for statusLine in $porcelainStatus; do
+	# Retrieve both status of the file
+	stageStatus=${statusLine:0:1}
+	workspaceStatus=${statusLine:1:1}
+	
+	fileName=${statusLine:3}
+	fileName=${fileName#'"'}
+	fileName=${fileName%'"'}
+	
+	echo "$stageStatus$workspaceStatus $relativePath$fileName"
+done
+unset IFS
+
+
