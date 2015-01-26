@@ -1,9 +1,14 @@
 #!/bin/bash
 
 read -d '' helpDoc <<"helpDoc"
-Prints the status of git files using the porcelain output of git status,
-but appending the relative path if run in a subdirectory and removing any
-quotes added to files with spaces.
+Prints a porcelain git status with additional modifications for ease of use
+in other scritps.
+
+* If run from a subdirectory, the output path for each file will be
+  relative to the current directory.
+* No file will be surrounder with quotes, even if the filename has spaces,
+  since quotes make filenames unsuitable for use as input of other scriots.
+  It is intended that the output is consumed separating by lines.
 helpDoc
 
 
@@ -61,7 +66,6 @@ for statusLine in $porcelainStatus; do
 	else
 		echo "$stageStatus$workspaceStatus $relativePath$fileName"
 	fi
-	
 done
 unset IFS
 
