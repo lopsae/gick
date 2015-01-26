@@ -1,14 +1,13 @@
 #!/bin/bash
 
 read -d '' helpDoc <<"helpDoc"
-Prints a porcelain git status with additional modifications for ease of use
-in other scritps.
+Prints a sensible git status that can be consumed easily by other scripts.
 
+The ouput is taken from git status -z with the following modifications:
 * If run from a subdirectory, the output path for each file will be
   relative to the current directory.
-* No file will be surrounder with quotes, even if the filename has spaces,
-  since quotes make filenames unsuitable for use as input of other scriots.
-  It is intended that the output is consumed separating by lines.
+* Files with an R (renamed) status are split into two lines, one for each
+  file.
 helpDoc
 
 
@@ -46,20 +45,43 @@ shift $(( OPTIND - 1 ));
 # None right now
 
 
+# Getting a clean status, separated by new lines
+rawStatus=$(git status -z -- "$@" | xargs -0 -n 1)
+
 relativePath=$(git rev-parse --show-cdup)
-porcelainStatus=$(git status --porcelain -- "$@")
 
 
+nextIsRenamedFile='false'
 IFS=$'\n'
-for statusLine in $porcelainStatus; do
+for statusLine in $rawStatus; do
+	# For renamed files, the current line is wholy the filename
+	# Status is requested again to have the correct status of that file
+	if [[ $nextIsRenamedFile = 'true' ]]; then
+		# On very odd cases, a renamed file which was re-added, the status
+		# of a specific file can actualy return two lines, for this case
+		# we take just the first line
+		fileName="$relativePath$statusLine"
+		statusLine=$(git status -z -- "$fileName" | xargs -0 -n1 | head -n 1)
+		nextIsRenamedFile='false'
+	fi
+	
 	# Retrieve both status of the file
 	stageStatus=${statusLine:0:1}
 	workspaceStatus=${statusLine:1:1}
-	
 	fileName=${statusLine:3}
-	# Cleaning quotes in files with spaces
-	fileName=${fileName#'"'}
-	fileName=${fileName%'"'}
+	
+	# Handing special R status
+	if [[ $stageStatus = 'R' ]]; then
+		# R status is for renamed files, its a mess, and it means the next
+		# line will contain ONLY the name of the file that was removed
+		nextIsRenamedFile='true'
+		
+		# Current file needs to be requested again to get its correct status
+		statusLine=$(git status -z -- "$relativePath$fileName")
+		stageStatus=${statusLine:0:1}
+		workspaceStatus=${statusLine:1:1}
+		fileName=${statusLine:3}
+	fi
 	
 	if [[ $cutStatusMode = 'true' ]]; then
 		echo "$relativePath$fileName"
