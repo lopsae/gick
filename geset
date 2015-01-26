@@ -26,7 +26,7 @@ if [[ ! -t 0 ]]; then
 
 # Dot special case
 elif [[ $# = 1 && $1 = '.' ]]; then
-	git status --porcelain | cut -c 4- | geset
+	gtatus -c | geset
 	exit $?
 fi
 
@@ -49,15 +49,8 @@ fi
 # Reseting the files
 IFS=$'\n'
 for fileName in $fileList; do
-	# TODO
-	# file name in here might contain spaces since gick will
-	# return the whole name, per line, without any quotes
-	# THIS WORKS BECAUSE IFS IS SET TO \n
-	# if IFS is unset, the command stops working because 
-	# the spaces in the file name break the command.
-	# One solution is to quote the file?
 	echo "reset '$fileName'"
-	git reset --quiet HEAD -- $fileName
+	git reset --quiet HEAD -- "$fileName"
 done
 unset IFS
 
