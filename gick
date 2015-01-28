@@ -22,22 +22,6 @@ else
 	fileList=$(gtatus -c)
 fi
 
-# OSX and other NIX have different option for extended regex
-if [[ $(uname) == 'Darwin' ]]; then
-	extendedOption="-E"
-else
-	extendedOption="-r"
-fi
-
-# Looks for " -> " and replaces it with a newline to split both paths
-# TODO this should also come from gtatus, JESUS
-fileList=$(echo "$fileList" | sed $extendedOption "s%(.*) -> (.*)%\1|\2%" | tr "|" "\n")
-
-# When there are spaces in the filenames git surrounds them with quotes
-# we dont want them here since we are splitting by line
-# TODO also from gtatus, once -> files are also properly split....
-fileList=$(echo "$fileList" | sed $extendedOption "s%^\"(.*)\"$%\1%")
-
 # We search only in the filenames returned by status
 matches=$(echo "$fileList" | pick "$@" 2>/dev/null)
 if [[ $? != 0 ]]; then
