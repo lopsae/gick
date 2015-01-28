@@ -18,10 +18,12 @@ error_invalidOptions=2
 
 # Options values
 cutStatusMode='false'
+onlyStageStatus='false'
+onlyWorkspaceStatus='false'
 
 
 # Options parsing
-while getopts hc option; do
+while getopts hcws option; do
 	case $option in
  		h)
 			# Print help
@@ -31,6 +33,14 @@ while getopts hc option; do
 		c)
 			# Cut status from output
 			cutStatusMode='true'
+			;;
+		s)
+			# Only files with stage status
+			onlyStageStatus='true'
+			;;
+		w)
+			# Only files with workspace status
+			onlyWorkspaceStatus='true'
 			;;
 		?)
 			exit
@@ -42,13 +52,23 @@ shift $(( OPTIND - 1 ));
 
 
 # Options validation
-# None right now
+
+# If -s and -w are used, all status is printed
+if [[ $onlyStageStatus = 'true' && $onlyWorkspaceStatus = 'true' ]]; then
+	onlyStageStatus='false'
+	onlyWorkspaceStatus='false'
+fi
 
 
 # Getting a clean status, separated by new lines
 rawStatus=$(git status -z -- "$@" | xargs -0 -n 1)
 
 relativePath=$(git rev-parse --show-cdup)
+
+
+# TODO have a first loop that cleans the ouput from R status, and marks those
+# lines for requery
+# that way the second loop is cleaner by not having to handle that special case
 
 
 nextIsRenamedFile='false'
@@ -81,6 +101,14 @@ for statusLine in $rawStatus; do
 		stageStatus=${statusLine:0:1}
 		workspaceStatus=${statusLine:1:1}
 		fileName=${statusLine:3}
+	fi
+	
+	if [[ $onlyStageStatus = 'true' && $stageStatus = ' ' ]]; then
+		continue
+	fi
+	
+	if [[ $onlyWorkspaceStatus = 'true' && $workspaceStatus = ' ' ]]; then
+		continue
 	fi
 	
 	if [[ $cutStatusMode = 'true' ]]; then
