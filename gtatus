@@ -1,19 +1,40 @@
 #!/bin/bash
 
 read -d '' helpDoc <<"helpDoc"
-Prints a sensible git status that can be consumed easily by other scripts.
+NAME
+    gtatus -- git status for machine consumption
 
-The ouput is taken from git status -z with the following modifications:
-* If run from a subdirectory, the output path for each file will be
-  relative to the current directory.
-* Files with an R (renamed) status are split into two lines, one for each
-  file.
+SYNOPSIS
+    gtatus [-hcsw]
+
+DESCRIPTION
+    Prints a sensible git status that can be consumed easily by other
+    scripts.
+    
+    The status printed is based in the output of `git status -z` and will
+    comply with the following in the default settings:
+     * The status of one file is ouput by line, with the usual format of
+       one leter for stage status, one leter for workspace status, one
+       space, and the filename.
+     * Filenames are not quoted regardless of the presence of spaces 
+       within and no special characters are escaped.
+     * No R status is ever printed, instead the status of both related
+       files are printed each on its own line following the normal format.
+     * When run from a subdirectory the filenames will be relative to it.
+
+OPTIONS
+    -h  Prints this help output.
+    
+    -c  Prints only the filenames, status are ommited.
+    
+    -s  Prints only files that have any status in stage.
+    
+    -w  Prints only files that have any status in the workspace.
 helpDoc
 
 
 # Error codes
-error_helpDoc=1
-error_invalidOptions=2
+error_invalidOptions=1
 
 
 # Options values
@@ -27,8 +48,8 @@ while getopts hcws option; do
 	case $option in
  		h)
 			# Print help
-			echo "$helpDoc" >&2
-			exit $error_helpDoc
+			echo "$helpDoc"
+			exit
 			;;
 		c)
 			# Cut status from output
