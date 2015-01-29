@@ -8,7 +8,6 @@ Quick setup
 In your shell session run the following:
 
 	export GOOLS_DIFFTOOL='vimdiff'
-	source /path/to/gools/.galiases
 	export PATH="$PATH:/path/to/gools"
 
 In any git repository you may try:
@@ -30,7 +29,7 @@ In any git repository you may try:
 	add 'some/folder/otherFile'
 	
 	# Reset a file, also just with any piece of the path
-	> geset her
+	> geset other
 	reset 'some/folder/otherFile'
 	
 	# Commit
@@ -57,8 +56,6 @@ Simple scripts and tools for git.
 
 
 To use the executable files found here either add the project location into your PATH enviroment variable, or use directly the scripts wherever they are.
-
-Some scripts may use the aliases defined in the .galiases file. This must be sourced into your current shell session.
 
 Some of the scripts depend on the enviroment variable GOOLS_DIFFTOOL
 which is used as the --tool option for "git mergetool" and "git difftool".
