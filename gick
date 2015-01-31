@@ -1,12 +1,25 @@
 #!/bin/bash
 
-# Using the pick command prints the matching files that appear in git status.
+read -d '' helpDoc <<"helpDoc"
+NAME
+    gick -- picks files from git status
 
-# gick will only check for the -w option with which it will ignore any files
-# that only have a staging status, thus only files that have workspace changes
-# will be considered.
+SYNOPSIS
+    pick [-ws] <substring>...
 
-# Any other option passed to gick is passed through to pick.
+DESCRIPTION
+    Using the pick command prints the first matching file that appears in
+    git status. By default only the filename is printed.
+
+OPTIONS
+    -w  Considers only files with status in the workspace.
+    
+    -s  Considers only files with status in stage.
+    
+    -v  Prints also the status of the matched file. The format remains the
+        same as with git status --short.
+helpDoc
+
 
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
