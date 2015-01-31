@@ -1,19 +1,64 @@
 #!/bin/bash
 
-# Prints, from the content piped in, the line or lines that contain in
-# order all the strings given as parameters.
+read -d '' helpDoc <<"helpDoc"
+NAME
+    pick -- searches stdin for an ordered list of substrings
 
-# Used without options only the first match is displayed, if the -a
-# option is used all the matches are printed.
+SYNOPSIS
+    pick [-hacdS] <substring>...
 
-# Pick uses grep -E to search for the given patters, that means that regular
-# expressions can be used. However, dots are treated specialy, being slashed
-# so that they are searched as dots. Using the -d option will let dots pass
-# unescaped to the grep command.
+DESCRIPTION
+    Prints, from the content piped into the command, the first line that
+    contains in order all given <substring>s.
+    
+    If no arguments or no content is piped in, or if no matching line is
+    found, the script will exit with a non zero value.
+    
+    Example:
+    
+        # Having a file that contains a list of fruits
+        > cat fruits
+        blood orange
+        green apple
+        tangerine
+        
+        > cat fruits | pick rang
+        blood orange
+        
+        > cat fruits | pick reen ple
+        green apple
+        
+        > cat fruits | pick rine tang
+        # Output to stderr
+        No match found
+    
+    By default if all <substring>s contain only lowercase letters the
+    matching is done ignoring all case diferences. If any upper case is
+    used in the <substring>s the command will automatically switch to
+    consider cases. This behaviour can be overriden with the -c option,
+    which will force the command to always consider cases.
+    
+    Pick uses grep with extended regular expressions to match the
+    <substring>s, this means that regular expretions could be used as
+    parameter to the command. However dots (.) are treated specially since
+    it is a very common character in filenames. When passing dots the
+    command will escape them from the final regular expression. This
+    behaviour can be overriden with the -d option, which will leave dots
+    unescaped.
 
-# If no arguments or no content is piped in the script will end
-# with a non-zero value, samewise if no match is found in the content
-# piped in.
+OPTIONS
+    -h  Prints this help output.
+    
+    -a  Displays all lines that match the search.
+    
+    -c  Forces the command to consider case differences.
+    
+    -d  Consider dots as part of a regular expression, instead of escaping
+        them.
+    
+    -S  Prints the regular expression used to search for matches and all
+        matching lines.
+helpDoc
 
 
 # Error codes
