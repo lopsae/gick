@@ -8,8 +8,8 @@ SYNOPSIS
     pick [-hacdS] <substring>...
 
 DESCRIPTION
-    Prints, from the content piped into the command, the first line that
-    contains in order all given <substring>s.
+    Prints, from the content read from the standard input, the first line
+    that contains in order all given <substring>s.
     
     If no arguments or no content is piped in, or if no matching line is
     found, the script will exit with a non zero value.
@@ -56,18 +56,62 @@ OPTIONS
     -d  Consider dots as part of a regular expression, instead of escaping
         them.
     
-    -S  Prints the regular expression used to search for matches and all
-        matching lines.
+    -S  Prints the regular expression used to search for matches.
 helpDoc
 
 
 # Error codes
-error_noStdin=1
-error_noParams=2
-error_invalidOptions=3
+error_invalidOptions=1
+error_noStdin=2
+error_noParams=3
 error_noMatch=4
 
-# Basic checks
+
+# Options values
+maxCountOption='--max-count 1'
+ignoreCaseOption='--ignore-case'
+keepDots='false'
+debugSearch='false'
+
+
+# Options parsing
+while getopts hacdS option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit
+			;;
+		a)
+			# Display all matches
+			maxCountOption=''
+			;;
+		c)
+			# Force to not ignore case
+			ignoreCaseOption=''
+			;;
+		d)
+			# Leave dots unescaped
+			keepDots='true'
+			;;
+		S)
+			# Display search string instead of results, for debugging
+			debugSearch='true'
+			;;
+		?)
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
 if [[ -t 0 ]]; then
 	echo 'No stdin given' >&2
 	exit $error_noStdin
@@ -78,50 +122,6 @@ if [[ $# = 0 ]]; then
 	exit $error_noParams
 fi
 
-# Options values
-maxCount='--max-count 1'
-ignoreCase='--ignore-case'
-keepDots=false
-debugSearch=false
-
-# Options parsing
-params=$(getopt acdS $*)
-getoptStatus=$?
-set -- $params
-
-if [[ $getoptStatus != 0 ]]; then
-	echo 'Invalid options' >&2
-	exit $error_invalidOptions
-fi
-
-for param; do
-	case "$param" in
-		-a)
-			# Display all matches
-			maxCount=''
-			shift
-			;;
-		-c)
-			# Force to not ignore case
-			ignoreCase=''
-			shift
-			;;
-		-d)
-			# Leave dots unescaped
-			keepDots=true
-			shift
-			;;
-		-S)
-			# Display search string instead of results, for debugging
-			debugSearch=true
-			shift
-			;;
-		--)
-			shift
-			break
-			;;
-	esac
-done
 
 piped=$(cat)
 
@@ -130,18 +130,18 @@ echo "$@" | grep [A-Z] >/dev/null 2>/dev/null
 
 if [[ $? = 0 ]]; then
 	# Any capital case triggers not ignoring case
-	ignoreCase=''
+	ignoreCaseOption=''
 fi
 
 search=''
 wildcard='.*'
 for param in $@; do
-	
-	if [[ $keepDots = false ]]; then
-		# treat dots since they are usual in filenames
+	if [[ $keepDots = 'false' ]]; then
+		# escape dots since they are usual in filenames
 		param=${param/./\\.}
 		
-		# if for any reason we do want a dot, appending it with \ will turn it back
+		# if for any reason we do want a dot, appending it with \ will
+		# de-escape it
 		param=${param/\\\\./.}
 	fi
 	
@@ -152,14 +152,12 @@ done
 # Remove the trailing wildcard
 search=${search%"$wildcard"}
 
-# Bailing out for debugging
-if [[ $debugSearch = true ]]; then
+# Printing out debug string
+if [[ $debugSearch = 'true' ]]; then
 	echo $search
-	exit
 fi
 
-# Piped needs to be between quotes as to not loose the newlines
-matches=$(echo "$piped" | grep -E $ignoreCase $maxCount $search)
+matches=$(echo "$piped" | grep -E $ignoreCaseOption $maxCountOption $search)
 
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2
