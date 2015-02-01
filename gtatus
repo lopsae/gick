@@ -48,7 +48,11 @@ while getopts hcws option; do
 	case $option in
  		h)
 			# Print help
-			echo "$helpDoc"
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
 			exit
 			;;
 		c)
