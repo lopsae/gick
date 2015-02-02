@@ -5,41 +5,84 @@ NAME
     gick -- picks files from git status
 
 SYNOPSIS
-    pick [-ws] <substring>...
+    pick [-hswv] <substring>...
 
 DESCRIPTION
     Using the pick command prints the first matching file that appears in
     git status. By default only the filename is printed.
 
 OPTIONS
-    -w  Considers only files with status in the workspace.
+    -h  Prints this help output.
     
-    -s  Considers only files with status in stage.
+    -s  Considers only files with any status in stage.
+    
+    -w  Considers only files with any status in the workspace.
     
     -v  Prints also the status of the matched file. The format remains the
-        same as with git status --short.
+        same as with git status --porcelain.
 helpDoc
 
 
+# Error codes
+error_invalidOptions=1
+error_noParams=2
+error_noMatch=3
+
+
+# Options values
+onlyStageOption=''
+onlyWorkspaceOption=''
+showStatus='false'
+
+
+# Options parsing
+while getopts hwsv option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit
+			;;
+		s)
+			# Limit to stage
+			onlyStageOption='-s'
+			;;
+		w)
+			# Limit to workspace
+			onlyWorkspaceOption='-w'
+			;;
+		v)
+			# Display status
+			showStatus='true'
+			;;
+		?)
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
-	exit 1
+	exit $error_noParams
 fi
 
-if [[ $1 = '-w' ]]; then
-	shift;
-	# Ignores any files without workspace status
-	# TODO this can be an option in gtatus
-	fileList=$(gtatus | grep --invert-match '^. ' | cut -c 4-)
-else
-	fileList=$(gtatus -c)
-fi
 
-# We search only in the filenames returned by status
+# List of files to consider
+fileList=$(gtatus -c $onlyStageOption $onlyWorkspaceOption)
+
+# Picking
 matches=$(echo "$fileList" | pick "$@" 2>/dev/null)
 if [[ $? != 0 ]]; then
-	echo 'No files found' >&2
-	exit 2
+	echo 'No match found' >&2
+	exit $error_noMatch
 fi
 
 echo "$matches"

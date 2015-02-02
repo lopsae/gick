@@ -27,9 +27,9 @@ OPTIONS
     
     -c  Prints only the filenames, status are ommited.
     
-    -s  Prints only files that have any status in stage.
+    -s  Prints only files with any status in stage.
     
-    -w  Prints only files that have any status in the workspace.
+    -w  Prints only files with any status in the workspace.
 helpDoc
 
 
@@ -68,7 +68,7 @@ while getopts hcws option; do
 			onlyWorkspaceStatus='true'
 			;;
 		?)
-			exit
+			exit $error_invalidOptions
 			;;
 	esac
 done
