@@ -86,7 +86,7 @@ fi
 
 
 # Getting a clean status, separated by new lines
-rawStatus=$(git status -z -- "$@" | xargs -0 -n 1)
+rawStatus=$(git status -z --untracked-files -- "$@" | xargs -0 -n 1)
 
 relativePath=$(git rev-parse --show-cdup)
 
