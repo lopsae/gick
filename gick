@@ -5,7 +5,7 @@ NAME
     gick -- picks files from git status
 
 SYNOPSIS
-    pick [-hswv] <substring>...
+    pick [-hswdv] <substring>...
 
 DESCRIPTION
     Using the pick command prints the first matching file that appears in
@@ -17,6 +17,9 @@ OPTIONS
     -s  Considers only files with any status in stage.
     
     -w  Considers only files with any status in the workspace.
+    
+    -d  Consider dots as part of a regular expression, instead of escaping
+        them.
     
     -v  Prints also the status of the matched file. The format remains the
         same as with git status --porcelain.
@@ -30,13 +33,13 @@ error_noMatch=3
 
 
 # Options values
-onlyStageOption=''
-onlyWorkspaceOption=''
+gtatusOptions=''
+pickOptions=''
 showStatus='false'
 
 
 # Options parsing
-while getopts hwsv option; do
+while getopts hwsdv option; do
 	case $option in
  		h)
 			# Print help
@@ -47,13 +50,15 @@ while getopts hwsv option; do
 			fi
 			exit
 			;;
-		s)
-			# Limit to stage
-			onlyStageOption='-s'
+		s|w)
+			# Pass through to gtatus
+			# Limit to stage or workspace
+			gtatusOptions="$gtatusOptions -$option"
 			;;
-		w)
-			# Limit to workspace
-			onlyWorkspaceOption='-w'
+		d)
+			# Pass through to pick
+			# keep dots
+			pickOptions="$pickOptions -$option"
 			;;
 		v)
 			# Display status
@@ -76,14 +81,18 @@ fi
 
 
 # List of files to consider
-fileList=$(gtatus -c $onlyStageOption $onlyWorkspaceOption)
+fileList=$(gtatus -c $gtatusOptions)
 
 # Picking
-matches=$(echo "$fileList" | pick "$@" 2>/dev/null)
+matches=$(echo "$fileList" | pick $pickOptions -- "$@" 2>/dev/null)
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2
 	exit $error_noMatch
 fi
 
-echo "$matches"
+if [[ $showStatus = 'true' ]]; then
+	gtatus -- "$matches"
+else
+	echo "$matches"
+fi
 
