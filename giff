@@ -2,12 +2,12 @@
 
 # Run a git difference using the first matching file found using gick
 # 
-# -n if used as the first argument will prevent any matching to happen
+# -p if used as the first argument will prevent any matching to happen
 # through gick, and next parameter will be interpreted as the file itself
 
 fileFound=''
 
-if [[ $1 = '-n' ]]; then
+if [[ $1 = '-p' ]]; then
 	fileFound="$2"
 else
 	fileFound=$(gick "$@" 2> /dev/null)
@@ -28,7 +28,7 @@ echo "diff '$fileFound'"
 if [[ "$GOOLS_DIFFTOOL" == '' ]]; then
 	git diff HEAD -- "$fileFound"
 else
-	git difftool --tool $GOOLS_DIFFTOOL --patience --no-prompt HEAD -- "$fileFound"
+	git difftool --tool $GOOLS_DIFFTOOL --minimal --no-prompt HEAD -- "$fileFound"
 fi
 
 

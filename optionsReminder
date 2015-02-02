@@ -1,0 +1,13 @@
+brief reminder about options being used by multiple commands
+
+-d keep dots when picking
+
+-p plain path, do not pick
+	before it was -n, but that was never easy to remember
+	maybe it is not needed?
+
+-s consider stage files
+-w consider workspace files
+
+-c cut off status
+-v show status, verbose
