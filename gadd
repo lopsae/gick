@@ -1,69 +1,104 @@
 #!/bin/bash
 
 read -d '' helpDoc <<"helpDoc"
+NAME
+    gadd - add to git stage using gick
+
+SYNOPSIS
+    gadd [-h]
+
+DESCRIPTION
 Adds and removes files using gick. Any option passed is given directly to the
 gick command.
 
-If dot is used as the single option the command acts over all the files that
-appear in "git status".
+If dot is used as the single option the command acts over all the files
+with any workspace status.
 
 If content is given through stdin it is interpreted as a list of files, one on
 each line, over which the command will act. In this case any option given to
 the command is ignored.
+
+OPTIONS
+    -h  Prints this help output.
 helpDoc
 
 
 # Error codes
-error_helpDoc=1
-error_noFilesFound=2
+error_invalidOptions=1
+error_noParams=2
+error_noMatch=3
 
 
 # Options values
-usePiped=false
-piped=''
+# none yet
 
-# If there is piped content it is used and any option is ignored
+# Options parsing
+while getopts h option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit
+			;;
+		?)
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
+
+usePiped='false'
+# If there is piped content any other option are ignored
 if [[ ! -t 0 ]]; then
-	usePiped=true
+	usePiped='true'
 	piped=$(cat)
-
-# Dot special case
-elif [[ $# = 1 && $1 = '.' ]]; then
-	gtatus -c | gadd
-	exit $?
-
-# Print help
-elif [[ $# = 0 || $1 = '-h' || $1 = '--help' ]]; then
-	echo "$helpDoc" >&2
-	exit $error_helpDoc
-fi
-
-# Getting the list of files to use
-fileList=''
-if [[ $usePiped = true ]]; then
-	# Use piped list
-	fileList="$piped"
 else
-	# Find the file with gick
-	fileList=$(gick $@ 2>/dev/null)
+	if [[ $# = 0 ]]; then
+		echo 'No parameters given' >&2
+		exit $error_noParams
+	fi
 
-	if [[ $? != 0 ]]; then
-		echo 'No files found' >&2
-		exit $error_noFilesFound
+	# Special dot case
+	if [[ $# = 1 && $1 = '.' ]]; then
+		gtatus -c | gadd
+		exit $?
 	fi
 fi
 
-# Properly adding each file
+
+# Getting the list of files to use
+fileList=''
+if [[ $usePiped = 'true' ]]; then
+	fileList="$piped"
+else
+	fileList=$(gick -- "$@" 2>/dev/null)
+
+	if [[ $? != 0 ]]; then
+		echo 'No files found' >&2
+		exit $error_noMatch
+	fi
+fi
+
+# Properly staging each file
 IFS=$'\n'
 for fileName in $fileList; do
-	# Retrieve both status of the file
+	# Retrieve status of the file
 	fileStatus=$(gtatus -- "$fileName")
 	stageStatus=${fileStatus:0:1}
-	workStatus=${fileStatus:1:1}
+	workspaceStatus=${fileStatus:1:1}
 
-	case $workStatus in
+	case $workspaceStatus in
 		' ')
 			case $stageStatus in
+				# TODO do gtatus returns ever R?
 				[MAR])
 					echo "Already staged '$fileName'" >&2
 					;;
@@ -81,7 +116,7 @@ for fileName in $fileList; do
 			echo "removed '$fileName'"
 			;;
 		*)
-			echo "Unknown workspace status '$workStatus' for '$fileName'"  >&2
+			echo "Unknown workspace status '$workspaceStatus' for '$fileName'" >&2
 			echo 'No operation done' >&2
 			;;
 	esac

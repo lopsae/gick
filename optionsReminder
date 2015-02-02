@@ -1,6 +1,17 @@
-brief reminder about options being used by multiple commands
+LANGUAGE
+
+git status for each file
+in stage
+in the workspace
+
+stdin is standard input
+
+
+OPTIONS
 
 -d keep dots when picking
+
+-a show all matches when picking/gicking
 
 -p plain path, do not pick
 	before it was -n, but that was never easy to remember

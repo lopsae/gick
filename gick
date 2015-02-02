@@ -50,7 +50,7 @@ while getopts hwsdv option; do
 			fi
 			exit
 			;;
-		s|w)
+		[sw])
 			# Pass through to gtatus
 			# Limit to stage or workspace
 			gtatusOptions="$gtatusOptions -$option"
