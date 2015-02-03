@@ -5,9 +5,11 @@ NAME
     gadd - add to git stage using gick
 
 SYNOPSIS
-    gadd [-h]
+    gadd [-hN]
 
 DESCRIPTION
+TODO format description
+
 Adds and removes files using gick. Any option passed is given directly to the
 gick command.
 
@@ -18,8 +20,17 @@ If content is given through stdin it is interpreted as a list of files, one on
 each line, over which the command will act. In this case any option given to
 the command is ignored.
 
+TODO above is false, -N option is passed through when used with piped
+contento so it is not ignored
+
 OPTIONS
     -h  Prints this help output.
+    
+    -N  Stages untracked files with an intent-to-add state. Processed files
+        will be staged with an empty marker so that later can be properly
+        added. This state allows other commands, like giff, to properly
+        work with these files. When using this option only untracked files
+        will be processed.
 helpDoc
 
 
@@ -30,10 +41,11 @@ error_noMatch=3
 
 
 # Options values
-# none yet
+stageUntracked='false'
+
 
 # Options parsing
-while getopts h option; do
+while getopts hN option; do
 	case $option in
  		h)
 			# Print help
@@ -43,6 +55,10 @@ while getopts h option; do
 				echo "$helpDoc"
 			fi
 			exit
+			;;
+		N)
+			# Stage untracked files
+			stageUntracked='true'
 			;;
 		?)
 			exit $error_invalidOptions
@@ -55,20 +71,24 @@ shift $(( OPTIND - 1 ));
 
 # Options validation
 
+# Either piped content or parameters are required
 usePiped='false'
-# If there is piped content any other option are ignored
 if [[ ! -t 0 ]]; then
 	usePiped='true'
 	piped=$(cat)
-else
-	if [[ $# = 0 ]]; then
-		echo 'No parameters given' >&2
-		exit $error_noParams
-	fi
+elif [[ $# = 0 ]]; then
+	echo 'No parameters given' >&2
+	exit $error_noParams
+fi
 
-	# Special dot case
-	if [[ $# = 1 && $1 = '.' ]]; then
+# Single dot special case
+if [[ $# = 1 && $1 = '.' ]]; then
+	if [[ $stageUntracked = 'false' ]]; then
 		gtatus -c | gadd
+		exit $?
+	else
+		# TODO when gtatus support status selection, replace bellow
+		gtatus | grep "^?" | cut -c 4- | gadd -N
 		exit $?
 	fi
 fi
@@ -91,10 +111,32 @@ fi
 IFS=$'\n'
 for fileName in $fileList; do
 	# Retrieve status of the file
+	# TODO status could be provided by single call to gtatus
+	
+	# TODO what if file does not exists or has no status?
+	# files through pipe in could not exist
+	
+	# TODO some cases of gtatus, replaced files, can return more that one
+	# file in a single call, split them in those cases?
+	# but seems to be the case only of a deleted file that was readded..
+	# which is already odd. In those cases git add -N yields a MM status
 	fileStatus=$(gtatus -- "$fileName")
 	stageStatus=${fileStatus:0:1}
 	workspaceStatus=${fileStatus:1:1}
-
+	
+	# Stage untracked will only add unstaged files
+	if [[ $stageUntracked = 'true' ]]; then
+		if [[ $stageStatus = '?' ]]; then
+			git add -N "$fileName"
+			echo "marked '$fileName'"
+		else
+			echo "Invalid stage status '$stageStatus' for '$fileName'" >&2
+			echo 'Only untracked are valid for intent-to-add, no operation done' >&2
+		fi
+		continue
+	fi
+	
+	# Normal files will get added or removed acordingly
 	case $workspaceStatus in
 		' ')
 			case $stageStatus in
