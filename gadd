@@ -116,8 +116,10 @@ for fileName in $fileList; do
 	# TODO what if file does not exists or has no status?
 	# files through pipe in could not exist
 	
-	# TODO some cases of gtatus, replaced files, can return more that one
-	# file in a single call, split them in those cases?
+	# TODO some cases of gtatus, deleted file from git but file still exists
+	# is considered as D, and with a second line as untracked with ??
+	# those files will have two lines of status in a single gtatus call
+	# split them in those cases?
 	# but seems to be the case only of a deleted file that was readded..
 	# which is already odd. In those cases git add -N yields a MM status
 	fileStatus=$(gtatus -- "$fileName")
@@ -140,8 +142,7 @@ for fileName in $fileList; do
 	case $workspaceStatus in
 		' ')
 			case $stageStatus in
-				# TODO do gtatus returns ever R?
-				[MAR])
+				[MA])
 					echo "Already staged '$fileName'" >&2
 					;;
 				[D])
