@@ -5,16 +5,13 @@ NAME
     pick -- searches stdin for an ordered list of substrings
 
 SYNOPSIS
-    pick [-hacdS] <substring>...
+    pick [-hacS] <substring>...
 
 DESCRIPTION
     Prints, from the content read from the standard input, the first line
     that contains in order all given <substring>s.
     
-    If no arguments or no content is piped in, or if no matching line is
-    found, the script will exit with a non zero value.
-    
-    Example:
+    E.g,
     
         # Having a file that contains a list of fruits
         > cat fruits
@@ -31,6 +28,20 @@ DESCRIPTION
         > cat fruits | pick rine tang
         # Output to stderr
         No match found
+
+    The <substring>s provided are joined into a extended regular expresion
+    which can be output with the `-S` option. This allows the use of
+    regular expresion terms in the <substring>s to furter refine the
+    search.
+    
+    E.g,
+        
+        > cat fruits | pick g e
+        blood orange
+        
+        > cat fruits | pick ^g e
+        green apple
+    
     
     By default if all <substring>s contain only lowercase letters the
     matching is done ignoring all case diferences. If any upper case is
@@ -38,13 +49,8 @@ DESCRIPTION
     consider cases. This behaviour can be overriden with the -c option,
     which will force the command to always consider cases.
     
-    Pick uses grep with extended regular expressions to match the
-    <substring>s, this means that regular expretions could be used as
-    parameter to the command. However dots (.) are treated specially since
-    it is a very common character in filenames. When passing dots the
-    command will escape them from the final regular expression. This
-    behaviour can be overriden with the -d option, which will leave dots
-    unescaped.
+    If no arguments or no content is piped in, or if no matching line is
+    found, the script will exit with a non zero value.
 
 OPTIONS
     -h  Prints this help output.
@@ -52,9 +58,6 @@ OPTIONS
     -a  Displays all lines that match the search.
     
     -c  Forces the command to consider case differences.
-    
-    -d  Consider dots as part of a regular expression, instead of escaping
-        them.
     
     -S  Prints the regular expression used to search for matches.
 helpDoc
@@ -70,7 +73,6 @@ error_noMatch=4
 # Options values
 maxCountOption='--max-count 1'
 ignoreCaseOption='--ignore-case'
-keepDots='false'
 debugSearch='false'
 
 
@@ -93,10 +95,6 @@ while getopts hacdS option; do
 		c)
 			# Force to not ignore case
 			ignoreCaseOption=''
-			;;
-		d)
-			# Leave dots unescaped
-			keepDots='true'
 			;;
 		S)
 			# Display search string instead of results, for debugging
@@ -133,20 +131,11 @@ if [[ $? = 0 ]]; then
 	ignoreCaseOption=''
 fi
 
+# Append a wildcard between each param
 search=''
 wildcard='.*'
 for param in $@; do
-	if [[ $keepDots = 'false' ]]; then
-		# escape dots since they are usual in filenames
-		param=${param/./\\.}
-		
-		# if for any reason we do want a dot, appending it with \ will
-		# de-escape it
-		param=${param/\\\\./.}
-	fi
-	
-	# Append a wildcard between each param
-	search=$search$param$wildcard
+	search="$search$param$wildcard"
 done
 
 # Remove the trailing wildcard
@@ -154,10 +143,10 @@ search=${search%"$wildcard"}
 
 # Printing out debug string
 if [[ $debugSearch = 'true' ]]; then
-	echo $search
+	echo "$search"
 fi
 
-matches=$(echo "$piped" | grep -E $ignoreCaseOption $maxCountOption $search)
+matches=$(echo "$piped" | grep -E $ignoreCaseOption $maxCountOption "$search")
 
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2
