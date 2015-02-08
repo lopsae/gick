@@ -5,7 +5,7 @@ NAME
     gick -- picks files from git status
 
 SYNOPSIS
-    pick [-hswav] <substring>...
+    pick [-hxswa] <substring>...
 
 DESCRIPTION
     Using the pick command prints the first matching file that appears in
@@ -14,14 +14,14 @@ DESCRIPTION
 OPTIONS
     -h  Prints this help output.
     
+    -x  Prints also the status of the matched file. The format remains the
+        same used by gtatus.
+    
     -s  Considers only files with any status in stage.
     
     -w  Considers only files with any status in the workspace.
     
     -a  Displays all files that match the search.
-    
-    -v  Prints also the status of the matched file. The format remains the
-        same as with git status --porcelain.
 helpDoc
 
 
@@ -32,13 +32,13 @@ error_noMatch=3
 
 
 # Options values
+showStatus='false'
 gtatusOptions=''
 pickOptions=''
-showStatus='false'
 
 
 # Options parsing
-while getopts hwsav option; do
+while getopts hxwsa option; do
 	case $option in
  		h)
 			# Print help
@@ -49,6 +49,10 @@ while getopts hwsav option; do
 			fi
 			exit
 			;;
+		x)
+			# Display status
+			showStatus='true'
+			;;
 		[sw])
 			# Pass through to gtatus
 			# Limit to stage or workspace
@@ -57,10 +61,6 @@ while getopts hwsav option; do
 		[a])
 			# Pass through to pick
 			pickOptions+=" -$option"
-			;;
-		v)
-			# Display status
-			showStatus='true'
 			;;
 		?)
 			exit $error_invalidOptions
