@@ -5,7 +5,7 @@ NAME
     gadd - add to git stage using gick
 
 SYNOPSIS
-    gadd [-hN]
+    gadd [-hND]
 
 DESCRIPTION
 TODO format description
@@ -30,7 +30,11 @@ OPTIONS
         will be staged with an empty marker so that later can be properly
         added. This state allows other commands, like giff, to properly
         work with these files. When using this option only untracked files
-        will be processed.
+        will be processed, files with any other workspace status are
+        ignored.
+    
+    -D  Enables dry run mode and performs no changes to the stage. Messages
+        about files being staged are still printed.
 helpDoc
 
 
@@ -41,11 +45,13 @@ error_noMatch=3
 
 
 # Options values
+optionsToPipe=''
 stageUntracked='false'
+dryRun='false'
 
 
 # Options parsing
-while getopts hN option; do
+while getopts hND option; do
 	case $option in
  		h)
 			# Print help
@@ -59,6 +65,12 @@ while getopts hN option; do
 		N)
 			# Stage untracked files
 			stageUntracked='true'
+			optionsToPipe+=' -N'
+			;;
+		D)
+			# Dry run mode
+			dryRun='true'
+			optionsToPipe+=' -D'
 			;;
 		?)
 			exit $error_invalidOptions
@@ -84,23 +96,23 @@ fi
 # Single dot special case
 if [[ $# = 1 && $1 = '.' ]]; then
 	if [[ $stageUntracked = 'false' ]]; then
-		gtatus -c | gadd
-		exit $?
+		fileList=$(gtatus -c)
 	else
 		# TODO when gtatus support status selection, replace bellow
-		gtatus | grep "^?" | cut -c 4- | gadd -N
-		exit $?
+		fileList=$(gtatus | grep "^?" | cut -c 4-)
 	fi
+	
+	echo "$fileList" | gadd $optionsToPipe
+	exit $?
 fi
 
 
 # Getting the list of files to use
-fileList=''
 if [[ $usePiped = 'true' ]]; then
 	fileList="$piped"
 else
 	fileList=$(gick -- "$@" 2>/dev/null)
-
+	
 	if [[ $? != 0 ]]; then
 		echo 'No files found' >&2
 		exit $error_noMatch
@@ -128,17 +140,16 @@ for fileName in $fileList; do
 	
 	# Stage untracked will only add unstaged files
 	if [[ $stageUntracked = 'true' ]]; then
-		if [[ $stageStatus = '?' ]]; then
+		if [[ $workspaceStatus = '?' ]]; then
 			git add -N "$fileName"
 			echo "marked '$fileName'"
 		else
-			echo "Invalid stage status '$stageStatus' for '$fileName'" >&2
-			echo 'Only untracked are valid for intent-to-add, no operation done' >&2
+			echo "Invalid stage status '$workspaceStatus' for '$fileName'" >&2
 		fi
 		continue
 	fi
 	
-	# Normal files will get added or removed acordingly
+	# Normal files are added or removed acordingly
 	case $workspaceStatus in
 		' ')
 			case $stageStatus in
@@ -151,11 +162,11 @@ for fileName in $fileList; do
 				esac
 			;;
 		[MA?])
-			git add "$fileName"
+			[[ $dryRun = 'false' ]] && git add "$fileName"
 			echo "added '$fileName'"
 			;;
 		[D])
-			git rm --quiet "$fileName"
+			[[ $dryRun = 'false' ]] && git rm --quiet "$fileName"
 			echo "removed '$fileName'"
 			;;
 		*)

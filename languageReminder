@@ -22,3 +22,5 @@ OPTIONS
 
 -c cut off status
 -v show status, verbose
+
+-D dryrun/debug

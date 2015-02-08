@@ -5,7 +5,7 @@ NAME
     pick -- searches stdin for an ordered list of substrings
 
 SYNOPSIS
-    pick [-hacS] <substring>...
+    pick [-hacD] <substring>...
 
 DESCRIPTION
     Prints, from the content read from the standard input, the first line
@@ -30,7 +30,7 @@ DESCRIPTION
         No match found
 
     The <substring>s provided are joined into a extended regular expresion
-    which can be output with the `-S` option. This allows the use of
+    which can be output with the `-D` option. This allows the use of
     regular expresion terms in the <substring>s to furter refine the
     search.
     
@@ -59,7 +59,7 @@ OPTIONS
     
     -c  Forces the command to consider case differences.
     
-    -S  Prints the regular expression used to search for matches.
+    -D  Prints the regular expression used to search for matches.
 helpDoc
 
 
@@ -77,7 +77,7 @@ debugSearch='false'
 
 
 # Options parsing
-while getopts hacdS option; do
+while getopts hacdD option; do
 	case $option in
  		h)
 			# Print help
@@ -96,7 +96,7 @@ while getopts hacdS option; do
 			# Force to not ignore case
 			ignoreCaseOption=''
 			;;
-		S)
+		D)
 			# Display search string instead of results, for debugging
 			debugSearch='true'
 			;;

@@ -52,11 +52,11 @@ while getopts hwsav option; do
 		[sw])
 			# Pass through to gtatus
 			# Limit to stage or workspace
-			gtatusOptions="$gtatusOptions -$option"
+			gtatusOptions+=" -$option"
 			;;
-		a)
+		[a])
 			# Pass through to pick
-			pickOptions="$pickOptions -$option"
+			pickOptions+=" -$option"
 			;;
 		v)
 			# Display status
