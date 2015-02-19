@@ -25,16 +25,16 @@ contento so it is not ignored
 
 OPTIONS
     -h  Prints this help output.
-    
+
     -N  Stages untracked files with an intent-to-add state. Processed files
         will be staged with an empty marker so that later can be properly
         added. This state allows other commands, like giff, to properly
         work with these files. When using this option only untracked files
         will be processed, files with any other workspace status are
         ignored.
-    
+
     -a  Stages all files that match the search.
-    
+
     -D  Enables dry run mode and performs no changes to the stage. Messages
         about files being staged are still printed.
 helpDoc
@@ -68,7 +68,7 @@ while getopts hNswaD option; do
 		N)
 			# Stage untracked files
 			stageUntracked='true'
-			dotCaseOptions+=' -$option'
+			dotCaseOptions+=" -$option"
 			;;
 		[a])
 			# Pass through to gick
@@ -109,7 +109,7 @@ if [[ $# = 1 && $1 = '.' ]]; then
 		# TODO when gtatus support status selection, replace bellow
 		fileList=$(gtatus | grep "^.?" | cut -c 4-)
 	fi
-	
+
 	echo "$fileList" | gadd $dotCaseOptions
 	exit $?
 fi
@@ -120,7 +120,7 @@ if [[ $usePiped = 'true' ]]; then
 	fileList="$piped"
 else
 	fileList=$(gick $gickOptions -- "$@" 2>/dev/null)
-	
+
 	if [[ $? != 0 ]]; then
 		echo 'No files found' >&2
 		exit $error_noMatch
@@ -132,10 +132,10 @@ IFS=$'\n'
 for fileName in $fileList; do
 	# Retrieve status of the file
 	# TODO status could be provided by single call to gtatus
-	
+
 	# TODO what if file does not exists or has no status?
 	# files through pipe in could not exist
-	
+
 	# TODO some cases of gtatus, deleted file from git but file still exists
 	# is considered as D, and with a second line as untracked with ??
 	# those files will have two lines of status in a single gtatus call
@@ -145,7 +145,7 @@ for fileName in $fileList; do
 	fileStatus=$(gtatus -- "$fileName")
 	stageStatus=${fileStatus:0:1}
 	workspaceStatus=${fileStatus:1:1}
-	
+
 	# Stage untracked will only add unstaged files
 	if [[ $stageUntracked = 'true' ]]; then
 		if [[ $workspaceStatus = '?' ]]; then
@@ -156,7 +156,7 @@ for fileName in $fileList; do
 		fi
 		continue
 	fi
-	
+
 	# Normal files are added or removed acordingly
 	case $workspaceStatus in
 		' ')
