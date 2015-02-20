@@ -20,15 +20,5 @@ fi
 
 # Get just the first file
 fileFound="$(echo "$fileFound" | head -n 1)"
-
-# TODO Check that GOOLS_DIFFTOOL is defined
-
 echo "diff '$fileFound'"
-
-if [[ "$GOOLS_DIFFTOOL" == '' ]]; then
-	git diff HEAD -- "$fileFound"
-else
-	git difftool --tool $GOOLS_DIFFTOOL --minimal --no-prompt HEAD -- "$fileFound"
-fi
-
-
+git difftool --minimal --no-prompt HEAD -- "$fileFound"
