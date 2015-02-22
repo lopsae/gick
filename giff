@@ -1,24 +1,104 @@
 #!/bin/bash
 
-# Run a git difference using the first matching file found using gick
-# 
-# -p if used as the first argument will prevent any matching to happen
-# through gick, and next parameter will be interpreted as the file itself
+read -d '' helpDoc <<"helpDoc"
+NAME
+    giff -- runs git difftool using pick to select the file
 
-fileFound=''
+SYNOPSIS
+    giff [-hip] <substring>...
 
-if [[ $1 = '-p' ]]; then
-	fileFound="$2"
+DESCRIPTION
+TODO update helpdoc
+    Run a git difference using the first matching file found using gick
+    -p if used as the first argument will prevent any matching to happen
+    through gick, and next parameter will be interpreted as the file itself
+    
+    Always compares with head, unless -i is used.
+
+OPTIONS
+    -h  Prints this help output.
+    
+    -i  Compares between the workspace and staged files.
+    
+    -p  Prints only the filenames, status are ommited.
+helpDoc
+
+
+# Error codes
+error_invalidOptions=1
+error_noParams=2
+error_noMatch=3
+error_noChanges=4
+
+
+# Options values
+usePlainPath='false'
+compareStage='false'
+
+
+# Options parsing
+# TODO use here first the :options to print our own invalid option
+while getopts hip option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit
+			;;
+		i)
+			# Compare with stage
+			compareStage='true'
+			;;
+		p)
+			# Use plain, do not pick
+			usePlainPath='true'
+			;;
+		?)
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
+if [[ $# = 0 ]]; then
+	echo 'No parameters given' >&2
+	exit $error_noParams
+fi
+
+
+if [[ $usePlainPath = 'true' ]]; then
+	fileName="$1"
 else
-	fileFound=$(gick "$@" 2> /dev/null)
+	fileName=$(gick "$@" 2> /dev/null | head -n 1)
 	
-	if [[ $? != 0 ]]; then
+	if [[ $fileName = '' ]]; then
 		echo 'No file found' >&2
-		exit 1
+		exit $error_noMatch
 	fi
 fi
 
-# Get just the first file
-fileFound="$(echo "$fileFound" | head -n 1)"
-echo "diff '$fileFound'"
-git difftool --minimal --no-prompt HEAD -- "$fileFound"
+echo "diff '$fileName'"
+
+difftoolOptions='--no-prompt --minimal --exit-code'
+if [[ $compareStage = 'true' ]]; then
+	git difftool $difftoolOptions -- "$fileName"
+	diffToolExit=$?
+else
+	git difftool $difftoolOptions HEAD -- "$fileName"
+	diffToolExit=$?
+fi
+
+if [[ $diffToolExit = 0 ]]; then
+	# TODO if a not existing file is provided with -p, 'no changes' is printed
+	# need to check if a file exists and has status, maybe gtatus/glist can do that
+	echo 'No changes' >&2
+	exit $error_noChanges
+fi
+

@@ -50,3 +50,16 @@ Options
 
 -D dryrun/debug
 	original from pick
+
+
+Error outputs
+-------------
+
+Invalid options
+echo "Invalid option: -$option" >&2
+
+No parameters
+echo 'No parameters given' >&2
+
+No files found
+echo 'No files found' >&2
