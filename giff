@@ -5,21 +5,24 @@ NAME
     giff -- runs git difftool using pick to select the file
 
 SYNOPSIS
-    giff [-hip] <substring>...
+    giff [-hiup] <substring>...
 
 DESCRIPTION
 TODO update helpdoc
     Run a git difference using the first matching file found using gick
     -p if used as the first argument will prevent any matching to happen
     through gick, and next parameter will be interpreted as the file itself
-    
+
     Always compares with head, unless -i is used.
 
 OPTIONS
     -h  Prints this help output.
-    
-    -i  Compares between the workspace and staged files.
-    
+
+    -i  Compare files between stage and the workspace. Using this option
+        takes precedence over `-u`.
+
+    -u  Compare files between HEAD and stage.
+
     -p  Prints only the filenames, status are ommited.
 helpDoc
 
@@ -33,12 +36,13 @@ error_noChanges=4
 
 # Options values
 usePlainPath='false'
-compareStage='false'
+compareStageAndWorkspace='false'
+compareHeadAndStage='false'
 
 
 # Options parsing
 # TODO use here first the :options to print our own invalid option
-while getopts hip option; do
+while getopts hiup option; do
 	case $option in
  		h)
 			# Print help
@@ -50,8 +54,12 @@ while getopts hip option; do
 			exit
 			;;
 		i)
-			# Compare with stage
-			compareStage='true'
+			# Compare between stage and workspace
+			compareStageAndWorkspace='true'
+			;;
+		u)
+			# Compare between head and stage
+			compareHeadAndStage='true'
 			;;
 		p)
 			# Use plain, do not pick
@@ -77,7 +85,7 @@ if [[ $usePlainPath = 'true' ]]; then
 	fileName="$1"
 else
 	fileName=$(gick "$@" 2> /dev/null | head -n 1)
-	
+
 	if [[ $fileName = '' ]]; then
 		echo 'No file found' >&2
 		exit $error_noMatch
@@ -86,9 +94,14 @@ fi
 
 echo "diff '$fileName'"
 
+# TODO if we can extract stage/head files to temporal location, running
+# with -ui should open a three way compare BABY
 difftoolOptions='--no-prompt --minimal --exit-code'
-if [[ $compareStage = 'true' ]]; then
+if [[ $compareStageAndWorkspace = 'true' ]]; then
 	git difftool $difftoolOptions -- "$fileName"
+	diffToolExit=$?
+elif [[ $compareHeadAndStage = 'true' ]]; then
+	git difftool $difftoolOptions --staged HEAD -- "$fileName"
 	diffToolExit=$?
 else
 	git difftool $difftoolOptions HEAD -- "$fileName"

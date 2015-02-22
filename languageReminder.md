@@ -4,6 +4,7 @@ Language Reminder
 git status for each file
 in stage
 in the workspace
+commands or options like `-s` or `git status` are quoted likeso
 
 stdin is standard input
 
