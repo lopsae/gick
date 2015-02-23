@@ -4,12 +4,15 @@ Language Reminder
 git status for each file
 in stage
 in the workspace
+
 commands or options like `-s` or `git status` are quoted likeso
 
 stdin is standard input
 
-always use fileName, not filename
+in code always use fileName
 more in line with other cases like fileData, fileContents fileStatus, etc.
+
+in helpdocs always use filename
 
 
 Helpdoc
@@ -45,7 +48,7 @@ Options
 	later gadd and all gick based commands
 
 -c cut off status
-	original from gtatus
+	original from glist
 -x show status
 	original from gick
 

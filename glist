@@ -2,20 +2,20 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    gtatus -- git status for machine consumption
+    glist -- git status for machine consumption
 
 SYNOPSIS
-    gtatus [-hcsw]
+    glist [-hcsw]
 
 DESCRIPTION
     Prints a sensible git status that can be consumed easily by other
     scripts.
 
     The status printed is based in the output of `git status -z` and will
-    comply with the following in the default settings:
-     * The status of one file is ouput by line, with the usual format of
-       one leter for stage status, one leter for workspace status, one
-       space, and the filename.
+    comply with the following by default:
+     * One file status per line, following the format of: one leter for
+       stage status, one leter for workspace status, one space, and the
+       filename.
      * Filenames are not quoted regardless of the presence of spaces
        within and no special characters are escaped.
      * No R status is ever printed, instead the status of both related
@@ -38,8 +38,7 @@ error_invalidOptions=1
 
 
 # Options values
-# TODO remove 'mode', its old style
-cutStatusMode='false'
+onlyFileNames='false'
 onlyStageStatus='false'
 onlyWorkspaceStatus='false'
 
@@ -58,7 +57,7 @@ while getopts :hcws option; do
 			;;
 		c)
 			# Cut status from output
-			cutStatusMode='true'
+			onlyFileNames='true'
 			;;
 		s)
 			# Only files with stage status
@@ -101,7 +100,7 @@ relativePath=$(git rev-parse --show-cdup)
 nextIsRenamedFile='false'
 IFS=$'\n'
 for statusLine in $rawStatus; do
-	# For renamed files, the current line is wholy the filename
+	# For renamed files, the current line is only the filename
 	# Status is requested again to have the correct status of that file
 	if [[ $nextIsRenamedFile = 'true' ]]; then
 		# On very odd cases, a renamed file which was re-added, the status
@@ -138,12 +137,11 @@ for statusLine in $rawStatus; do
 		continue
 	fi
 
-	if [[ $cutStatusMode = 'true' ]]; then
+	if [[ $onlyFileNames = 'true' ]]; then
 		echo "$relativePath$fileName"
 	else
 		echo "$stageStatus$workspaceStatus $relativePath$fileName"
 	fi
 done
 unset IFS
-
 

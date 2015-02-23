@@ -110,7 +110,7 @@ fi
 
 if [[ $diffToolExit = 0 ]]; then
 	# TODO if a not existing file is provided with -p, 'no changes' is printed
-	# need to check if a file exists and has status, maybe gtatus/glist can do that
+	# need to check if a file exists and has status, maybe glist can do that
 	echo 'No changes' >&2
 	exit $error_noChanges
 fi

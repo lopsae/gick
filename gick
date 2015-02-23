@@ -15,7 +15,7 @@ OPTIONS
     -h  Prints this help output.
 
     -x  Prints also the status of the matched file. The format remains the
-        same used by gtatus.
+        same used by `git status`.
 
     -s  Considers only files with any status in stage.
 
@@ -33,7 +33,7 @@ error_noMatch=3
 
 # Options values
 showStatus='false'
-gtatusOptions=''
+glistOptions=''
 pickOptions=''
 
 
@@ -54,9 +54,9 @@ while getopts :hxwsa option; do
 			showStatus='true'
 			;;
 		[sw])
-			# Pass through to gtatus
+			# Pass through to glist
 			# Limit to stage or workspace
-			gtatusOptions+=" -$option"
+			glistOptions+=" -$option"
 			;;
 		[a])
 			# Pass through to pick
@@ -80,7 +80,7 @@ fi
 
 
 # List of files to consider
-fileList=$(gtatus -c $gtatusOptions)
+fileList=$(glist -c $glistOptions)
 
 # Picking
 matches=$(echo "$fileList" | pick $pickOptions -- "$@" 2>/dev/null)
@@ -90,7 +90,9 @@ if [[ $? != 0 ]]; then
 fi
 
 if [[ $showStatus = 'true' ]]; then
-	gtatus -- "$matches"
+	# TODO doing head just in case this is a double status file
+	# remove oooonce glist assures single status for each file
+	glist -- "$matches" | head -n 1
 else
 	echo "$matches"
 fi
