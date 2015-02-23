@@ -57,7 +57,7 @@ Error outputs
 -------------
 
 Invalid options
-echo "Invalid option: -$option" >&2
+echo "Invalid option: -$OPTARG" >&2
 
 No parameters
 echo 'No parameters given' >&2

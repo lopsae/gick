@@ -10,21 +10,21 @@ SYNOPSIS
 DESCRIPTION
     Prints, from the content read from the standard input, the first line
     that contains in order all given <substring>s.
-    
+
     E.g,
-    
+
         # Having a file that contains a list of fruits
         > cat fruits
         blood orange
         green apple
         tangerine
-        
+
         > cat fruits | pick rang
         blood orange
-        
+
         > cat fruits | pick reen ple
         green apple
-        
+
         > cat fruits | pick rine tang
         # Output to stderr
         No match found
@@ -33,32 +33,32 @@ DESCRIPTION
     which can be output with the `-D` option. This allows the use of
     regular expresion terms in the <substring>s to furter refine the
     search.
-    
+
     E.g,
-        
+
         > cat fruits | pick g e
         blood orange
-        
+
         > cat fruits | pick ^g e
         green apple
-    
-    
+
+
     By default if all <substring>s contain only lowercase letters the
     matching is done ignoring all case diferences. If any upper case is
     used in the <substring>s the command will automatically switch to
     consider cases. This behaviour can be overriden with the -c option,
     which will force the command to always consider cases.
-    
+
     If no arguments or no content is piped in, or if no matching line is
     found, the script will exit with a non zero value.
 
 OPTIONS
     -h  Prints this help output.
-    
+
     -a  Displays all lines that match the search.
-    
+
     -c  Forces the command to consider case differences.
-    
+
     -D  Prints the regular expression used to search for matches.
 helpDoc
 
@@ -77,7 +77,7 @@ debugSearch='false'
 
 
 # Options parsing
-while getopts hacdD option; do
+while getopts :hacdD option; do
 	case $option in
  		h)
 			# Print help
@@ -101,6 +101,7 @@ while getopts hacdD option; do
 			debugSearch='true'
 			;;
 		?)
+            echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;
 	esac

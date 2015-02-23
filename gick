@@ -13,14 +13,14 @@ DESCRIPTION
 
 OPTIONS
     -h  Prints this help output.
-    
+
     -x  Prints also the status of the matched file. The format remains the
         same used by gtatus.
-    
+
     -s  Considers only files with any status in stage.
-    
+
     -w  Considers only files with any status in the workspace.
-    
+
     -a  Displays all files that match the search.
 helpDoc
 
@@ -38,7 +38,7 @@ pickOptions=''
 
 
 # Options parsing
-while getopts hxwsa option; do
+while getopts :hxwsa option; do
 	case $option in
  		h)
 			# Print help
@@ -63,6 +63,7 @@ while getopts hxwsa option; do
 			pickOptions+=" -$option"
 			;;
 		?)
+			echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;
 	esac

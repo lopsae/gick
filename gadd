@@ -2,10 +2,10 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    gadd - add to git stage using gick
+    gadd - selects a file with gick to stage
 
 SYNOPSIS
-    gadd [-hNaD]
+    gadd [-hNaD] <substring>...
 
 DESCRIPTION
 TODO format description, very outdated
@@ -54,7 +54,7 @@ dryRun='false'
 
 
 # Options parsing
-while getopts hNswaD option; do
+while getopts :hNswaD option; do
 	case $option in
  		h)
 			# Print help
@@ -81,6 +81,7 @@ while getopts hNswaD option; do
 			dotCaseOptions+=' -$option'
 			;;
 		?)
+			echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;
 	esac

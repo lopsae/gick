@@ -41,8 +41,7 @@ compareHeadAndStage='false'
 
 
 # Options parsing
-# TODO use here first the :options to print our own invalid option
-while getopts hiup option; do
+while getopts :hiup option; do
 	case $option in
  		h)
 			# Print help
@@ -66,6 +65,7 @@ while getopts hiup option; do
 			usePlainPath='true'
 			;;
 		?)
+			echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;
 	esac
