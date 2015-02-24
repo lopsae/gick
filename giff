@@ -2,18 +2,18 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    giff -- runs git difftool using pick to select the file
+    giff -- runs `git difftool` with a file selected with `gick`
 
 SYNOPSIS
-    giff [-hiup] <substring>...
+    giff [-hiup] <substrings>...
 
 DESCRIPTION
-TODO update helpdoc
-    Run a git difference using the first matching file found using gick
-    -p if used as the first argument will prevent any matching to happen
-    through gick, and next parameter will be interpreted as the file itself
+    Runs `git difftool`, opening whichever tool is configured by the git
+    configuration. The file to open is selected with `gick` and the given
+    <substrings>.
 
-    Always compares with head, unless -i is used.
+    By default the script compares between HEAD and the workspace. This
+    behavior can be modified with the `-i` or `-u` options.
 
 OPTIONS
     -h  Prints this help output.

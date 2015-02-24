@@ -2,26 +2,23 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    gadd - selects a file with gick to stage
+    gadd - stages a file selected with `gick`
 
 SYNOPSIS
-    gadd [-hNaD] <substring>...
+    gadd [-hNaD] <substrings>...
 
 DESCRIPTION
-TODO format description, very outdated
+    Stages files selected with `gick` and the given <substrings>.
 
-Adds and removes files using gick. Any option passed is given directly to the
-gick command.
+    Depending on the workspace status of each file these will be added or
+    removed properly from stage.
 
-If dot is used as the single option the command acts over all the files
-with any workspace status.
+    If <substrings> is comprised of a single dot "." the script will
+    try to stage all modified files present in the workspace.
 
-If content is given through stdin it is interpreted as a list of files, one on
-each line, over which the command will act. In this case any option given to
-the command is ignored.
-
-TODO above is false, -N option is passed through when used with piped
-contento so it is not ignored
+    The script can also received through standard input a list of files
+    to stage, one file per line. In this case the paths are used as
+    received, no search is performed with them.
 
 OPTIONS
     -h  Prints this help output.

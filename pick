@@ -5,52 +5,60 @@ NAME
     pick -- searches stdin for an ordered list of substrings
 
 SYNOPSIS
-    pick [-hacD] <substring>...
+    pick [-hacD] <substrings>...
 
 DESCRIPTION
     Prints, from the content read from the standard input, the first line
-    that contains in order all given <substring>s.
+    that contains in order all given <substrings>.
 
     E.g,
 
-        # Having a file that contains a list of fruits
         > cat fruits
-        blood orange
-        green apple
-        tangerine
+        Blood orange
+        Green apple
+        Red apple
 
-        > cat fruits | pick rang
-        blood orange
+        > cat fruits | pick app
+        Green apple
 
-        > cat fruits | pick reen ple
-        green apple
+        > cat fruits | pick odd orange
+        Blood orange
 
-        > cat fruits | pick rine tang
+        > cat fruits | pick orange odd
         # Output to stderr
         No match found
 
-    The <substring>s provided are joined into a extended regular expresion
+    The <substrings> provided are joined into a extended regular expresion
     which can be output with the `-D` option. This allows the use of
-    regular expresion terms in the <substring>s to furter refine the
+    regular expresion terms in the <substrings> to furter refine the
     search.
 
     E.g,
 
-        > cat fruits | pick g e
-        blood orange
+        > cat fruits | pick re app
+        Green apple
 
-        > cat fruits | pick ^g e
-        green apple
+        > cat fruits | pick ^re app
+        Red apple
 
 
-    By default if all <substring>s contain only lowercase letters the
+    By default if all <substrings> contain only lowercase letters the
     matching is done ignoring all case diferences. If any upper case is
-    used in the <substring>s the command will automatically switch to
-    consider cases. This behaviour can be overriden with the -c option,
+    used in the <substrings> the command will automatically switch to
+    consider cases. This behaviour can be overriden with the `-c` option,
     which will force the command to always consider cases.
 
-    If no arguments or no content is piped in, or if no matching line is
-    found, the script will exit with a non zero value.
+    E.g,
+
+        > cat fruits | pick re app
+        Green apple
+
+        > cat fruits | pick Re app
+        Red apple
+
+        > cat fruits | pick -c re app
+        # Output to stderr
+        No match found
 
 OPTIONS
     -h  Prints this help output.
@@ -60,6 +68,13 @@ OPTIONS
     -c  Forces the command to consider case differences.
 
     -D  Prints the regular expression used to search for matches.
+
+EXIT STATUS
+    If a matching line is found, it is printed and the script will exit
+    with zero.
+
+    If no arguments are given, or no content is piped in, or if no matching
+    line is found, the script will exit with a non zero value.
 helpDoc
 
 
@@ -71,6 +86,7 @@ error_noMatch=4
 
 
 # Options values
+# TODO maxCountOption and ignoreCaseOption could be joined into just grepOptions
 maxCountOption='--max-count 1'
 ignoreCaseOption='--ignore-case'
 debugSearch='false'
