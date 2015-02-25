@@ -86,9 +86,8 @@ error_noMatch=4
 
 
 # Options values
-# TODO maxCountOption and ignoreCaseOption could be joined into just grepOptions
-maxCountOption='--max-count 1'
-ignoreCaseOption='--ignore-case'
+allMatches='false'
+ignoreCase='true'
 debugSearch='false'
 
 
@@ -106,11 +105,11 @@ while getopts :hacdD option; do
 			;;
 		a)
 			# Display all matches
-			maxCountOption=''
+			allMatches='true'
 			;;
 		c)
 			# Force to not ignore case
-			ignoreCaseOption=''
+			ignoreCase='false'
 			;;
 		D)
 			# Display search string instead of results, for debugging
@@ -145,7 +144,7 @@ echo "$@" | grep [A-Z] >/dev/null 2>/dev/null
 
 if [[ $? = 0 ]]; then
 	# Any capital case triggers not ignoring case
-	ignoreCaseOption=''
+	ignoreCase='false'
 fi
 
 # Append a wildcard between each param
@@ -163,7 +162,15 @@ if [[ $debugSearch = 'true' ]]; then
 	echo "$search"
 fi
 
-matches=$(echo "$piped" | grep -E $ignoreCaseOption $maxCountOption "$search")
+grepOptions=''
+if [[ $allMatches = 'false' ]];then
+	grepOptions+=' --max-count 1'
+fi
+if [[ $ignoreCase = 'true' ]];then
+	grepOptions+=' --ignore-case'
+fi
+
+matches=$(echo "$piped" | grep -E $grepOptions "$search")
 
 if [[ $? != 0 ]]; then
 	echo 'No match found' >&2

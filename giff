@@ -92,18 +92,18 @@ else
 	fi
 fi
 
-echo "diff '$fileName'"
 
-# TODO if we can extract stage/head files to temporal location, running
-# with -ui should open a three way compare BABY
 difftoolOptions='--no-prompt --minimal --exit-code'
 if [[ $compareStageAndWorkspace = 'true' ]]; then
+	echo "diff stage-workspace '$fileName'"
 	git difftool $difftoolOptions -- "$fileName"
 	diffToolExit=$?
 elif [[ $compareHeadAndStage = 'true' ]]; then
+	echo "diff head-stage '$fileName'"
 	git difftool $difftoolOptions --staged HEAD -- "$fileName"
 	diffToolExit=$?
 else
+	echo "diff head-workspace '$fileName'"
 	git difftool $difftoolOptions HEAD -- "$fileName"
 	diffToolExit=$?
 fi
