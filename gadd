@@ -2,13 +2,13 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    gadd - stages a file selected with `gick`
+    gadd - stage a file selected with `gick`
 
 SYNOPSIS
-    gadd [-hNaD] <substrings>...
+    gadd [-hNpaD] <substrings>...
 
 DESCRIPTION
-    Stages files selected with `gick` and the given <substrings>.
+    Stages a file selected with `gick` and the given <substrings>.
 
     Depending on the workspace status of each file these will be added or
     removed properly from stage.
@@ -18,19 +18,24 @@ DESCRIPTION
 
     The script can also received through standard input a list of files
     to stage, one file per line. In this case the paths are used as
-    received, no search is performed with them.
+    received, no search is performed with them. <substrings> or paths, if
+    using the `-p` option, are also ignored.
 
 OPTIONS
     -h  Prints this help output.
 
     -N  Stages untracked files with an intent-to-add state. Processed files
         will be staged with an empty marker so that later can be properly
-        added. This state allows other commands, like giff, to properly
+        added. This state allows other scripts, like giff, to properly
         work with these files. When using this option only untracked files
         will be processed, files with any other workspace status are
         ignored.
 
-    -a  Stages all files that match the search.
+    -p  Uses the parameters given as paths, instead of performing a search
+        with `gick`.
+
+    -a  Stages all files that match the search, instead of only the first
+        one. This option is ignored if `-p` is used.
 
     -D  Enables dry run mode and performs no changes to the stage. Messages
         about files being staged are still printed.
@@ -47,11 +52,12 @@ error_noMatch=3
 dotCaseOptions=''
 gickOptions=''
 stageUntracked='false'
+usePlainPaths='false'
 dryRun='false'
 
 
 # Options parsing
-while getopts :hNswaD option; do
+while getopts :hNpaD option; do
 	case $option in
  		h)
 			# Print help
@@ -66,6 +72,10 @@ while getopts :hNswaD option; do
 			# Stage untracked files
 			stageUntracked='true'
 			dotCaseOptions+=" -$option"
+			;;
+		p)
+			# Using plain paths
+			usePlainPaths='true'
 			;;
 		[a])
 			# Pass through to gick
@@ -117,12 +127,23 @@ fi
 if [[ $usePiped = 'true' ]]; then
 	fileList="$piped"
 else
-	fileList=$(gick $gickOptions -- "$@" 2>/dev/null)
+	if [[ $usePlainPaths = 'true' ]]; then
+		# Moving params to filelist, separated by newlines
+		fileList=$1
+		shift
+		for item in "$@"; do
+			fileList+=$'\n'$item
+		done
+	else
+		fileList=$(gick $gickOptions -- "$@" 2>/dev/null)
 
-	if [[ $? != 0 ]]; then
-		echo 'No files found' >&2
-		exit $error_noMatch
+		if [[ $? != 0 ]]; then
+			echo 'No files found' >&2
+			exit $error_noMatch
+		fi
 	fi
+
+
 fi
 
 # Properly staging each file
@@ -168,16 +189,17 @@ for fileName in $fileList; do
 				esac
 			;;
 		[MA?])
-			[[ $dryRun = 'false' ]] && git add "$fileName"
+			[[ $dryRun = 'false' ]] && git add -A -- "$fileName"
 			echo "added '$fileName'"
 			;;
 		[D])
-			[[ $dryRun = 'false' ]] && git rm --quiet "$fileName"
+			[[ $dryRun = 'false' ]] && git add -A -- "$fileName"
 			echo "removed '$fileName'"
 			;;
 		*)
+			# TODO fails to here when the given file does not exists, fix
+			# when glist can return that the file does exist
 			echo "Unknown workspace status '$workspaceStatus' for '$fileName'" >&2
-			echo 'No operation done' >&2
 			;;
 	esac
 done

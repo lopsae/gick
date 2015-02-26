@@ -2,7 +2,7 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    pick -- searches stdin for an ordered list of substrings
+    pick -- search standard input for an ordered list of substrings
 
 SYNOPSIS
     pick [-hacD] <substrings>...
@@ -67,7 +67,8 @@ OPTIONS
 
     -c  Forces the command to consider case differences.
 
-    -D  Prints the regular expression used to search for matches.
+    -D  Prints to standard error the regular expression used to search for
+        matches.
 
 EXIT STATUS
     If a matching line is found, it is printed and the script will exit
@@ -159,7 +160,7 @@ search=${search%"$wildcard"}
 
 # Printing out debug string
 if [[ $debugSearch = 'true' ]]; then
-	echo "$search"
+	echo "$search" >&2
 fi
 
 grepOptions=''

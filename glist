@@ -25,7 +25,7 @@ DESCRIPTION
 OPTIONS
     -h  Prints this help output.
 
-    -c  Prints only the filenames, status are ommited.
+    -c  Prints only filenames, status are ommited.
 
     -s  Prints only files with any status in stage.
 

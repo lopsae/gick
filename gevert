@@ -41,7 +41,7 @@ else
 fi
 
 # Generating a the data for backups
-backupPath="/tmp/geverts/"
+backupPath="/tmp/gevert/"
 mkdir -p "$backupPath"
 
 # Creating a time stamp for the file
@@ -54,15 +54,15 @@ for fileName in $fileList; do
 	baseFileName=$(basename $fileName)
 	backupFile="${backupPath}${timeStamp}_${baseFileName}_XXXX"
 	backupFile=$(mktemp $backupFile)
-	
+
 	echo "revert '$fileName'"
-	
+
 	# Make a backup of the file if it exists
 	if [[ -f $fileName ]]; then
 		cp $fileName $backupFile
 		echo "backup in '$backupFile'"
 	fi
-	
+
 	# TODO
 	# new added files (with a A status) need to be reset and removed
 	# checkout fails because there is nothing to checkout

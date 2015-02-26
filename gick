@@ -2,20 +2,21 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    gick -- picks files from git status
+    gick -- search filepaths that have a git status
 
 SYNOPSIS
-    pick [-hxswa] <substring>...
+    pick [-hxswa] <substrings>...
 
 DESCRIPTION
-    Using the pick command prints the first matching file that appears in
-    git status. By default only the filename is printed.
+    Prints the first matching filepath, from any files with a git status,
+    using the `pick` script and the given <substrings>. By default only
+    the filepath is printed.
 
 OPTIONS
     -h  Prints this help output.
 
-    -x  Prints also the status of the matched file. The format remains the
-        same used by `git status`.
+    -x  Prints the status of the file along the filename. The format
+        remains the same used by `git status`.
 
     -s  Considers only files with any status in stage.
 
