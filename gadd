@@ -31,8 +31,7 @@ OPTIONS
         will be processed, files with any other workspace status are
         ignored.
 
-    -p  Uses the parameters given as paths, instead of performing a search
-        with `gick`.
+    -p  Uses the parameters given as paths, instead of performing a search.
 
     -a  Stages all files that match the search, instead of only the first
         one. This option is ignored if `-p` is used.

@@ -1,79 +1,68 @@
 #!/bin/bash
 
 read -d '' helpDoc <<"helpDoc"
-Checkout a branch found through gickb.
+NAME
+    gout -- checkout a branch selected with `gickb`
+
+SYNOPSIS
+    gout [-hr] <substrings>...
+
+DESCRIPTION
+    Checksout a local branch selected with `gickb` and the given
+    <substrings>.
+
+OPTIONS
+    -h  Prints this help output.
+
+    -r  Searches and checksout a remote branch.
 helpDoc
 
 
-# gout cosa
-# normal checkout
-# if ambiguou print
-
-# gout -r cosa
-# checkout remote branch
-# if ambiguous print
-
-# gout -n 2 cosa
-# checkout the given specific match, usefull when there is more that one
-# match
-
 # Error codes
-error_helpDoc=1
-error_invalidOptions=2
-error_invalidForceIndex=3
-error_noMatches=4
-error_ambiguousMatch=5
-error_forceIndexOverBound=6
+error_invalidOptions=1
+error_noMatches=2
+error_ambiguousMatch=3
 
-
-# Print help
-if [[ $# = 0 || $1 = '-h' || $1 = '--help' ]]; then
-	echo "$helpDoc" >&2
-	exit $error_helpDoc
-fi
 
 # Options values
+# TODO rename to gickbOptions instead of useRemote
 useRemote=''
-forceIndex=0
+
 
 # Options parsing
-params=$(getopt rn: $*)
-getoptStatus=$?
-set -- $params
-
-if [[ $getoptStatus != 0 ]]; then
-	echo 'Invalid options' >&2
-	exit $error_invalidOptions
-fi
-
-for param; do
-	case "$param" in
-		-r)
-			# Check remote branches
-			useRemote='-r'
-			shift
-			;;
-		-n)
-			# Use an specific match
-			shift
-			forceIndex=$1
-			shift
-			# For some reason \d does not work inside with [[ =~ ]]
-			if [[ ! $forceIndex =~ ^[0-9]+$ || $forceIndex < 1 ]]; then
-				# forceIndex is not a number or lower that zero
-				echo "Invalid argument with flag '-n': should be an integer greater that 0" >&2
-				exit $error_invalidForceIndex
+while getopts :hr option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
 			fi
+			exit
 			;;
-		--)
-			shift
-			break
+		r)
+			# Searches remote branches
+			useRemote='-r'
+			;;
+		?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
 			;;
 	esac
 done
 
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
+# None right now
+
+
 # Always get all matching branches with -a
-branches=$(gickb $useRemote -- -a $@ 2>/dev/null)
+# TODO -a should be a gickb option, not a sketchy option pass
+# fix when gickb get reworked
+branches=$(gickb $useRemote -- -a "$@" 2>/dev/null)
 
 if [[ $? != 0 ]]; then
 	echo 'No branch found' >&2
@@ -81,32 +70,14 @@ if [[ $? != 0 ]]; then
 fi
 
 matchesCount=$(echo "$branches" | wc -l | tr -d [:blank:])
-
-if [[ $forceIndex = 0 ]]; then
-	# No option -n, there mist be a single match
-	if [[ $matchesCount > 1 ]]; then
-		echo 'More that one matching branch found' >&2
-		echo 'Use "-n #" to use an specific match' >&2
-
-		# Print all the matches numbered by line
-		echo "$branches" | awk '{printf "%d: %s\n", NR, $0}' >&2
-		exit $error_ambiguousMatch
-	fi
-	
-	# If there is a single match we are cool
-	branchName=$branches
-else
-	# There is a forced index, grab that specific one
-	if [[ $forceIndex -gt $matchesCount ]]; then
-		echo "Invalid argument with flag '-n': out of bounds" >&2
-		# Print all the matches numbered by line
-		echo "$branches" | awk '{printf "%d: %s\n", NR, $0}' >&2
-		exit $error_forceIndexOverBound
-	fi
-	
-	# Get the specific line
-	branchName=$(echo "$branches" | sed -n "${forceIndex}{p;q;}")
+if [[ $matchesCount > 1 ]]; then
+	echo 'Ambiguous branch search' >&2
+	echo "$branches" >&2
+	exit $error_ambiguousMatch
 fi
+
+# Otherwise there is single branch
+branchName=$branches
 
 # Clean up remote
 if [[ $useRemote != '' ]]; then
