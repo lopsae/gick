@@ -1,48 +1,73 @@
 #!/bin/bash
 
+
+read -d '' helpDoc <<"helpDoc"
 # Prints matching branches using pick.
 
 # By default it seeks for a match in the local branches, if -r is
-# provided, it prints the first matching branch on remote branches. 
+# provided, it prints the first matching branch on remote branches.
 
 # Options given after "--" will be passed directly to pick.
+NAME
+    gickb -- search through git branches
+
+SYNOPSIS
+    gickb [-hr] <substrings>...
+
+DESCRIPTION
+    Prints the first matching git branch searching with `pick` and the
+    given substrings.
+
+OPTIONS
+    -h  Prints this help output.
+
+    -r  Searches through remote branches, instead of local ones.
+helpDoc
 
 
 # Error codes
 error_invalidOptions=1
-error_noParameters=2
+error_noParams=2
 
 
-# Option values
+# Options values
+# TODO change to gitBranchOptions
+# TODO add -a option, as passthrough to pick
 useRemotes=''
 
+
 # Options parsing
-params=$(getopt r $*)
-getoptStatus=$?
-set -- $params
-
-if [[ $getoptStatus != 0 ]]; then
-	echo 'Invalid options' >&2
-	exit $error_invalidOptions
-fi
-
-for param; do
-	case "$param" in
-		-r)
-			useRemotes='-r'
-			shift
+while getopts :hr option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit
 			;;
-		--)
-			shift
-			break
+		r)
+			# Use remotes
+			useRemotes='-r'
+			;;
+		?)
+            echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
 			;;
 	esac
 done
 
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
-	exit $error_noParameters
+	exit $$error_noParams
 fi
 
-git branch $useRemotes | tr -d [:blank:] | tr -d '*' | pick $@
+# TODO check if branches can have spaces in their names, if so this wrong
+git branch $useRemotes | tr -d [:blank:] | tr -d '*' | pick "$@"
 
