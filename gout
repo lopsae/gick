@@ -62,7 +62,7 @@ shift $(( OPTIND - 1 ));
 # Always get all matching branches with -a
 # TODO -a should be a gickb option, not a sketchy option pass
 # fix when gickb get reworked
-branches=$(gickb $useRemote -- -a "$@" 2>/dev/null)
+branches=$(gickb -a $useRemote -- "$@" 2>/dev/null)
 
 if [[ $? != 0 ]]; then
 	echo 'No branch found' >&2
@@ -84,5 +84,5 @@ if [[ $useRemote != '' ]]; then
 	branchName=${branchName#*/}
 fi
 
-git checkout $branchName
+git checkout "$branchName"
 

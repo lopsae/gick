@@ -12,7 +12,7 @@ NAME
     gickb -- search through git branches
 
 SYNOPSIS
-    gickb [-hr] <substrings>...
+    gickb [-hra] <substrings>...
 
 DESCRIPTION
     Prints the first matching git branch searching with `pick` and the
@@ -22,6 +22,8 @@ OPTIONS
     -h  Prints this help output.
 
     -r  Searches through remote branches, instead of local ones.
+
+    -a  Prints all matches, instead of only the first one.
 helpDoc
 
 
@@ -31,13 +33,12 @@ error_noParams=2
 
 
 # Options values
-# TODO change to gitBranchOptions
-# TODO add -a option, as passthrough to pick
-useRemotes=''
+gitBranchOptions=''
+pickOptions=''
 
 
 # Options parsing
-while getopts :hr option; do
+while getopts :hra option; do
 	case $option in
  		h)
 			# Print help
@@ -50,7 +51,11 @@ while getopts :hr option; do
 			;;
 		r)
 			# Use remotes
-			useRemotes='-r'
+			gitBranchOptions+=' -r'
+			;;
+		a)
+			# Pass through for pick
+			pickOptions+=" -$option"
 			;;
 		?)
             echo "Invalid option: -$OPTARG" >&2
@@ -65,9 +70,9 @@ shift $(( OPTIND - 1 ));
 # Options validation
 if [[ $# = 0 ]]; then
 	echo 'No parameters given' >&2
-	exit $$error_noParams
+	exit $error_noParams
 fi
 
 # TODO check if branches can have spaces in their names, if so this wrong
-git branch $useRemotes | tr -d [:blank:] | tr -d '*' | pick "$@"
+git branch $gitBranchOptions | tr -d '*' | tr -d [:blank:] | pick $pickOptions -- "$@"
 
