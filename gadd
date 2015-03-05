@@ -8,18 +8,19 @@ SYNOPSIS
     gadd [-hNpaD] <substrings>...
 
 DESCRIPTION
-    Stages a file selected with `gick` and the given <substrings>.
+    Stages files selected with `gick` and the given <substrings>.
 
     Depending on the workspace status of each file these will be added or
     removed properly from stage.
 
-    If <substrings> is comprised of a single dot "." the script will
-    try to stage all modified files present in the workspace.
+    If <substrings> is comprised of a single dot "." the script will try to
+    stage all modified files present in the workspace.
 
     The script can also received through standard input a list of files
     to stage, one file per line. In this case the paths are used as
-    received, no search is performed with them. <substrings> or paths, if
-    using the `-p` option, are also ignored.
+    received, no search is performed with them. No search is performed with
+    any given <substrings> and paths provided with the `-p` option are also
+    ignored.
 
 OPTIONS
     -h  Prints this help output.

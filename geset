@@ -1,47 +1,107 @@
 #!/bin/bash
 
-# Unstages files using gick. Any option passed is given directly to the
-# gick command.
+read -d '' helpDoc <<"helpDoc"
+NAME
+    geset -- reset a file selected with `gick`
 
-# If dot is used as the single option the command acts over all the files
-# that appear in git status.
+SYNOPSIS
+    geset [-hpaD]
 
-# If content is given through stdin it is interpreted as a list of files
-# separated by newlines over which the command will act. In this case any
-# option given to the command is ignored.
+DESCRIPTION
+    Unstages files selected with `gick` and the given <substrings>.
+
+    If <substrings> is comprised of a single dot "." the script will try to
+    unstage all modified files present in the workspace.
+
+    The script can also received through standard input a list of files
+    to unstage, one file per line. In this case the paths are used as
+    received, no search is performed with them. No search is performed with
+    any given <substrings> and paths provided with the `-p` option are also
+    ignored.
+
+OPTIONS
+    -h  Prints this help output.
+
+    TODO not yet implemented
+    -p  Uses the parameters given as paths, instead of performing a search.
+
+    TODO not yet implemented
+    -a  Stages all files that match the search, instead of only the first
+        one. This option is ignored if `-p` is used.
+
+    TODO not yet implemened
+    -D  Enables dry run mode and performs no changes to the stage. Messages
+        about files being unstaged are still printed.
+helpDoc
 
 
 # Error codes
-error_noFilesFound=1
+error_invalidOptions=1
+error_noParams=2
+error_noMatch=3
 
 
 # Options values
-usePiped=false
-piped=''
+
+
+# Options parsing
+while getopts :ha option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit
+			;;
+		p)
+			;;
+		a)
+			;;
+		D)
+			;;
+		?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
 
 # If there is piped content it is used and any option is ignored
+usePiped='false'
 if [[ ! -t 0 ]]; then
-	usePiped=true
+	usePiped='true'
 	piped=$(cat)
+elif [[ $# = 0 ]]; then
+	echo 'No parameters given' >&2
+	exit $error_noParams
+fi
 
 # Dot special case
-elif [[ $# = 1 && $1 = '.' ]]; then
+if [[ $# = 1 && $1 = '.' ]]; then
 	glist -c | geset
 	exit $?
 fi
 
 # Getting the list of files to use
-fileList=''
-if [[ $usePiped = true ]]; then
+if [[ $usePiped = 'true' ]]; then
 	# Use piped list
 	fileList="$piped"
 else
 	# Find the file with gick
-	fileList=$(gick "$@" 2>/dev/null)
+	# TODO make only files with stage status selectable
+	fileList=$(gick -- "$@" 2>/dev/null)
 
 	if [[ $? != 0 ]]; then
 		echo 'No files found' >&2
-		exit $error_noFilesFound
+		exit $error_noMatch
 	fi
 fi
 
@@ -49,6 +109,8 @@ fi
 # Reseting the files
 IFS=$'\n'
 for fileName in $fileList; do
+	# TODO filelist should contain only files with stage status
+	# TODO If files are given here without stage status, print cannot reset
 	git reset --quiet HEAD -- "$fileName"
 	echo "reset '$fileName'"
 done
