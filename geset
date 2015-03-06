@@ -25,11 +25,9 @@ OPTIONS
     TODO not yet implemented
     -p  Uses the parameters given as paths, instead of performing a search.
 
-    TODO not yet implemented
     -a  Stages all files that match the search, instead of only the first
         one. This option is ignored if `-p` is used.
 
-    TODO not yet implemened
     -D  Enables dry run mode and performs no changes to the stage. Messages
         about files being unstaged are still printed.
 helpDoc
@@ -42,10 +40,13 @@ error_noMatch=3
 
 
 # Options values
+dotCaseOptions=''
+gickOptions=''
+run='true'
 
 
 # Options parsing
-while getopts :ha option; do
+while getopts :hpaD option; do
 	case $option in
  		h)
 			# Print help
@@ -58,9 +59,15 @@ while getopts :ha option; do
 			;;
 		p)
 			;;
-		a)
+		[a])
+			# Pass through to gick
+			# all matches
+			gickOptions+=" -$option"
 			;;
 		D)
+			# Dry run mode
+			run='false'
+			dotCaseOptions+=" -$option"
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -86,7 +93,7 @@ fi
 
 # Dot special case
 if [[ $# = 1 && $1 = '.' ]]; then
-	glist -c | geset
+	glist -c | geset $dotCaseOptions
 	exit $?
 fi
 
@@ -97,7 +104,7 @@ if [[ $usePiped = 'true' ]]; then
 else
 	# Find the file with gick
 	# TODO make only files with stage status selectable
-	fileList=$(gick -- "$@" 2>/dev/null)
+	fileList=$(gick $gickOptions -- "$@" 2>/dev/null)
 
 	if [[ $? != 0 ]]; then
 		echo 'No files found' >&2
@@ -111,7 +118,7 @@ IFS=$'\n'
 for fileName in $fileList; do
 	# TODO filelist should contain only files with stage status
 	# TODO If files are given here without stage status, print cannot reset
-	git reset --quiet HEAD -- "$fileName"
+	[[ $run = 'true' ]] && git reset --quiet HEAD -- "$fileName"
 	echo "reset '$fileName'"
 done
 unset IFS

@@ -53,7 +53,7 @@ dotCaseOptions=''
 gickOptions=''
 stageUntracked='false'
 usePlainPaths='false'
-dryRun='false'
+run='true'
 
 
 # Options parsing
@@ -84,8 +84,8 @@ while getopts :hNpaD option; do
 			;;
 		D)
 			# Dry run mode
-			dryRun='true'
-			dotCaseOptions+=' -$option'
+			run='false'
+			dotCaseOptions+=" -$option"
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -189,11 +189,11 @@ for fileName in $fileList; do
 				esac
 			;;
 		[MA?])
-			[[ $dryRun = 'false' ]] && git add -A -- "$fileName"
+			[[ $run = 'true' ]] && git add -A -- "$fileName"
 			echo "added '$fileName'"
 			;;
 		[D])
-			[[ $dryRun = 'false' ]] && git add -A -- "$fileName"
+			[[ $run = 'true' ]] && git add -A -- "$fileName"
 			echo "removed '$fileName'"
 			;;
 		*)
