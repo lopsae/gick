@@ -56,10 +56,6 @@ done
 shift $(( OPTIND - 1 ));
 
 
-# Options validation
-# None right now
-
-
 # Always get all matching branches with -a
 # TODO -a should be a gickb option, not a sketchy option pass
 # fix when gickb get reworked

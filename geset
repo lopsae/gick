@@ -14,10 +14,8 @@ DESCRIPTION
     unstage all modified files present in the workspace.
 
     The script can also received through standard input a list of files
-    to unstage, one file per line. In this case the paths are used as
-    received, no search is performed with them. No search is performed with
-    any given <substrings> and paths provided with the `-p` option are also
-    ignored.
+    to unstage, one file per line. When using standard input all given
+    <substrings> are ignored, no search is performed.
 
 OPTIONS
     -h  Prints this help output.
@@ -81,9 +79,7 @@ done
 shift $(( OPTIND - 1 ));
 
 
-# Options validation
-
-# If there is piped content it is used and any option is ignored
+# Piped content
 usePiped='false'
 if [[ ! -t 0 ]]; then
 	usePiped='true'

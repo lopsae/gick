@@ -1,44 +1,82 @@
 #!/bin/bash
 
-# Reverts files using gick to head state. Any option passed is given directly
-# to the gick command.
+read -d '' helpDoc <<"helpDoc"
+NAME
+    gevert -- reverts a file selected with `gick`
 
-# For any file reverted a backup file is copied in /tmp/geverts. The file is
-# printed as the command is run.
+SYNOPSIS
+    gevert [-h] <substrings>...
 
-# If content is given through stdin it is interpreted as a list of files
-# separated by newlines over which the command will act. In this case any
-# option given to the command is ignored.
+DESCRIPTION
+    Checksout the head version of a file selected with `gick` and the given
+    <substrings>.
+
+    For any file reverted a backup is created in /tmp/gevert/. The file
+    location is printed as part of the script output.
+
+    The script can also received through standard input a list of files
+    to revert, one file per line. When using standard input all given
+    <substrings> are ignored, no search is performed.
+
+OPTIONS
+    -h  Prints this help output.
+helpDoc
 
 
 # Error codes
-error_noFilesFound=1
+error_invalidOptions=1
+error_noParams=2
+error_noMatch=3
 
 
 # Options values
-usePiped=false
-piped=''
+#TODO add dryrun
 
-# If there is piped content it is used and any option is ignored
+
+# Options parsing
+while getopts :h option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit
+			;;
+		?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Either piped content or parameters are required
+usePiped='false'
 if [[ ! -t 0 ]]; then
-	usePiped=true
+	usePiped='true'
 	piped=$(cat)
+elif [[ $# = 0 ]]; then
+	echo 'No parameters given' >&2
+	exit $error_noParams
 fi
 
 # Getting the list of files to use
-fileList=''
 if [[ $usePiped = true ]]; then
-	# Use piped list
 	fileList="$piped"
 else
-	# Find the file with gick
-	fileList=$(gick $@ 2>/dev/null)
+	fileList=$(gick -- "$@" 2>/dev/null)
 
 	if [[ $? != 0 ]]; then
 		echo 'No files found' >&2
-		exit $error_noFilesFound
+		exit $error_noMatch
 	fi
 fi
+
 
 # Generating a the data for backups
 backupPath="/tmp/gevert/"
@@ -55,8 +93,6 @@ for fileName in $fileList; do
 	backupFile="${backupPath}${timeStamp}_${baseFileName}_XXXX"
 	backupFile=$(mktemp $backupFile)
 
-	echo "revert '$fileName'"
-
 	# Make a backup of the file if it exists
 	if [[ -f $fileName ]]; then
 		cp $fileName $backupFile
@@ -67,6 +103,7 @@ for fileName in $fileList; do
 	# new added files (with a A status) need to be reset and removed
 	# checkout fails because there is nothing to checkout
 	git checkout HEAD -- "$fileName"
+	echo "reverted '$fileName'"
 done
 unset IFS
 

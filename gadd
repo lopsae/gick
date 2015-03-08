@@ -17,10 +17,8 @@ DESCRIPTION
     stage all modified files present in the workspace.
 
     The script can also received through standard input a list of files
-    to stage, one file per line. In this case the paths are used as
-    received, no search is performed with them. No search is performed with
-    any given <substrings> and paths provided with the `-p` option are also
-    ignored.
+    to stage, one file per line. When using standard input all given
+    <substrings> are ignored, no search is performed.
 
 OPTIONS
     -h  Prints this help output.
@@ -97,8 +95,6 @@ done
 shift $(( OPTIND - 1 ));
 
 
-# Options validation
-
 # Either piped content or parameters are required
 usePiped='false'
 if [[ ! -t 0 ]]; then
@@ -142,8 +138,6 @@ else
 			exit $error_noMatch
 		fi
 	fi
-
-
 fi
 
 # Properly staging each file
