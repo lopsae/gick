@@ -5,7 +5,7 @@ NAME
     gevert -- reverts a file selected with `gick`
 
 SYNOPSIS
-    gevert [-h] <substrings>...
+    gevert [-hD] <substrings>...
 
 DESCRIPTION
     Checksout the head version of a file selected with `gick` and the given
@@ -20,6 +20,10 @@ DESCRIPTION
 
 OPTIONS
     -h  Prints this help output.
+
+    -D  Enables dry run mode and performs no changes to the workspace.
+        Messages about files being reverted are still printed, and backup
+        copies are still created.
 helpDoc
 
 
@@ -30,11 +34,11 @@ error_noMatch=3
 
 
 # Options values
-#TODO add dryrun
+run='true'
 
 
 # Options parsing
-while getopts :h option; do
+while getopts :hD option; do
 	case $option in
  		h)
 			# Print help
@@ -44,6 +48,10 @@ while getopts :h option; do
 				echo "$helpDoc"
 			fi
 			exit
+			;;
+		D)
+			# Dry run mode
+			run='false'
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -102,7 +110,7 @@ for fileName in $fileList; do
 	# TODO
 	# new added files (with a A status) need to be reset and removed
 	# checkout fails because there is nothing to checkout
-	git checkout HEAD -- "$fileName"
+	[[ $run = 'true' ]] && git checkout HEAD -- "$fileName"
 	echo "reverted '$fileName'"
 done
 unset IFS

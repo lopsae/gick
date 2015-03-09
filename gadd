@@ -35,7 +35,7 @@ OPTIONS
     -a  Stages all files that match the search, instead of only the first
         one. This option is ignored if `-p` is used.
 
-    -D  Enables dry run mode and performs no changes to the stage. Messages
+    -D  Enables dry run mode and performs no changes to stage. Messages
         about files being staged are still printed.
 helpDoc
 
