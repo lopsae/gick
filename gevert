@@ -8,11 +8,13 @@ SYNOPSIS
     gevert [-hD] <substrings>...
 
 DESCRIPTION
-    Checksout the head version of a file selected with `gick` and the given
-    <substrings>.
+    Checksout the HEAD version of a file selected with `gick` and the given
+    <substrings>. The file in both stage and the workspace will be set to
+    its HEAD version.
 
-    For any file reverted a backup is created in /tmp/gevert/. The file
-    location is printed as part of the script output.
+    For any file reverted a backup of the workspace file is created in
+    /tmp/gevert/. The file location is printed as part of the script
+    output.
 
     The script can also received through standard input a list of files
     to revert, one file per line. When using standard input all given
@@ -107,10 +109,24 @@ for fileName in $fileList; do
 		echo "backup in '$backupFile'"
 	fi
 
-	# TODO
-	# new added files (with a A status) need to be reset and removed
-	# checkout fails because there is nothing to checkout
-	[[ $run = 'true' ]] && git checkout HEAD -- "$fileName"
+	fileStatus=$(glist -- "$fileName")
+	stageStatus=${fileStatus:0:1}
+	workspaceStatus=${fileStatus:1:1}
+
+	case $stageStatus in
+		[A])
+			# Added files cannot be checkout since they are new
+			[[ $run = 'true' ]] && geset -p -- "$fileName" >/dev/null
+			[[ $run = 'true' ]] && rm "$fileName"
+			;;
+		[?])
+			[[ $run = 'true' ]] && rm "$fileName"
+			;;
+		*)
+			[[ $run = 'true' ]] && git checkout HEAD -- "$fileName"
+			;;
+	esac
+
 	echo "reverted '$fileName'"
 done
 unset IFS

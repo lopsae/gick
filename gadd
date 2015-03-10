@@ -180,7 +180,7 @@ for fileName in $fileList; do
 				[D])
 					echo "Already removed '$fileName'" >&2
 					;;
-				esac
+			esac
 			;;
 		[MA?])
 			[[ $run = 'true' ]] && git add -A -- "$fileName"

@@ -8,7 +8,9 @@ SYNOPSIS
     geset [-hpaD]
 
 DESCRIPTION
-    Unstages files selected with `gick` and the given <substrings>.
+    Unstages files selected with `gick` and the given <substrings>. After
+    an unstage the staged entry is set to the same content to the
+    workspace. Workspace content is never modified.
 
     If <substrings> is comprised of a single dot "." the script will try to
     unstage all modified files present in the workspace.
