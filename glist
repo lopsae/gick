@@ -5,14 +5,14 @@ NAME
     glist -- git status for machine consumption
 
 SYNOPSIS
-    glist [-hcsw]
+    glist [-hcsw] [--] [<paths>...]
 
 DESCRIPTION
     Prints a sensible git status that can be consumed easily by other
     scripts.
 
-    The status printed is based in the output of `git status -z` and will
-    comply with the following by default:
+    The status printed is based in the output of `git status --porcelain`
+    and will comply with the following by default:
      * One file status per line, following the format of: one leter for
        stage status, one leter for workspace status, one space, and the
        filename.
@@ -30,17 +30,31 @@ OPTIONS
     -s  Prints only files with any status in stage.
 
     -w  Prints only files with any status in the workspace.
+
+EXIT STATUS
+    The script will exit with zero when run without any parameters, even
+    if there are no changes in stage or the workspace.
+
+    When run with the `-s`, or `-w` options, or both, the script will exit
+    with zero if there are files with status for stage, the workspace, or
+    both. If there are no files with the proper status, the script will
+    will exit with non-zero.
+
+    If files are given as argument the script will exit with zero if at
+    least one file exists or has a git status.
 helpDoc
 
 
 # Error codes
 error_invalidOptions=1
+error_noMatch=2
 
 
 # Options values
 onlyFileNames='false'
 onlyStageStatus='false'
 onlyWorkspaceStatus='false'
+useExitStatus='false'
 
 
 # Options parsing
@@ -62,10 +76,12 @@ while getopts :hcws option; do
 		s)
 			# Only files with stage status
 			onlyStageStatus='true'
+			useExitStatus='true'
 			;;
 		w)
 			# Only files with workspace status
 			onlyWorkspaceStatus='true'
+			useExitStatus='true'
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -78,6 +94,11 @@ shift $(( OPTIND - 1 ));
 
 
 # Options validation
+
+# If paths are provided we want to use exit status
+if [[ $# > 0 ]]; then
+	useExitStatus='true'
+fi
 
 # If -s and -w are used, all status is printed
 if [[ $onlyStageStatus = 'true' && $onlyWorkspaceStatus = 'true' ]]; then
@@ -98,6 +119,7 @@ relativePath=$(git rev-parse --show-cdup)
 
 
 nextIsRenamedFile='false'
+foundAnyFile='false'
 IFS=$'\n'
 for statusLine in $rawStatus; do
 	# For renamed files, the current line is only the filename
@@ -137,6 +159,7 @@ for statusLine in $rawStatus; do
 		continue
 	fi
 
+	foundAnyFile='true'
 	if [[ $onlyFileNames = 'true' ]]; then
 		echo "$relativePath$fileName"
 	else
@@ -144,4 +167,8 @@ for statusLine in $rawStatus; do
 	fi
 done
 unset IFS
+
+if [[ $useExitStatus = 'true' && $foundAnyFile = 'false' ]]; then
+	exit $error_noMatch
+fi
 
