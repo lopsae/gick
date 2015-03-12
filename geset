@@ -124,8 +124,16 @@ fi
 # Reseting the files
 IFS=$'\n'
 for fileName in $fileList; do
-	# TODO filelist should contain only files with stage status
-	# TODO If files are given here without stage status, print cannot reset
+	fileStatus=$(glist -s -- "$fileName")
+
+	if [[ $? != 0 ]]; then
+		echo "cannot reset '$fileName'" >&2
+		continue
+	fi
+
+	# stageStatus=${fileStatus:0:1}
+	# workspaceStatus=${fileStatus:1:1}
+
 	[[ $run = 'true' ]] && git reset --quiet HEAD -- "$fileName"
 	echo "reset '$fileName'"
 done
