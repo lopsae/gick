@@ -14,45 +14,72 @@ Correct git status
 ==================
 
 git status:
-first letter: diff HEAD <-> index
-second letter: diff index <-> workspace
+* first letter: diff HEAD <-> index
+* second letter: diff index <-> workspace
+
+Status and file contents:
+
+	Stage status
+	|Workspace status
+	||    Head file
+	||    | Stage file
+	||    | | Workspace file
+	||    | | |
+	SW -> H S W : Notes
 
 example:
-AM = does not exist in HEAD, added to index, modified
 
-?? -> wrong because a file cannot exist unknowing in stage
-should be:
-_? -> new in workspace, not known in stage, not known in head
+	AM -> _ A B : does not exist in HEAD, exists in index, modified in workspace
 
-valid status: MAD_?
+Some git status are functionaly wrong:
 
-Index can have (and operations allowed):
-_ -> same as HEAD (cannot reset)
-M -> exists in head, changed in stage (can reset, stage equaled to head)
-D -> Exists in Head, Not exists in stage (can reset, stage equaled to head)
-A -> Not exists in HEAD, exists in stage (can reset, removed from stage)
+	?? -> _ _ A : wrong because a file cannot exist unknowing in stage
+	ti should be:
+	_? -> _ _ A : HEAD and index are the same so '_' status,
+	              new in workspace so '?' status
 
-Workspace can have:
-_ -> same as index (cannot add)
-M -> exists in stage, changed in workspace (can add, updates stage)
-D -> exists in index, missing in workspace (can add, removes from stage)
-? -> not exists in stage, new in worspace (can add, adds to stage)
+Valid status:
+* M: Modified, valid in stage and workspace
+* D: Deleted, valid in stage and workspace
+* _: No status, valid in stage and workspace
+* A: Added, valid only in Stage, equivalent of '?'
+* ?: Untracked, valid only in workspace, equivalent of 'A'
+
+Index status can be (and operations allowed):
+
+	_• -> X X • : same as HEAD (cannot reset)
+	M• -> X A • : exists in head, modified in stage (can reset, HEAD -> stage)
+	D• -> X _ • : exists in Head, missing in stage (can reset, HEAD -> stage)
+	A• -> _ X • : missing in HEAD, exists in stage (can reset, stage removed)
+
+Workspace status can have (and operations allowed):
+
+	•_ -> • X X : same as index (cannot add)
+	•M -> • X A : exists in stage, modified in workspace (can add, workspace -> stage)
+	•D -> • X _ : exists in index, missing in workspace (can add, stage removed)
+	•? -> • _ X : missing in stage, exists in worspace (can add, workspace -> stage)
+
+So in a nutshell:
+* reset always equates HEAD into stage
+* add always equates workspace into stage
 
 Reset always clears the stage status, workspace is never touched
-MX -> _X
-DX -> _X
-AX -> _X
 
-M_ -> _M
-D_ -> _D
-A_ -> _?
+	MX -> _X
+	DX -> _X
+	AX -> _X
+
+	M_ -> _M
+	D_ -> _D
+	A_ -> _?
 
 Add always clears workspace status
-XM -> M_
-XD -> D_
-X? -> A_
 
-All possible status:
+	XM -> M_
+	XD -> D_
+	X? -> A_
+
+All possible status combinations:
 _M -> X X A
 _D -> X X _
 _? -> _ _ A
@@ -70,16 +97,3 @@ AD -> _ A _
 A? -> invalid: ? can only exist without a stage, this is: AD
 A_ -> _ A A
 
-
-File in Head, Stage, Workspace:
-H S W
-X X X -> __
-X X A -> _M
-X A A -> M_
-X A B -> MM
-_ _ A ->  ? -> in git is ??
-_ A A -> A_
-_ A B -> AM
-X X _ -> _D
-X _ _ -> D_
-X _ A -> D?
