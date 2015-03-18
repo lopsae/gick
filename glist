@@ -155,6 +155,10 @@ for statusLine in $rawStatus; do
 		continue
 	fi
 
+	if [[ $onlyStageStatus = 'true' && $stageStatus = '?' ]]; then
+		continue
+	fi
+
 	if [[ $onlyWorkspaceStatus = 'true' && $workspaceStatus = ' ' ]]; then
 		continue
 	fi
