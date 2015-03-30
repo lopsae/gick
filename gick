@@ -91,9 +91,14 @@ if [[ $? != 0 ]]; then
 fi
 
 if [[ $showStatus = 'true' ]]; then
-	# TODO doing head just in case this is a double status file
-	# remove oooonce glist assures single status for each file
-	glist -- "$matches" | head -n 1
+	# Transforming multiline to array, since glist cant receive stdin
+	# TODO fix to stdin when glist can process it
+	IFS=$'\n'
+	for item in $matches; do
+		matchesArray+=("$item")
+	done
+	unset IFS
+	glist -- "${matchesArray[@]}"
 else
 	echo "$matches"
 fi
