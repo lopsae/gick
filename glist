@@ -90,7 +90,7 @@ while getopts :hcws option; do
 			onlyWorkspaceStatus='true'
 			;;
 		?)
-			echo "Invalid option: -$OPTARG" >&2
+			[[ -t 1 ]] && echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;
 	esac
@@ -202,12 +202,12 @@ unset IFS
 # on the reimplementation
 if [[ ${#filePaths[@]} -gt 0 && $filesPrinted -lt ${#filePaths[@]} ]]; then
 
-	echo "Some files were not found" >&2
+	[[ -t 1 ]] && echo "Some files were not found" >&2
 	exit $error_noMatch
 fi
 
 if [[ $filesPrinted -eq 0 ]]; then
-	echo "No files with status" >&2
+	[[ -t 1 ]] && echo "No files with status" >&2
 	exit $error_noMatch
 fi
 
