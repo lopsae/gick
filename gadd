@@ -16,8 +16,8 @@ DESCRIPTION
     If <substrings> is comprised of a single dot "." the script will try to
     stage all modified files present in the workspace.
 
-    The script can also received through standard input a list of files
-    to stage, one file per line. When using standard input all given
+    The script can also receive through standard input a list of files to
+    stage, one path per line. When using standard input all given
     <substrings> are ignored, no search is performed.
 
 OPTIONS

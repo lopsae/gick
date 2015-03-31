@@ -17,6 +17,9 @@ in helpdocs always use filename
 in helpdocs, the "script" is always refered as "the script", not as "the program". E.g, "The script will exit with zero."
 TODO script too specific, could be considered that program is more general and includes "scripts", and also this stuff may become a program (and right now it is a program) and then it stops being a script... change to program?
 
+When accepting standart input:
+The script can also receive through standard input a list of files [to stage], one path per line.
+
 TODO should use filepath or filename? sounds weird in `gick` helpdoc
 seems like filename would be more familiar...
 

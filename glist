@@ -22,6 +22,13 @@ DESCRIPTION
        files are printed each on its own line following the normal format.
      * When run from a subdirectory the filenames will be relative to it.
 
+    If <paths> are provided only the status of those given files are
+    printed.
+
+    The script can also receive through standard input a list of files to
+    print, one path per line. When using standard input the list of files
+    is merged with any <paths> provided as arguments.
+
 OPTIONS
     -h  Prints this help output.
 
@@ -32,16 +39,17 @@ OPTIONS
     -w  Prints only files with any status in the workspace.
 
 EXIT STATUS
-    The script will exit with zero when run without any parameters, even
-    if there are no changes in stage or the workspace.
+    When run without parameters the script will exit with non-zero if there
+    are no files with status.
 
     When run with the `-s`, or `-w` options, or both, the script will exit
     with zero if there are files with status for stage, the workspace, or
     both. If there are no files with the proper status, the script will
     will exit with non-zero.
 
-    If files are given as argument the script will exit with zero if at
-    least one file exists or has a git status.
+    If file paths are provided as either arguments or through standard
+    input the script will exit with zero only if all the paths provided are
+    found with a proper status.
 helpDoc
 
 
@@ -51,10 +59,10 @@ error_noMatch=2
 
 
 # Options values
+# TODO rename to 'printStatus'
 onlyFileNames='false'
 onlyStageStatus='false'
 onlyWorkspaceStatus='false'
-useExitStatus='false'
 
 
 # Options parsing
@@ -76,12 +84,10 @@ while getopts :hcws option; do
 		s)
 			# Only files with stage status
 			onlyStageStatus='true'
-			useExitStatus='true'
 			;;
 		w)
 			# Only files with workspace status
 			onlyWorkspaceStatus='true'
-			useExitStatus='true'
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -95,20 +101,38 @@ shift $(( OPTIND - 1 ));
 
 # Options validation
 
-# If paths are provided we want to use exit status
-if [[ $# > 0 ]]; then
-	useExitStatus='true'
+# Piped content uses exit status
+usePiped='false'
+if [[ ! -t 0 ]]; then
+	usePiped='true'
+	piped=$(cat)
 fi
 
 # If -s and -w are used, all status is printed
-if [[ $onlyStageStatus = 'true' && $onlyWorkspaceStatus = 'true' ]]; then
+if [[ $onlyStageStatus == 'true' && $onlyWorkspaceStatus == 'true' ]]; then
 	onlyStageStatus='false'
 	onlyWorkspaceStatus='false'
 fi
 
 
+# Defining the list of files to use
+filePaths=()
+if [[ $# -gt 0 ]]; then
+	usingSpecificFiles='true'
+	filePaths=("$@")
+fi
+
+if [[ $usePiped == 'true' ]]; then
+	usingSpecificFiles='true'
+	IFS=$'\n'
+	for item in $piped; do
+		filePaths+=("$item")
+	done
+	unset IFS
+fi
+
 # Getting a clean status, separated by new lines
-rawStatus=$(git status -z --untracked-files -- "$@" | xargs -0 -n 1)
+rawStatus=$(git status -z --untracked-files -- "${filePaths[@]}" | tr '\0' '\n')
 
 relativePath=$(git rev-parse --show-cdup)
 
@@ -119,12 +143,12 @@ relativePath=$(git rev-parse --show-cdup)
 
 
 nextIsRenamedFile='false'
-foundAnyFile='false'
+filesPrinted=0
 IFS=$'\n'
 for statusLine in $rawStatus; do
 	# For renamed files, the current line is only the filename
 	# Status is requested again to have the correct status of that file
-	if [[ $nextIsRenamedFile = 'true' ]]; then
+	if [[ $nextIsRenamedFile == 'true' ]]; then
 		# On very odd cases, a renamed file which was re-added, the status
 		# of a specific file can actualy return two lines, for this case
 		# we take just the first line
@@ -139,7 +163,7 @@ for statusLine in $rawStatus; do
 	fileName=${statusLine:3}
 
 	# Handing special R status
-	if [[ $stageStatus = 'R' ]]; then
+	if [[ $stageStatus == 'R' ]]; then
 		# R status is for renamed files, its a mess, and it means the next
 		# line will contain ONLY the name of the file that was removed
 		nextIsRenamedFile='true'
@@ -151,20 +175,20 @@ for statusLine in $rawStatus; do
 		fileName=${statusLine:3}
 	fi
 
-	if [[ $onlyStageStatus = 'true' && $stageStatus = ' ' ]]; then
+	if [[ $onlyStageStatus == 'true' && $stageStatus == ' ' ]]; then
 		continue
 	fi
 
-	if [[ $onlyStageStatus = 'true' && $stageStatus = '?' ]]; then
+	if [[ $onlyStageStatus == 'true' && $stageStatus == '?' ]]; then
 		continue
 	fi
 
-	if [[ $onlyWorkspaceStatus = 'true' && $workspaceStatus = ' ' ]]; then
+	if [[ $onlyWorkspaceStatus == 'true' && $workspaceStatus == ' ' ]]; then
 		continue
 	fi
 
-	foundAnyFile='true'
-	if [[ $onlyFileNames = 'true' ]]; then
+	filesPrinted=$(( $filesPrinted + 1 ))
+	if [[ $onlyFileNames == 'true' ]]; then
 		echo "$relativePath$fileName"
 	else
 		echo "$stageStatus$workspaceStatus $relativePath$fileName"
@@ -172,7 +196,18 @@ for statusLine in $rawStatus; do
 done
 unset IFS
 
-if [[ $useExitStatus = 'true' && $foundAnyFile = 'false' ]]; then
+# Check if the files printed are at least as many as the specific files given
+# TODO this might fail if repeated files are provided through stdin or arguments
+# or on very od cases or renamed-readed files, which may have to be solved
+# on the reimplementation
+if [[ ${#filePaths[@]} -gt 0 && $filesPrinted -lt ${#filePaths[@]} ]]; then
+
+	echo "Some files were not found" >&2
+	exit $error_noMatch
+fi
+
+if [[ $filesPrinted -eq 0 ]]; then
+	echo "No files with status" >&2
 	exit $error_noMatch
 fi
 
