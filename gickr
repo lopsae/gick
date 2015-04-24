@@ -10,7 +10,7 @@ if [[ $# = 0 ]]; then
 	count=$(git remote | wc -l | tr -d [:blank:])
 	if [[ $count = 1 ]]; then
 		git remote
-		exit
+		exit 0
 	else
 		echo 'No single remote found' >&2
 		exit 1

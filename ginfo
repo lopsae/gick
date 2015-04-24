@@ -28,7 +28,7 @@ case $1 in
 	url|urls)
 		# remove the "url" subcommand
 		shift
-		
+
 		remotes=$(gickr $@ 2> /dev/null)
 		if [[ $? != 0 ]]; then
 			echo 'No remote found' >&2
@@ -37,13 +37,13 @@ case $1 in
 
 		git remote show -n $remotes \
 		| grep --regexp "^*" --regexp "^\s*Fetch" --regexp "^\s*Push"
-		exit
+		exit 0
 		;;
-		
+
 	user)
 		echo $(git config user.name) $(git config user.email)
 		;;
-		
+
 	branch)
 		branchRef=$(git symbolic-ref HEAD 2>/dev/null)
 		if [[ $? != 0 ]]; then
@@ -53,18 +53,18 @@ case $1 in
 		# Removing the initial "refs/heads/"
 		echo ${branchRef#refs/heads/}
 		;;
-		
+
 	tracking|upstream)
 		upstream=$(git rev-parse --symbolic-full-name @{upstream} 2>/dev/null)
 		if [[ $? != 0 ]]; then
 			echo 'No tracking branch' >&2
 			exit $error_noTrackingBranch
 		fi
-		
+
 		# Removing the initial "refs/remotes/""
 		echo ${upstream#refs/remotes/}
 		;;
-		
+
 	*)
 		echo 'Unknown ginfo subcommand' >&2
 		exit $error_unknowInfo

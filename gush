@@ -72,7 +72,7 @@ if [[ $? = 0 ]]; then
 		else
 			git push
 		fi
-		exit
+		exit 0
 	fi
 else
 	# Having no tracking means we will set it

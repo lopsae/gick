@@ -55,7 +55,7 @@ while getopts :hpaD option; do
 			else
 				echo "$helpDoc"
 			fi
-			exit
+			exit 0
 			;;
 		p)
 			# Using plain paths

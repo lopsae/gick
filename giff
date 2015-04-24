@@ -50,7 +50,7 @@ while getopts :hiup option; do
 			else
 				echo "$helpDoc"
 			fi
-			exit
+			exit 0
 			;;
 		i)
 			# Compare between stage and workspace

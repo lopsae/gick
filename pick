@@ -102,7 +102,7 @@ while getopts :hacdD option; do
 			else
 				echo "$helpDoc"
 			fi
-			exit
+			exit 0
 			;;
 		a)
 			# Display all matches

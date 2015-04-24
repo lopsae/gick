@@ -64,7 +64,7 @@ while getopts :hNpaD option; do
 			else
 				echo "$helpDoc"
 			fi
-			exit
+			exit 0
 			;;
 		N)
 			# Stage untracked files

@@ -49,7 +49,7 @@ while getopts :hD option; do
 			else
 				echo "$helpDoc"
 			fi
-			exit
+			exit 0
 			;;
 		D)
 			# Dry run mode
