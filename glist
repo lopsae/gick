@@ -59,10 +59,9 @@ error_noMatch=2
 
 
 # Options values
-# TODO rename to 'printStatus'
-onlyFileNames='false'
-onlyStageStatus='false'
-onlyWorkspaceStatus='false'
+printStatus='true'
+printOnlyStage='false'
+printOnlyWorkspace='false'
 
 
 # Options parsing
@@ -79,15 +78,15 @@ while getopts :hcws option; do
 			;;
 		c)
 			# Cut status from output
-			onlyFileNames='true'
+			printStatus='false'
 			;;
 		s)
 			# Only files with stage status
-			onlyStageStatus='true'
+			printOnlyStage='true'
 			;;
 		w)
 			# Only files with workspace status
-			onlyWorkspaceStatus='true'
+			printOnlyWorkspace='true'
 			;;
 		?)
 			[[ -t 1 ]] && echo "Invalid option: -$OPTARG" >&2
@@ -109,9 +108,9 @@ if [[ ! -t 0 ]]; then
 fi
 
 # If -s and -w are used, all status is printed
-if [[ $onlyStageStatus == 'true' && $onlyWorkspaceStatus == 'true' ]]; then
-	onlyStageStatus='false'
-	onlyWorkspaceStatus='false'
+if [[ $printOnlyStage == 'true' && $printOnlyWorkspace == 'true' ]]; then
+	printOnlyStage='false'
+	printOnlyWorkspace='false'
 fi
 
 
@@ -175,23 +174,23 @@ for statusLine in $rawStatus; do
 		fileName=${statusLine:3}
 	fi
 
-	if [[ $onlyStageStatus == 'true' && $stageStatus == ' ' ]]; then
+	if [[ $printOnlyStage == 'true' && $stageStatus == ' ' ]]; then
 		continue
 	fi
 
-	if [[ $onlyStageStatus == 'true' && $stageStatus == '?' ]]; then
+	if [[ $printOnlyStage == 'true' && $stageStatus == '?' ]]; then
 		continue
 	fi
 
-	if [[ $onlyWorkspaceStatus == 'true' && $workspaceStatus == ' ' ]]; then
+	if [[ $printOnlyWorkspace == 'true' && $workspaceStatus == ' ' ]]; then
 		continue
 	fi
 
 	filesPrinted=$(( $filesPrinted + 1 ))
-	if [[ $onlyFileNames == 'true' ]]; then
-		echo "$relativePath$fileName"
-	else
+	if [[ $printStatus == 'true' ]]; then
 		echo "$stageStatus$workspaceStatus $relativePath$fileName"
+	else
+		echo "$relativePath$fileName"
 	fi
 done
 unset IFS
