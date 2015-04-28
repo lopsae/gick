@@ -91,14 +91,7 @@ if [[ $? != 0 ]]; then
 fi
 
 if [[ $showStatus = 'true' ]]; then
-	# Transforming multiline to array, since glist cant receive stdin
-	# TODO fix to stdin when glist can process it
-	IFS=$'\n'
-	for item in $matches; do
-		matchesArray+=("$item")
-	done
-	unset IFS
-	glist -- "${matchesArray[@]}"
+	echo "$matches" | glist
 else
 	echo "$matches"
 fi
