@@ -1,41 +1,60 @@
 Language Reminder
 =================
 
-git status for each file
+Git status for each file
+------------------------
 in stage
 in the workspace
 
+
+Command line parts in helpdocs
+------------------------------
 commands or options like `-s` or `git status` are quoted like so
 also other options like `<substrings>`
 
+
+stdin/stdot
+-----------
 stdin is standard input
 stder is standard error
 
-in code always use fileName. More in line with other cases like fileData, fileContents fileStatus, etc.
 
-in helpdocs always use filename
+filename/filepath/path
+----------------------
+In helpdocs use each for the following
+	filename: synonim for basename, only the final part of the whole path+name for a file.
+	filepath: path+name for a file.
+	path: only the path made by folders, not ending on a filename.
+In code always use "fileName". This way it is more in line with other common names like "fileData", "fileContents", "fileStatus", etc.
 
+
+The program
+-----------
 in helpdocs, the "script" is always refered as "the program"
 E.g, "The program will exit with zero."
 
-When accepting standart input:
+
+When accepting standart input
+-----------------------------
+E.g,
 The program can also receive through standard input a list of files [to stage], one path per line.
 
-TODO should use filepath or filename? sounds weird in `gick` helpdoc
-seems like filename would be more familiar...
+
+Examples
+--------
+Start with "E.g," and example is indented one more level.
 
 
-Name sentence
+NAME sentence
 -------------
-
 Should read as an imperative to the program, starts with lowercase
 * ls - list directory contents
 * git-status - Show the working tree status
 TODO this needs updating in all the scripts
 
-Description sentence
------------------
 
+DESCRIPTION sentence
+--------------------
 Should read with an implicit [the program], and start with uppercase
 * [the program] Selects a file for staging...
 
@@ -55,29 +74,22 @@ current favorites:
 * runs `git difftool` with a file selected with `gick`
 
 
-Helpdoc
--------
-
-sections are:
+Section sequence in helpdocs
+----------------------------
 * NAME
 * SYNOPSIS
 * DESCRIPTION
 * OPTIONS
-* EXIT STATUS
+* EXIT STATUS (optional)
+* EXAMPLES (optional)
 
-EXAMPLES may be added after EXIT STATUS. Minor examples are fine within DESCRIPTION
 
-
-Options order
+Options order in SYNOPTSIS and OPTIONS
 -------------
-
-order of options in SYNOPSIS
-
 -h <- always the first
 -specific <- command specific options
 -cx <- cut-status/print-status group
 -swa <- stage/worspace/all group
-
 
 -D <- debug/dev/dryrun, always the last
 
