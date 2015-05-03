@@ -2,21 +2,15 @@
 
 
 read -d '' helpDoc <<"helpDoc"
-# Prints matching branches using pick.
-
-# By default it seeks for a match in the local branches, if -r is
-# provided, it prints the first matching branch on remote branches.
-
-# Options given after "--" will be passed directly to pick.
 NAME
-    gickb -- search through git branches
+    gickb -- search git branches
 
 SYNOPSIS
     gickb [-hra] <substrings>...
 
 DESCRIPTION
     Prints the first matching git branch searching with `pick` and the
-    given substrings.
+    given `<substrings>`.
 
 OPTIONS
     -h  Prints this help output.
