@@ -9,7 +9,7 @@ SYNOPSIS
 
 DESCRIPTION
     Prints, from the content read from the standard input, the first line
-    that contains in order all given <substrings>.
+    that contains in order all given `<substrings>`.
 
     E.g,
 
@@ -28,9 +28,9 @@ DESCRIPTION
         # Output to stderr
         No match found
 
-    The <substrings> provided are joined into a extended regular expresion
+    The `<substrings>` provided are joined into a extended regular expresion
     which can be output with the `-D` option. This allows the use of
-    regular expresion terms in the <substrings> to furter refine the
+    regular expresion terms in the `<substrings>` to furter refine the
     search.
 
     E.g,
@@ -42,7 +42,7 @@ DESCRIPTION
         Red apple
 
 
-    By default if all <substrings> contain only lowercase letters the
+    By default if all `<substrings>` contain only lowercase letters the
     matching is done ignoring all case diferences. If any upper case is
     used in the <substrings> the command will automatically switch to
     consider cases. This behaviour can be overriden with the `-c` option,
@@ -71,11 +71,10 @@ OPTIONS
         matches.
 
 EXIT STATUS
-    If a matching line is found, it is printed and the script will exit
-    with zero.
+    0   If a matching line is found.
 
-    If no arguments are given, or no content is piped in, or if no matching
-    line is found, the script will exit with a non zero value.
+    >0  If no `<substrings>` are given, or no content is received through
+        standard input, or no matching line is found.
 helpDoc
 
 
