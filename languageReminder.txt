@@ -74,6 +74,11 @@ current favorites:
 * runs `git difftool` with a file selected with `gick`
 
 
+EXIT STATUS sentences
+---------------------
+TODO new format like the one in pick
+
+
 Section sequence in helpdocs
 ----------------------------
 * NAME
@@ -138,3 +143,20 @@ echo 'No files found' >&2
 
 No op
 echo 'No operation done' >&2
+
+
+Current progress
+----------------
+
+pick
+- checked for "program"
+- checked for ``
+- new EXIT STATUS
+
+glist
+- checked for "program"
+- checked for ``
+
+gick
+- checked for "program"
+- checked for ``

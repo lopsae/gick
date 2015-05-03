@@ -9,13 +9,13 @@ SYNOPSIS
 
 DESCRIPTION
     Prints the first matching filepath, from any files with a git status,
-    using the `pick` script and the given <substrings>. By default only
+    using the `pick` program and the given `<substrings>`. By default only
     the filepath is printed.
 
 OPTIONS
     -h  Prints this help output.
 
-    -x  Prints the status of the file along the filename. The format
+    -x  Prints the status of the file along the filepath. The format
         remains the same used by `git status`.
 
     -s  Considers only files with any status in stage.

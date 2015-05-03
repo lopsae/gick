@@ -5,42 +5,42 @@ NAME
     glist -- git status for machine consumption
 
 SYNOPSIS
-    glist [-hcsw] [--] [<paths>...]
+    glist [-hcsw] [--] [<filepaths>...]
 
 DESCRIPTION
     Prints a sensible git status that can be consumed easily by other
-    scripts.
+    programs.
 
     The status printed is based in the output of `git status --porcelain`
     and will comply with the following by default:
      * One file status per line, following the format of: one leter for
        stage status, one leter for workspace status, one space, and the
-       filename.
-     * Filenames are not quoted regardless of the presence of spaces
+       filepath.
+     * Filepaths are not quoted regardless of the presence of spaces
        within and no special characters are escaped.
      * No R status is ever printed, instead the status of both related
        files are printed each on its own line following the normal format.
-     * When run from a subdirectory the filenames will be relative to it.
+     * When run from a subdirectory the filepaths are relative to it.
 
-    If <paths> are provided only the status of those given files are
+    If `<filepaths>` are provided only the status of those given files are
     printed.
 
-    The script can also receive through standard input a list of files to
-    print, one path per line. When using standard input the list of files
-    is merged with any <paths> provided as arguments.
+    The program can also receive through standard input a list of files to
+    print, one filepath per line. When using standard input the given list
+    of filepaths is merged with any `<filepaths>` provided as arguments.
 
 OPTIONS
     -h  Prints this help output.
 
-    -c  Prints only filenames, status are ommited.
+    -c  Prints only filepaths, status are ommited.
 
     -s  Prints only files with any status in stage.
 
     -w  Prints only files with any status in the workspace.
 
 EXIT STATUS
-    When run without parameters the script will exit with non-zero if there
-    are no files with status.
+    When run without parameters the program will exit with non-zero if
+    there are no files with status.
 
     When run with the `-s`, or `-w` options, or both, the script will exit
     with zero if there are files with status for stage, the workspace, or
@@ -48,8 +48,8 @@ EXIT STATUS
     will exit with non-zero.
 
     If file paths are provided as either arguments or through standard
-    input the script will exit with zero only if all the paths provided are
-    found with a proper status.
+    input the program will exit with zero only if all the paths provided
+    are found with a proper status.
 helpDoc
 
 
