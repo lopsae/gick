@@ -9,10 +9,11 @@ SYNOPSIS
 
 DESCRIPTION
     Runs `git difftool`, opening whichever tool is configured by the git
-    configuration. The file to open is selected with `gick` and the given
-    <substrings>.
+    configuration, with a file selected with `gick` and the given
+    `<substrings>`. Any file with stage or workspace status is considered
+    for the search.
 
-    By default the script compares between HEAD and the workspace. This
+    By default the program compares between HEAD and the workspace. This
     behavior can be modified with the `-i` or `-u` options.
 
 OPTIONS
@@ -23,7 +24,9 @@ OPTIONS
 
     -u  Compare files between HEAD and stage.
 
-    -p  Prints only the filenames, status are ommited.
+    -p  Uses the parameter given as a filepath, instead of performing a
+        search with `gick`. Only the first parameter is used, any other
+        parameter is ignored.
 helpDoc
 
 

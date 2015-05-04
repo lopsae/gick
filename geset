@@ -8,21 +8,22 @@ SYNOPSIS
     geset [-hpaD]
 
 DESCRIPTION
-    Unstages files selected with `gick` and the given <substrings>. After
-    an unstage the staged entry is set to the same content to the
-    workspace. Workspace content is never modified.
+    Unstages a file selected with `gick` and the given `<substrings>`.
+    The file staged entry is set to the same content in the workspace.
+    Workspace content is never modified.
 
-    If <substrings> is comprised of a single dot "." the script will try to
-    unstage all modified files present in the workspace.
+    If `<substrings>` is comprised of a single dot `.` the program will try
+    to unstage all modified files present in the workspace.
 
-    The script can also received through standard input a list of files
-    to unstage, one file per line. When using standard input all given
-    <substrings> are ignored, no search is performed.
+    The program can also received through standard input a list of files
+    to unstage, one filepath per line. When using standard input all given
+    `<substrings>` are ignored and no search is performed.
 
 OPTIONS
     -h  Prints this help output.
 
-    -p  Uses the parameters given as paths, instead of performing a search.
+    -p  Uses the parameters given as filepaths, instead of performing a
+        search.
 
     -a  Stages all files that match the search, instead of only the first
         one. This option is ignored if `-p` is used.

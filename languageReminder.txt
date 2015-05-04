@@ -36,13 +36,28 @@ E.g, "The program will exit with zero."
 
 When accepting standart input
 -----------------------------
+Use this general sentence. Used in gadd
 E.g,
-The program can also receive through standard input a list of files [to stage], one path per line.
+	The program can also receive through standard input a list of files to stage, one filepath per line.
 
 
 Examples
 --------
 Start with "E.g," and example is indented one more level.
+
+
+Descriptions that relly heavily in gick
+---------------------------------------
+Describes the action of its defaults, that is, that the program works over one file. From gadd:
+	Stages a file selected with `gick` and the given `<substrings>`.
+Id there is a dot case:
+	If `<substrings>` is comprised of a single dot `.` the program will...
+
+
+Checkout as a verb
+------------------
+When using checkout as a verb in description, separate if there is need for conjugation
+	Checks out the HEAD version of a file selected....
 
 
 NAME sentence
@@ -158,5 +173,17 @@ glist
 - checked for ``
 
 gick
+- checked for "program"
+- checked for ``
+
+gadd, geset, gevert
+- checked for "program"
+- checked for ``
+
+giff
+- checked for "program"
+- checked for ``
+
+gout
 - checked for "program"
 - checked for ``

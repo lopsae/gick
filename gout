@@ -2,19 +2,19 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    gout -- checkout a branch selected with `gickb`
+    gout -- checks out a branch selected with `gickb`
 
 SYNOPSIS
     gout [-hr] <substrings>...
 
 DESCRIPTION
-    Checksout a local branch selected with `gickb` and the given
-    <substrings>.
+    Checks out a local branch selected with `gickb` and the given
+    `<substrings>`.
 
 OPTIONS
     -h  Prints this help output.
 
-    -r  Searches and checksout a remote branch.
+    -r  Searches through remote branches, instead of local.
 helpDoc
 
 

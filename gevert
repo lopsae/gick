@@ -8,17 +8,17 @@ SYNOPSIS
     gevert [-hD] <substrings>...
 
 DESCRIPTION
-    Checksout the HEAD version of a file selected with `gick` and the given
-    <substrings>. The file in both stage and the workspace will be set to
+    Checks out the HEAD version of a file selected with `gick` and the given
+    `<substrings>`. The file in both stage and the workspace will be set to
     its HEAD version.
 
     For any file reverted a backup of the workspace file is created in
-    /tmp/gevert/. The file location is printed as part of the script
+    /tmp/gevert/. The file location is printed as part of the program's
     output.
 
-    The script can also received through standard input a list of files
-    to revert, one file per line. When using standard input all given
-    <substrings> are ignored, no search is performed.
+    The program can also received through standard input a list of files
+    to revert, one filepath per line. When using standard input all given
+    `<substrings>` are ignored and no search is performed.
 
 OPTIONS
     -h  Prints this help output.
