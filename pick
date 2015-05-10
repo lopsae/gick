@@ -68,7 +68,7 @@ OPTIONS
     -c  Forces the command to consider case differences.
 
     -D  Prints to standard error the regular expression used to search for
-        matches.
+        matches. Afterwards matches are printed normally.
 
 EXIT STATUS
     0   If a matching line is found.
@@ -112,7 +112,7 @@ while getopts :hacdD option; do
 			ignoreCase='false'
 			;;
 		D)
-			# Display search string instead of results, for debugging
+			# Display search string
 			debugSearch='true'
 			;;
 		?)
