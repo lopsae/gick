@@ -118,7 +118,6 @@ Options descriptions
 --------------------
 
 -h Prints this help output and quits the program.
-TODO pending change, previous was "Prints this help output"
 
 -p plain path, instead of searching with pick/gick
 	original from gadd - Uses the parameters given as paths, instead of performing a search with `gick`.

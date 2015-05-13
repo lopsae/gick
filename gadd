@@ -21,7 +21,7 @@ DESCRIPTION
     `<substrings>` are ignored and no search is performed.
 
 OPTIONS
-    -h  Prints this help output.
+    -h  Prints this help output and quits the program.
 
     -N  Stages untracked files with an intent-to-add state. Processed files
         will be staged with an empty marker so that later can be properly

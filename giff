@@ -17,7 +17,7 @@ DESCRIPTION
     behavior can be modified with the `-i` or `-u` options.
 
 OPTIONS
-    -h  Prints this help output.
+    -h  Prints this help output and quits the program.
 
     -i  Compare files between stage and the workspace. Using this option
         takes precedence over `-u`.

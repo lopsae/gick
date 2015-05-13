@@ -30,7 +30,7 @@ DESCRIPTION
     of filepaths is merged with any `<filepaths>` provided as arguments.
 
 OPTIONS
-    -h  Prints this help output.
+    -h  Prints this help output and quits the program.
 
     -c  Prints only filepaths, status are ommited.
 

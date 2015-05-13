@@ -13,7 +13,7 @@ DESCRIPTION
     given `<substrings>`.
 
 OPTIONS
-    -h  Prints this help output.
+    -h  Prints this help output and quits the program.
 
     -r  Searches through remote branches, instead of local ones.
 

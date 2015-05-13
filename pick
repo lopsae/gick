@@ -61,7 +61,7 @@ DESCRIPTION
         No match found
 
 OPTIONS
-    -h  Prints this help output.
+    -h  Prints this help output and quits the program.
 
     -a  Displays all lines that match the search.
 

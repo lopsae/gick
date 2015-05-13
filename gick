@@ -13,7 +13,7 @@ DESCRIPTION
     the filepath is printed.
 
 OPTIONS
-    -h  Prints this help output.
+    -h  Prints this help output and quits the program.
 
     -x  Prints the status of the file along the filepath. The format
         remains the same used by `git status`.
