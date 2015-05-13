@@ -61,7 +61,7 @@ teardown() {
 	# -c option to force finding lowercase
 	[[ $(echo "$input" | pick r) == 'Red' ]] || false
 	[[ $(echo "$input" | pick R) == 'Red' ]] || false
-	[[ $(echo "$input" | pick r -c) == 'Green' ]] || false
+	[[ $(echo "$input" | pick -c r) == 'Green' ]] || false
 
 	input=$'Green\nRed'
 
@@ -72,7 +72,7 @@ teardown() {
 	# Force find correct case when there is none
 	[[ $(echo "Ego" | pick e) == 'Ego' ]] || false
 	[[ $(echo "Ego" | pick E) == 'Ego' ]] || false
-	run 'echo "Ego" | pick e -c)'
+	run 'echo "Ego" | pick -c e)'
 	[[ $status -gt 0 ]] || false
 
 	[[ $(echo "Ego" | pick o) == 'Ego' ]] || false
