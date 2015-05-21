@@ -108,8 +108,14 @@ Options order in SYNOPTSIS and OPTIONS
 -------------
 -h <- always the first
 -specific <- command specific options
+
+TODO -c is used by glist, but its first used by PICK, dammit
+TODO cut-status has to change to a different letter
+TODO -c has to become a standart use passthrough, just like -a
+
+-ac <- all-matches/consider-caps pick specific options
 -cx <- cut-status/print-status group
--swa <- stage/worspace/all group
+-sw <- stage/worspace/all group
 
 -D <- debug/dev/dryrun, always the last
 
@@ -175,6 +181,10 @@ gick
 - checked for "program"
 - checked for ``
 
+gickb, gickr
+- TODO check state of updates in these
+- TODO gickr missing helpdocs
+
 gadd, geset, gevert
 - checked for "program"
 - checked for ``
@@ -186,3 +196,9 @@ giff
 gout
 - checked for "program"
 - checked for ``
+
+gush
+- TODO missing helpdocs
+
+ginfo
+- TODO old helpdocs
