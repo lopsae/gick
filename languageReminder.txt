@@ -108,15 +108,12 @@ Options order in SYNOPTSIS and OPTIONS
 -------------
 -h <- always the first
 -specific <- command specific options
-
-TODO -c is used by glist, but its first used by PICK, dammit
-TODO cut-status has to change to a different letter
-TODO -c has to become a standart use passthrough, just like -a
-
 -ac <- all-matches/consider-caps pick specific options
--cx <- cut-status/print-status group
 -sw <- stage/worspace/all group
-
+-kl <- cut-status/print-status group
+	REMIDNER: previously was -cx, -c was changed because it was used by pick
+	changed to -kl because of 'k' sound closeness to 'c', and because 'l' is next to it and already used for printing longer information
+	TODO delete me once this reminder becomes meaningless
 -D <- debug/dev/dryrun, always the last
 
 
@@ -167,6 +164,15 @@ echo 'No operation done' >&2
 
 Current progress
 ----------------
+
+Working on:
+- switch from -cx to -kl
+- flip options, -sw come before -kl
+- -c as standart passthrough
+
+Fish with
+- checked for "program"
+- checked for ``
 
 pick
 - checked for "program"

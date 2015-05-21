@@ -53,6 +53,10 @@ EXIT STATUS
 helpDoc
 
 
+# TODO -cx options must change to -kl
+# TODO -c becomes passthrough for pick
+
+
 # Error codes
 error_invalidOptions=1
 error_noMatch=2
