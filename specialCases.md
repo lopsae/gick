@@ -29,71 +29,126 @@ Status and file contents:
 
 example:
 
-	AM -> _ A B : does not exist in HEAD, exists in index, modified in workspace
+	AM -> _ A B : does not exist in HEAD, exists in index, different content in workspace
 
 Some git status are functionaly wrong:
 
-	?? -> _ _ A : wrong because a file cannot exist unknowing in stage
-	ti should be:
+	?? -> _ _ A : wrong because a ? in S-position should denote a file missing from HEAD
+	this should be:
 	_? -> _ _ A : HEAD and index are the same so '_' status,
 	              new in workspace so '?' status
 
 Valid status:
-* M: Modified, valid in stage and workspace
-* D: Deleted, valid in stage and workspace
-* _: No status, valid in stage and workspace
-* A: Added, valid only in Stage, equivalent of '?'
-* ?: Untracked, valid only in workspace, equivalent of 'A'
+* M -> A B : Modified, valid in stage and workspace
+* D -> A _ : Deleted, valid in stage and workspace
+* _ -> A A : No status, valid in stage and workspace
 
-Index status can be (and operations allowed):
+* A -> _ A : Added, valid only in Stage, equivalent of '?'
+* ? -> _ A: Untracked, valid only in workspace, equivalent of 'A'
 
-	_• -> X X • : same as HEAD (cannot reset)
-	M• -> X A • : exists in head, modified in stage (can reset, HEAD -> stage)
-	D• -> X _ • : exists in Head, missing in stage (can reset, HEAD -> stage)
-	A• -> _ X • : missing in HEAD, exists in stage (can reset, stage removed)
+Index status and operations allowed (reset):
 
-Workspace status can have (and operations allowed):
+	_. -> A A . : same as HEAD (cannot reset)
+	M. -> A B . : exists in head, modified in stage (can reset, HEAD -> stage)
+	D. -> A _ . : exists in Head, missing in stage (can reset, HEAD -> stage)
+	A. -> _ A . : missing in HEAD, exists in stage (can reset, stage removed)
 
-	•_ -> • X X : same as index (cannot add)
-	•M -> • X A : exists in stage, modified in workspace (can add, workspace -> stage)
-	•D -> • X _ : exists in index, missing in workspace (can add, stage removed)
-	•? -> • _ X : missing in stage, exists in worspace (can add, workspace -> stage)
+Workspace status and operations allowed (add):
+
+	._ -> . A A : same as index (cannot add)
+	.M -> . A B : exists in stage, modified in workspace (can add, workspace -> stage)
+	.D -> . A _ : exists in index, missing in workspace (can add, stage removed)
+	.? -> . _ A : missing in stage, exists in worspace (can add, workspace -> stage)
 
 So in a nutshell:
 * reset always equates HEAD into stage
+	H>S W
 * add always equates workspace into stage
+	H S<W
 
 Reset always clears the stage status, workspace is never touched
 
-	MX -> _X
-	DX -> _X
-	AX -> _X
-
-	M_ -> _M
-	D_ -> _D
-	A_ -> _?
+	Mx -> _x
+	Dx -> _x
+	Ax -> _x
 
 Add always clears workspace status
 
-	XM -> M_
-	XD -> D_
-	X? -> A_
+	xM -> M_
+	xD -> D_
+	x? -> A_
 
-All possible status combinations:
-_M -> X X A
-_D -> X X _
+
+All possible status combinations
+--------------------------------
+
+_M -> A A B
+_D -> A A _
 _? -> _ _ A
-__ -> X X X but invalid: there is no status
-MM -> X A B
-MD -> X A _
-M? -> invalid: ? can only exist without a stage, this is MD
-M_ -> X A A
-DM -> X _ A
-DD -> invalid: if workspace is releted then it becomes D_
-D? -> invalid: ? can only exists without a stage, this is D_
-D_ -> X _ _
+__ -> A A A invalid: there is no status
+
+MM -> A B C
+MD -> A B _
+M? -> A * C contradiction 1
+M_ -> A B B
+
+DM -> A * B contradiction 2
+DD -> A * _ contradiction 3
+D? -> A _ B
+D_ -> A _ _
+
 AM -> _ A B
 AD -> _ A _
-A? -> invalid: ? can only exist without a stage, this is: AD
+A? -> _ * A contradiction 4
 A_ -> _ A A
+
+
+Contradictions
+--------------
+
+M? -> A * C : 1 : * cannot be both B and _
+      A B
+        _ C
+
+DM -> A * B : 2 : * cannot be both _ and B
+      A _
+        B C
+
+DD -> A * _ : 3 : * cannot be both _ and B
+      A _
+        B _
+
+A? -> _ * C : 4 : * cannot be both B and _
+      _ B
+        _ C
+
+
+All valid status (reordered)
+----------------------------
+
+_M -> A A B : workspace changed
+_D -> A A _ : workspace deleted
+_? -> _ _ A : workspace new
+
+M_ -> A B B : staged change
+D_ -> A _ _ : staged delete
+A_ -> _ A A : staged new
+
+MM -> A B C : staged change, workspace changed
+MD -> A B _ : staged change, workspace deleted
+
+AM -> _ A B : staged new, workspace new changed
+AD -> _ A _ : staged new, workspace deleted
+
+D? -> A _ B : staged delete, workspace readded
+
+
+
+
+
+
+
+
+
+
 
