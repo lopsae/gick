@@ -54,11 +54,11 @@ setup() {
 
 teardown() {
 	cd ..
-	# rm -rf $testRepo
+	rm -rf $testRepo
 }
 
 
 @test "TODO" {
-	$cosa='nostra'
+	cosa='nostra'
 	[[ $cosa == 'nostra' ]] || false
 }
