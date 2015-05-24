@@ -123,32 +123,21 @@ A? -> _ * C : 4 : * cannot be both B and _
         _ C
 
 
-All valid status (reordered)
+All valid status (ordered by operations)
 ----------------------------
 
-_M -> A A B : workspace changed
-_D -> A A _ : workspace deleted
 _? -> _ _ A : workspace new
-
-M_ -> A B B : staged change
-D_ -> A _ _ : staged delete
 A_ -> _ A A : staged new
-
-MM -> A B C : staged change, workspace changed
-MD -> A B _ : staged change, workspace deleted
-
 AM -> _ A B : staged new, workspace new changed
 AD -> _ A _ : staged new, workspace deleted
 
+_M -> A A B : workspace changed
+M_ -> A B B : staged change
+MM -> A B C : staged change, workspace changed
+MD -> A B _ : staged change, workspace deleted
+
+_D -> A A _ : workspace deleted
+D_ -> A _ _ : staged delete
 D? -> A _ B : staged delete, workspace readded
-
-
-
-
-
-
-
-
-
 
 
