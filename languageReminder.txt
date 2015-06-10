@@ -9,8 +9,15 @@ in the workspace
 
 Command line parts in helpdocs
 ------------------------------
-commands or options like `-s` or `git status` are quoted like so
-also other options like `<substrings>`
+commands or options like `-s` or `git status` are quoted like so also other options like `<substrings>`. Pretty much everything that could go in the command line should use quotes.
+
+
+Parts of command lines
+----------------------
+- Command or program: the name of the command itself, like `git` or `gick`.
+- Options: specific switches for commands, the ones that start with dashes, like `-p` or `--help`
+- Arguments: additional information provided to the program or options, surrounder by angle brackets like `<substrings>`. When refering to them on any part of the helpdocs they should keep the brackets.
+- Parameters: unused
 
 
 stdin/stdot
