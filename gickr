@@ -1,14 +1,66 @@
 #!/bin/bash
 
-# If no parameter is given and there is a single git remote it is
-# printed. Otherwise a non-zero value is returned if no remotes or more
-# that one remote exits. If parameters are provided they are used to
-# pick a remote from the remotes list.
+
+read -d '' helpDoc <<"helpDoc"
+NAME
+    gickr -- search git remotes
+
+SYNOPSIS
+    gickr [-h] [<substrings>...]
+
+DESCRIPTION
+    Prints the first matching git remote searching with `pick` and the
+    given `<substrings>`.
+
+    If no `<substrings>` are given and there is only a single remote, it
+    is printed. If more that one remote exists then `<substrings>` must be
+    provided to properly search for a matching remote.
+
+OPTIONS
+    -h  Prints this help output and quits the program.
+helpDoc
+
+
+# TODO ass passtrhough options
+
+
+# Error codes
+error_invalidOptions=1
+error_noParams=2
+
+
+# Options values
+
+
+# Options parsing
+while getopts :hra option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit 0
+			;;
+		?)
+            echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
+
 
 # No parameters option
 if [[ $# = 0 ]]; then
-	count=$(git remote | wc -l | tr -d [:blank:])
-	if [[ $count = 1 ]]; then
+	count=$(git remote | wc -l)
+	if [[ $count -eq 1 ]]; then
 		git remote
 		exit 0
 	else
@@ -17,5 +69,5 @@ if [[ $# = 0 ]]; then
 	fi
 fi
 
-git remote | pick $@
+git remote | pick "$@"
 

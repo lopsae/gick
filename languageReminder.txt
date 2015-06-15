@@ -172,12 +172,15 @@ echo 'No operation done' >&2
 Current progress
 ----------------
 
+Pending to start:
+- check for arguments instead of parameters
+
 Working on:
 - switch from -cx to -kl
 - flip options, -sw come before -kl
 - -c as standart passthrough
 
-Fish with
+Finish with
 - checked for "program"
 - checked for ``
 
@@ -196,7 +199,6 @@ gick
 
 gickb, gickr
 - TODO check state of updates in these
-- TODO gickr missing helpdocs
 
 gadd, geset, gevert
 - checked for "program"
