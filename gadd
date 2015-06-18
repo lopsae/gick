@@ -181,6 +181,9 @@ for fileName in $fileList; do
 				[D])
 					echo "Already removed '$fileName'" >&2
 					;;
+				*)
+					echo "Already staged with status '$stageStatus'" >&2
+					;;
 			esac
 			;;
 		[MA?])
