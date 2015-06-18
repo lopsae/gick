@@ -15,25 +15,29 @@ teardown() {
 }
 
 
+# Test run from inside a test repository, commands are one directory up
+glist='../glist'
+
+
 @test 'help and basic errors' {
 	# Helpdocs
 	helpDocRegex='^NAME[[:space:]]+glist'
-	[[ $(../glist -h) =~ $helpDocRegex ]] || false
+	[[ $($glist -h) =~ $helpDocRegex ]] || false
 
 	# There is some output
-	[[ ! -z $(../glist) ]] || false
+	[[ ! -z $($glist) ]] || false
 
 	# Trying to select files that do not exist
-	run ../glist unexistent
+	run $glist unexistent
 	[[ $status -gt 0 ]] || false
 
-	run 'echo unexistent | ../glist'
+	run 'echo unexistent | $glist'
 	[[ $status -gt 0 ]] || false
 }
 
 
 @test 'basic status' {
-	run ../glist
+	run $glist
 
 	echo "$output" | grep '^ M workspaceChanged'
 	echo "$output" | grep '^M  stagedChange'
