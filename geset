@@ -8,12 +8,14 @@ SYNOPSIS
     geset [-hpaD]
 
 DESCRIPTION
-    Unstages a file selected with `gick` and the given `<substrings>`.
-    The file staged entry is set to the same content in the workspace.
+    Unstages a file selected with `gick` and the given `<substrings>`. The
+    file's staged entry is set to the same content as in the workspace.
     Workspace content is never modified.
 
+    Only files with a stage status are considered for selection.
+
     If `<substrings>` is comprised of a single dot `.` the program will try
-    to unstage all modified files present in the workspace.
+    to unstage all modified files with a stage status.
 
     The program can also received through standard input a list of files
     to unstage, one filepath per line. When using standard input all given

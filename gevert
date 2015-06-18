@@ -10,7 +10,7 @@ SYNOPSIS
 DESCRIPTION
     Checks out the HEAD version of a file selected with `gick` and the given
     `<substrings>`. The file in both stage and the workspace will be set to
-    its HEAD version.
+    their content in HEAD.
 
     For any file reverted a backup of the workspace file is created in
     /tmp/gevert/. The file location is printed as part of the program's

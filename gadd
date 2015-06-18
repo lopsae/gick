@@ -8,10 +8,11 @@ SYNOPSIS
     gadd [-hNpaD] <substrings>...
 
 DESCRIPTION
-    Stages a file selected with `gick` and the given `<substrings>`.
+    Stages a file selected with `gick` and the given `<substrings>`. The
+    file will be properly added or removed from stage depending on its
+    workspace status.
 
-    Depending on the workspace status of each file these will be properly
-    added or removed from stage.
+    Only files with a workspace status are considered for selection.
 
     If `<substrings>` is comprised of a single dot `.` the program will try
     to stage all modified files present in the workspace.

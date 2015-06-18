@@ -57,8 +57,11 @@ Descriptions that relly heavily in gick
 ---------------------------------------
 Describes the action of its defaults, that is, that the program works over one file. From gadd:
 	Stages a file selected with `gick` and the given `<substrings>`.
-Id there is a dot case:
-	If `<substrings>` is comprised of a single dot `.` the program will...
+If there is a dot case:
+	If `<substrings>` is comprised of a single dot `.` the program will try to ... all ... files with a ... status.
+If scope of the command is limited to a certain status
+	Only files with a ... status are considered for selection.
+
 
 
 Checkout as a verb
