@@ -212,6 +212,10 @@ gout
 - checked for "program"
 - checked for ``
 
+gerge
+- ??? check all
+- merge with listing of gout (as in "gout, gerge" because they are very similar)
+
 gush
 - TODO missing helpdocs
 

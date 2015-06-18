@@ -1,0 +1,69 @@
+#!/bin/bash
+
+read -d '' helpDoc <<"helpDoc"
+NAME
+    gerge -- TODO
+
+SYNOPSIS
+    gerge [-h] <substrings>...
+
+DESCRIPTION
+    Merges HEAD and a local branch selected with `gickb` and the given
+    `<substrings>`.
+
+OPTIONS
+    -h  Prints this help output and quits the program.
+helpDoc
+
+
+# Error codes
+error_invalidOptions=1
+error_noMatches=2
+error_ambiguousMatch=3
+
+
+# Options values
+
+
+# Options parsing
+while getopts :hr option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit 0
+			;;
+		?)
+			echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
+			;;
+	esac
+done
+
+shift $(( OPTIND - 1 ));
+
+
+# Always get all matching branches with -a
+branches=$(gickb -a -- "$@" 2>/dev/null)
+
+if [[ $? != 0 ]]; then
+	echo 'No branch found' >&2
+	exit $error_noMatches
+fi
+
+matchesCount=$(echo "$branches" | wc -l | tr -d [:blank:])
+if [[ $matchesCount > 1 ]]; then
+	echo 'Ambiguous branch match' >&2
+	echo "$branches" >&2
+	exit $error_ambiguousMatch
+fi
+
+# Otherwise there is single branch
+branchName=$branches
+echo "merge '$branchName'"
+git merge "$branchName"
+
