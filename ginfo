@@ -1,13 +1,28 @@
 #!/bin/bash
 
 read -d '' helpDoc <<"helpDoc"
-Displays helpful information about the git repository. Current supported
-subcommands are:
-  url - Displays the push and fetch urls of each repository remote.
-  user - Displays the repository user and email.
-  branch - Displays the current branch checked out.
-  tracking - Displays the current tracking branch.
-  upstream - Same as tracking.
+NAME
+    ginfo - display information about the git repository
+
+SYNOPSIS
+    ginfo [help]
+    ginfo url|user|branch|upstream
+
+DESCRIPTION
+    ginfo [help]
+        Prints this help output and quits the program.
+
+    ginfo url
+        Displays the push and fetch urls of each remote.
+
+    ginfo user
+        Displays the repository user and email.
+
+    ginfo branch
+        Displays the current branch checked out.
+
+    ginfo upstream|tracking
+        Displays the current upstream branch.
 helpDoc
 
 
@@ -19,14 +34,19 @@ error_notInABranch=4
 error_noTrackingBranch=5
 
 
-if [[ $# = 0 || $1 = '-h' || $1 = '--help' ]]; then
-	echo "$helpDoc" >&2
-	exit $error_helpDoc
+if [[ $# = 0 || $1 = 'help' || $1 = 'h' ]]; then
+	if [[ -t 0 ]]; then
+		echo "$helpDoc" | less
+	else
+		echo "$helpDoc"
+	fi
+	exit 0
 fi
+
+# TODO check that there are not any extra parameters
 
 case $1 in
 	url|urls)
-		# remove the "url" subcommand
 		shift
 
 		remotes=$(gickr $@ 2> /dev/null)
