@@ -2,7 +2,7 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    ginfo - display information about the git repository
+    ginfo - print information about the git repository
 
 SYNOPSIS
     ginfo [help]
@@ -13,16 +13,16 @@ DESCRIPTION
         Prints this help output and quits the program.
 
     ginfo url
-        Displays the push and fetch urls of each remote.
+        Prints the push and fetch urls of each remote.
 
     ginfo user
-        Displays the repository user and email.
+        Prints the repository user and email.
 
     ginfo branch
-        Displays the current branch checked out.
+        Prints the current branch checked out.
 
     ginfo upstream|tracking
-        Displays the current upstream branch.
+        Prints the current upstream branch.
 helpDoc
 
 

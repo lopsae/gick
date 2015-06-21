@@ -22,7 +22,7 @@ OPTIONS
 
     -w  Considers only files with any status in the workspace.
 
-    -a  Displays all files that match the search.
+    -a  Prints all files that match the search.
 helpDoc
 
 
@@ -51,7 +51,7 @@ while getopts :hxwsa option; do
 			exit 0
 			;;
 		x)
-			# Display status
+			# Print status
 			showStatus='true'
 			;;
 		[sw])

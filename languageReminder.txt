@@ -48,6 +48,11 @@ E.g,
 	The program can also receive through standard input a list of files to stage, one filepath per line.
 
 
+Print vs display
+----------------
+Use 'print'
+
+
 Examples
 --------
 Start with "E.g," and example is indented one more level.
@@ -148,7 +153,7 @@ Options descriptions
 	original from gick - Prints the status of the file along the filename. The format remains the same used by `git status`.
 
 -a work with all matches, instead of just the first
-	original from pick - Displays all lines that match the search.
+	original from pick - Prints all lines that match the search.
 	from gadd - Stages all files that match the search, instead of only the first one.
 
 
@@ -223,4 +228,4 @@ gush
 - TODO missing helpdocs
 
 ginfo
-- TODO old helpdocs
+- TODO check for state

@@ -63,7 +63,7 @@ DESCRIPTION
 OPTIONS
     -h  Prints this help output and quits the program.
 
-    -a  Displays all lines that match the search.
+    -a  Prints all lines that match the search.
 
     -c  Forces the command to consider case differences.
 
@@ -104,7 +104,7 @@ while getopts :hacdD option; do
 			exit 0
 			;;
 		a)
-			# Display all matches
+			# Print all matches
 			allMatches='true'
 			;;
 		c)
@@ -112,7 +112,7 @@ while getopts :hacdD option; do
 			ignoreCase='false'
 			;;
 		D)
-			# Display search string
+			# Print search string
 			debugSearch='true'
 			;;
 		?)

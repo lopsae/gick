@@ -18,11 +18,11 @@ In any git repository you may try:
 	 M some/folder/file
 	 M some/folder/otherFile
 
-	# Display the tracking branch, but none yet
+	# Print the tracking branch, but none yet
 	> gracking
 	No tracking branch
 
-	# Add some files, you only need one or more substrings of the path displayed in git status
+	# Add some files, you only need one or more substrings of the path printed in git status
 	> gad file
 	add 'some/folder/file'
 	> gad oth File
