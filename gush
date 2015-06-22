@@ -1,25 +1,40 @@
 #!/bin/bash
 
-# Gush performs various push operations.
+read -d '' helpDoc <<"helpDoc"
+NAME
+    gush -- perform `git push` operations
 
-# If the current branch is already tracking a remote branch and gush
-# is used without parameters it will just push the pending changes into
-# the remote branch.
-# If parameters are given these will be used to pick a single remote
-# from the available ones and gush will attempt to push into a branch
-# of the same name. In this cases the tracking information of the branch
-# remains unchanged.
+SYNOPSIS
+    gush [-hD] [--] [<substrings>...]
 
-# If the current branch is not tracking any remote branch gush will
-# attempt to push the branch into a remote branch of the same name.
-# If there is a single remote it will be picked without using
-# parameters, otherwise the parameters will be used to pick a single
-# remote from the available ones. The branch created in the remote will
-# be saved as the current tracking branch.
+DESCRIPTION
+    Performs automatically various common `git push` operations.
 
-# If the -d option is used the command will execute in dry run mode and
-# no git push command will happen. Whatever would be run will be
-# printed instead.
+    When the current branch is tracking a remote branch:
+      - Without any arguments the program will push into the tracking
+        branch.
+      - Otherwise a remote is selected with `gickr` and the given
+        `<substrings>` and the program will push to a remote branch of the
+        same name as the current.
+      - The tracking information of the current branch is not changed.
+
+    When the current branch is not tracking a remote branch:
+      - Without any argments the program will push into a remote branch of
+        the same name if the repository has a single remote. If the
+        repository has more than one remote then arguments are mandatory
+        to select a remote with `gickr` and the given `<substrings>`.
+      - With arguments a remote is selected with `gickr` and the given
+        <substrings>` and the program will push to a remote branch of the
+        same name as the current.
+      - The current branch will be set to track the remote brach to which
+        it was pushed.
+
+OPTIONS
+    -h  Prints this help output and quits the program.
+
+    -D  Enables dry run mode and performs no changes nor pushes. The
+        `git push` command that would the run is printed instead.
+helpDoc
 
 
 # Error codes
@@ -29,30 +44,35 @@ error_noSingleRemote=3
 error_noRemoteMatch=4
 error_remoteBranchExists=5
 
+
+# Options defaults
+run='true'
+
+
 # Options parsing
-params=$(getopt d $*)
-getoptStatus=$?
-set -- $params
-
-if [[ $getoptStatus != 0 ]]; then
-	echo 'Invalid options' >&2
-	exit $error_invalidOptions
-fi
-
-dryrun=false
-
-for param; do
-	case "$param" in
-		-d)
-			dryrun=true
-			shift
+while getopts :h option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit 0
 			;;
-		--)
-			shift
-			break
+		D)
+			# Dry run mode
+			run='false'
+			;;
+		?)
+			[[ -t 1 ]] && echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
 			;;
 	esac
 done
+shift $(( OPTIND - 1 ));
+
 
 # If headless nothing to do here
 branchName=$(ginfo branch 2>/dev/null)
@@ -67,10 +87,10 @@ trackingBranch=$(ginfo tracking 2>/dev/null)
 if [[ $? = 0 ]]; then
 	# Tracking and no parameters, simply push
 	if [[ $# = 0 ]]; then
-		if [[ $dryrun = true ]]; then
-			echo git push
-		else
+		if [[ $run = 'true' ]]; then
 			git push
+		else
+			echo git push
 		fi
 		exit 0
 	fi
@@ -106,9 +126,9 @@ if [[ $setUpstream != '' ]]; then
 fi
 
 # All good so beam it up
-if [[ $dryrun = true ]]; then
-	echo git push $setUpstream $remote $branchName
+if [[ $run = 'true' ]]; then
+	git push "$setUpstream" "$remote" "$branchName"
 else
-	git push $setUpstream $remote $branchName
+	echo git push "$setUpstream" "$remote" "$branchName"
 fi
 

@@ -2,13 +2,13 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    program -- short description
+    program -- peform some action
 
 SYNOPSIS
     program [-h] [--] [<arguments>...]
 
 DESCRIPTION
-    Long description
+    Performs some action with more details.
 
 OPTIONS
     -h  Prints this help output and quits the program.
@@ -50,5 +50,5 @@ shift $(( OPTIND - 1 ));
 # Options validation
 
 
-# Rest of program
+# Rest of program...
 
