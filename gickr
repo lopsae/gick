@@ -25,7 +25,7 @@ helpDoc
 
 # Error codes
 error_invalidOptions=1
-error_noParams=2
+error_noArguments=2
 
 
 # Options parsing

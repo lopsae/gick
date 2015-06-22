@@ -81,7 +81,7 @@ helpDoc
 # Error codes
 error_invalidOptions=1
 error_noStdin=2
-error_noParams=3
+error_noArguments=3
 error_noMatch=4
 
 
@@ -132,7 +132,7 @@ fi
 
 if [[ $# = 0 ]]; then
 	echo 'No arguments given' >&2
-	exit $error_noParams
+	exit $error_noArguments
 fi
 
 
@@ -143,11 +143,11 @@ if [[ "$@" =~ [A-Z] ]]; then
 	ignoreCase='false'
 fi
 
-# Append a wildcard between each param
+# Append a wildcard between each argument
 search=''
 wildcard='.*'
-for param in $@; do
-	search="$search$param$wildcard"
+for argument in $@; do
+	search="$search$argument$wildcard"
 done
 
 # Remove the trailing wildcard

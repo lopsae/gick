@@ -44,7 +44,7 @@ helpDoc
 
 # Error codes
 error_invalidOptions=1
-error_noParams=2
+error_noArguments=2
 error_noMatch=3
 
 
@@ -103,7 +103,7 @@ if [[ ! -t 0 ]]; then
 	piped=$(cat)
 elif [[ $# = 0 ]]; then
 	echo 'No arguments given' >&2
-	exit $error_noParams
+	exit $error_noArguments
 fi
 
 # Single dot special case
@@ -125,7 +125,7 @@ if [[ $usePiped = 'true' ]]; then
 	fileList="$piped"
 else
 	if [[ $usePlainPaths = 'true' ]]; then
-		# Moving params to filelist, separated by newlines
+		# Moving arguments to filelist, separated by newlines
 		fileList=$1
 		shift
 		for item in "$@"; do
