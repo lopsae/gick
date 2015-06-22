@@ -26,8 +26,8 @@ stdin is standard input
 stder is standard error
 
 
-filename/filepath/path
-----------------------
+filename, filepath, path
+------------------------
 In helpdocs use each for the following
 	filename: synonim for basename, only the final part of the whole path+name for a file.
 	filepath: path+name for a file.
@@ -43,7 +43,7 @@ E.g, "The program will exit with zero."
 
 When accepting standart input
 -----------------------------
-Use this general sentence. Used in gadd
+Use this general sentence. Original in gadd
 E.g,
 	The program can also receive through standard input a list of files to stage, one filepath per line.
 
@@ -83,23 +83,22 @@ When using checkout as a verb in description, separate if there is need for conj
 NAME sentence
 -------------
 Should read as an imperative to the program, starts with lowercase
-* ls - list directory contents
-* git-status - Show the working tree status
-TODO this needs updating in all the scripts
+- ls - list directory contents
+- git-status - Show the working tree status
 
 For programs that search and perform an action:
-* original from gadd: stage a file selected with `gick`
-* [action] a [object] selected with `[program]`
+- original from gadd: stage a file selected with `gick`
+- [action] a [object] selected with `[program]`
 
 
 DESCRIPTION sentence
 --------------------
 Should read with an implicit [the program], and start with uppercase
-* [the program] Selects a file for staging...
+- [the program] Selects a file for staging...
 
 For programs that search and perform an action:
-* original from gadd: Stages a file selected with `gick` and the given `<substrings>`.
-* [Action] a [object] selected with `[program]` and the given `<substrings>`.
+- original from gadd: Stages a file selected with `gick` and the given `<substrings>`.
+- [Action] a [object] selected with `[program]` and the given `<substrings>`.
 
 
 EXIT STATUS sentences
@@ -109,12 +108,12 @@ TODO new format like the one in pick
 
 Section sequence in helpdocs
 ----------------------------
-* NAME
-* SYNOPSIS
-* DESCRIPTION
-* OPTIONS
-* EXIT STATUS (optional)
-* EXAMPLES (optional)
+- NAME
+- SYNOPSIS
+- DESCRIPTION
+- OPTIONS
+- EXIT STATUS (optional)
+- EXAMPLES (optional)
 
 
 Options order in SYNOPTSIS and OPTIONS
@@ -124,7 +123,7 @@ Options order in SYNOPTSIS and OPTIONS
 -ac <- all-matches/consider-caps pick specific options
 -sw <- stage/worspace/all group
 -kl <- cut-status/print-status group
-	REMIDNER: previously was -cx, -c was changed because it was used by pick
+	REMINDER: previously was -cx, -c was changed because it was used by pick
 	changed to -kl because of 'k' sound closeness to 'c', and because 'l' is next to it and already used for printing longer information
 	TODO delete me once this reminder becomes meaningless
 -D <- debug/dev/dryrun, always the last
