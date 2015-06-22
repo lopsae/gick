@@ -2,7 +2,7 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    gerge -- TODO
+    gerge -- merge with a branch selected with `gickb`
 
 SYNOPSIS
     gerge [-h] <substrings>...

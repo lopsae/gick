@@ -82,26 +82,19 @@ Should read as an imperative to the program, starts with lowercase
 * git-status - Show the working tree status
 TODO this needs updating in all the scripts
 
+For programs that search and perform an action:
+* original from gadd: stage a file selected with `gick`
+* [action] a [object] selected with `[program]`
+
 
 DESCRIPTION sentence
 --------------------
 Should read with an implicit [the program], and start with uppercase
 * [the program] Selects a file for staging...
 
-
-Canditates:
-* selects a file with gick to stage
-* runs git difftool using pick to select the file
-
-* selects a file with gick to ...?
-* runs ... using gick to select the file?
-
-* selects a file using `gick` and stages it
-* selects a file using `gick` and opens the diff tool to compare it
-
-current favorites:
-* stages a file selected with `gick`
-* runs `git difftool` with a file selected with `gick`
+For programs that search and perform an action:
+* original from gadd: Stages a file selected with `gick` and the given `<substrings>`.
+* [Action] a [object] selected with `[program]` and the given `<substrings>`.
 
 
 EXIT STATUS sentences
