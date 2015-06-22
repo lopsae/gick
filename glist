@@ -39,8 +39,8 @@ OPTIONS
     -w  Prints only files with any status in the workspace.
 
 EXIT STATUS
-    When run without parameters the program will exit with non-zero if
-    there are no files with status.
+    When run without arguments the program will exit with non-zero if there
+    are no files with status.
 
     When run with the `-s`, or `-w` options, or both, the script will exit
     with zero if there are files with status for stage, the workspace, or

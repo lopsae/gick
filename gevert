@@ -64,13 +64,13 @@ done
 shift $(( OPTIND - 1 ));
 
 
-# Either piped content or parameters are required
+# Either piped content or arguments are required
 usePiped='false'
 if [[ ! -t 0 ]]; then
 	usePiped='true'
 	piped=$(cat)
 elif [[ $# = 0 ]]; then
-	echo 'No parameters given' >&2
+	echo 'No arguments given' >&2
 	exit $error_noParams
 fi
 

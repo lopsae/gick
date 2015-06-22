@@ -131,7 +131,7 @@ if [[ -t 0 ]]; then
 fi
 
 if [[ $# = 0 ]]; then
-	echo 'No parameters given' >&2
+	echo 'No arguments given' >&2
 	exit $error_noParams
 fi
 

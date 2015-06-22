@@ -25,7 +25,7 @@ pick='./pick'
 	helpDocRegex='^NAME[[:space:]]+pick'
 	[[ $($pick -h) =~ $helpDocRegex ]] || false
 
-	# Stdin, but no parameters
+	# Stdin, but no arguments
 	run 'echo something | $pick'
 	[[ $status -gt 0 ]] || false
 }

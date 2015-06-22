@@ -24,9 +24,9 @@ OPTIONS
 
     -u  Compare files between HEAD and stage.
 
-    -p  Uses the parameter given as a filepath, instead of performing a
-        search with `gick`. Only the first parameter is used, any other
-        parameter is ignored.
+    -p  Uses the argument given as a filepath, instead of performing a
+        search with `gick`. Only the first argument is used, any other
+        argument is ignored.
 helpDoc
 
 
@@ -78,7 +78,7 @@ shift $(( OPTIND - 1 ));
 
 # Options validation
 if [[ $# = 0 ]]; then
-	echo 'No parameters given' >&2
+	echo 'No arguments given' >&2
 	exit $error_noParams
 fi
 

@@ -42,7 +42,7 @@ if [[ $# = 0 || $1 = 'help' || $1 = 'h' ]]; then
 	exit 0
 fi
 
-# TODO check that there are not any extra parameters
+# TODO check that there are not any extra arguments
 
 case $1 in
 	url|urls)

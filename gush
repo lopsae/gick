@@ -85,7 +85,7 @@ fi
 setUpstream=''
 trackingBranch=$(ginfo tracking 2>/dev/null)
 if [[ $? = 0 ]]; then
-	# Tracking and no parameters, simply push
+	# Tracking and no arguments, simply push
 	if [[ $# = 0 ]]; then
 		if [[ $run = 'true' ]]; then
 			git push

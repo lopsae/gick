@@ -17,7 +17,7 @@ Parts of command lines
 - Command or program: the name of the command itself, like `git` or `gick`.
 - Options: specific switches for commands, the ones that start with dashes, like `-p` or `--help`
 - Arguments: additional information provided to the program or options, surrounder by angle brackets like `<substrings>`. When refering to them on any part of the helpdocs they should keep the brackets.
-- Parameters: unused
+- Parameters: use instead arguments
 
 
 stdin/stdot
@@ -136,7 +136,7 @@ Options descriptions
 -h Prints this help output and quits the program.
 
 -p plain path, instead of searching with pick/gick
-	original from gadd - Uses the parameters given as paths, instead of performing a search with `gick`.
+	original from gadd - Uses the arguments given as paths, instead of performing a search with `gick`.
 	from giff - Prints only the filenames, status are ommited.
 
 
@@ -166,8 +166,8 @@ Error outputs
 Invalid options
 echo "Invalid option: -$OPTARG" >&2
 
-No parameters
-echo 'No parameters given' >&2
+No arguments
+echo 'No arguments given' >&2
 
 No files found
 echo 'No files found' >&2
@@ -180,7 +180,7 @@ Current progress
 ----------------
 
 Pending to start:
-- check for arguments instead of parameters
+- none
 
 Working on:
 - switch from -cx to -kl
@@ -188,6 +188,7 @@ Working on:
 - -c as standart passthrough
 
 Finish with
+- none
 
 pick
 - new EXIT STATUS

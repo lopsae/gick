@@ -49,7 +49,7 @@ done
 shift $(( OPTIND - 1 ));
 
 
-# No parameters option
+# No arguments option
 if [[ $# = 0 ]]; then
 	count=$(git remote | wc -l)
 	if [[ $count -eq 1 ]]; then
