@@ -157,6 +157,7 @@ Options descriptions
 
 -D dryrun/debug
 	original from pick - Prints to standard error the regular expression used to search for matches.
+	more common from gadd - Enables dry run mode and performs no changes to stage. Messages about files being staged are still printed.
 
 
 Error outputs
@@ -187,41 +188,22 @@ Working on:
 - -c as standart passthrough
 
 Finish with
-- checked for "program"
-- checked for ``
 
 pick
-- checked for "program"
-- checked for ``
 - new EXIT STATUS
 
 glist
-- checked for "program"
-- checked for ``
 
 gick
-- checked for "program"
-- checked for ``
 
 gickb, gickr
-- checked for "program"
-- checked for ``
 
 gadd, geset, gevert
-- checked for "program"
-- checked for ``
 
 giff
-- checked for "program"
-- checked for ``
 
 gout, gerge
-- checked for "program"
-- checked for ``
 
 gush
-- TODO missing helpdocs
 
 ginfo
-- checked for "program"
-- checked for ``
