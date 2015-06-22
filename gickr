@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 read -d '' helpDoc <<"helpDoc"
 NAME
     gickr -- search git remotes
@@ -12,16 +11,16 @@ DESCRIPTION
     Prints the first matching git remote searching with `pick` and the
     given `<substrings>`.
 
-    If no `<substrings>` are given and there is only a single remote, it
-    is printed. If more that one remote exists then `<substrings>` must be
-    provided to properly search for a matching remote.
+    If there is only a single remote it will be printed when no
+    `<substrings>` are given. When the repository has multiple remotes
+    providing `<substrings>` is mandatory to perform the search.
 
 OPTIONS
     -h  Prints this help output and quits the program.
 helpDoc
 
 
-# TODO ass passtrhough options
+# TODO add passtrhough options
 
 
 # Error codes

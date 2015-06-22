@@ -53,6 +53,11 @@ Print vs display
 Use 'print'
 
 
+Argument vs parameter
+---------------------
+Use 'argument'
+
+
 Examples
 --------
 Start with "E.g," and example is indented one more level.
@@ -199,7 +204,8 @@ gick
 - checked for ``
 
 gickb, gickr
-- TODO check state of updates in these
+- checked for "program"
+- checked for ``
 
 gadd, geset, gevert
 - checked for "program"
@@ -209,16 +215,13 @@ giff
 - checked for "program"
 - checked for ``
 
-gout
+gout, gerge
 - checked for "program"
 - checked for ``
-
-gerge
-- ??? check all
-- merge with listing of gout (as in "gout, gerge" because they are very similar)
 
 gush
 - TODO missing helpdocs
 
 ginfo
-- TODO check for state
+- checked for "program"
+- checked for ``
