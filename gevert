@@ -5,7 +5,7 @@ NAME
     gevert -- reverts a file selected with `gick`
 
 SYNOPSIS
-    gevert [-hD] <substrings>...
+    gevert [-hD] [--] <substrings>...
 
 DESCRIPTION
     Checks out the HEAD version of a file selected with `gick` and the given
@@ -35,7 +35,7 @@ error_noParams=2
 error_noMatch=3
 
 
-# Options values
+# Options defaults
 run='true'
 
 
@@ -61,7 +61,6 @@ while getopts :hD option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

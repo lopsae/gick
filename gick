@@ -5,7 +5,7 @@ NAME
     gick -- search filepaths that have a git status
 
 SYNOPSIS
-    pick [-hxswa] <substrings>...
+    pick [-hxswa] [--] <substrings>...
 
 DESCRIPTION
     Prints the first matching filepath, from any files with a git status,
@@ -32,7 +32,7 @@ error_noParams=2
 error_noMatch=3
 
 
-# Options values
+# Options defaults
 showStatus='false'
 glistOptions=''
 pickOptions=''
@@ -69,7 +69,6 @@ while getopts :hxwsa option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

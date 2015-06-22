@@ -5,7 +5,7 @@ NAME
     gickb -- search git branches
 
 SYNOPSIS
-    gickb [-hra] <substrings>...
+    gickb [-hra] [--] <substrings>...
 
 DESCRIPTION
     Prints the first matching git branch searching with `pick` and the
@@ -25,7 +25,7 @@ error_invalidOptions=1
 error_noParams=2
 
 
-# Options values
+# Options defaults
 gitBranchOptions=''
 pickOptions=''
 
@@ -56,7 +56,6 @@ while getopts :hra option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

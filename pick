@@ -5,7 +5,7 @@ NAME
     pick -- search standard input for an ordered list of substrings
 
 SYNOPSIS
-    pick [-hacD] <substrings>...
+    pick [-hacD] [--] <substrings>...
 
 DESCRIPTION
     Prints, from the content read from the standard input, the first line
@@ -85,7 +85,7 @@ error_noParams=3
 error_noMatch=4
 
 
-# Options values
+# Options defaults
 allMatches='false'
 ignoreCase='true'
 debugSearch='false'
@@ -121,7 +121,6 @@ while getopts :hacdD option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

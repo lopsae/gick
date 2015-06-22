@@ -5,7 +5,7 @@ NAME
     giff -- runs `git difftool` with a file selected with `gick`
 
 SYNOPSIS
-    giff [-hiup] <substrings>...
+    giff [-hiup] [--] <substrings>...
 
 DESCRIPTION
     Runs `git difftool`, opening whichever tool is configured by the git
@@ -37,7 +37,7 @@ error_noMatch=3
 error_noChanges=4
 
 
-# Options values
+# Options defaults
 usePlainPath='false'
 compareStageAndWorkspace='false'
 compareHeadAndStage='false'
@@ -73,7 +73,6 @@ while getopts :hiup option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

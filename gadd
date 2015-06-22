@@ -5,7 +5,7 @@ NAME
     gadd - stage a file selected with `gick`
 
 SYNOPSIS
-    gadd [-hNpaD] <substrings>...
+    gadd [-hNpaD] [--] <substrings>...
 
 DESCRIPTION
     Stages a file selected with `gick` and the given `<substrings>`. The
@@ -48,7 +48,7 @@ error_noParams=2
 error_noMatch=3
 
 
-# Options values
+# Options defaults
 dotCaseOptions=''
 gickOptions=''
 stageUntracked='false'
@@ -93,7 +93,6 @@ while getopts :hNpaD option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

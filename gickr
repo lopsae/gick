@@ -5,7 +5,7 @@ NAME
     gickr -- search git remotes
 
 SYNOPSIS
-    gickr [-h] [<substrings>...]
+    gickr [-h] [--] [<substrings>...]
 
 DESCRIPTION
     Prints the first matching git remote searching with `pick` and the
@@ -28,9 +28,6 @@ error_invalidOptions=1
 error_noParams=2
 
 
-# Options values
-
-
 # Options parsing
 while getopts :hra option; do
 	case $option in
@@ -49,11 +46,7 @@ while getopts :hra option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
-
-
-# Options validation
 
 
 # No parameters option

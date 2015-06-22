@@ -1,0 +1,54 @@
+#!/bin/bash
+
+read -d '' helpDoc <<"helpDoc"
+NAME
+    program -- short description
+
+SYNOPSIS
+    program [-h] [--] [<arguments>...]
+
+DESCRIPTION
+    Long description
+
+OPTIONS
+    -h  Prints this help output and quits the program.
+
+EXIT STATUS
+    List of exit status
+helpDoc
+
+
+# Error codes
+error_invalidOptions=1
+
+
+# Options defaults
+defaults='true'
+
+
+# Options parsing
+while getopts :h option; do
+	case $option in
+ 		h)
+			# Print help
+			if [[ -t 0 ]]; then
+				echo "$helpDoc" | less
+			else
+				echo "$helpDoc"
+			fi
+			exit 0
+			;;
+		?)
+			[[ -t 1 ]] && echo "Invalid option: -$OPTARG" >&2
+			exit $error_invalidOptions
+			;;
+	esac
+done
+shift $(( OPTIND - 1 ));
+
+
+# Options validation
+
+
+# Rest of program
+

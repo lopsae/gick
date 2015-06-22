@@ -5,7 +5,7 @@ NAME
     geset -- reset a file selected with `gick`
 
 SYNOPSIS
-    geset [-hpaD]
+    geset [-hpaD] [--] <substrings>...
 
 DESCRIPTION
     Unstages a file selected with `gick` and the given `<substrings>`. The
@@ -41,7 +41,7 @@ error_noParams=2
 error_noMatch=3
 
 
-# Options values
+# Options defaults
 dotCaseOptions=''
 gickOptions=''
 usePlainPaths='false'
@@ -80,7 +80,6 @@ while getopts :hpaD option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

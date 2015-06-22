@@ -5,7 +5,7 @@ NAME
     gerge -- merge with a branch selected with `gickb`
 
 SYNOPSIS
-    gerge [-h] <substrings>...
+    gerge [-h] [--] <substrings>...
 
 DESCRIPTION
     Merges HEAD and a local branch selected with `gickb` and the given
@@ -20,9 +20,6 @@ helpDoc
 error_invalidOptions=1
 error_noMatches=2
 error_ambiguousMatch=3
-
-
-# Options values
 
 
 # Options parsing
@@ -43,7 +40,6 @@ while getopts :hr option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
 

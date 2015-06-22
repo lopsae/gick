@@ -27,11 +27,10 @@ helpDoc
 
 
 # Error codes
-error_helpDoc=1
-error_unknowInfo=2
-error_noRemoteFound=3
-error_notInABranch=4
-error_noTrackingBranch=5
+error_invalidArguments=1
+error_noRemoteFound=2
+error_notInABranch=3
+error_noTrackingBranch=4
 
 
 if [[ $# = 0 || $1 = 'help' || $1 = 'h' ]]; then
@@ -87,7 +86,7 @@ case $1 in
 
 	*)
 		echo 'Unknown ginfo subcommand' >&2
-		exit $error_unknowInfo
+		exit $error_invalidArguments
 		;;
 esac
 

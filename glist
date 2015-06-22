@@ -62,7 +62,7 @@ error_invalidOptions=1
 error_noMatch=2
 
 
-# Options values
+# Options defaults
 printStatus='true'
 printOnlyStage='false'
 printOnlyWorkspace='false'
@@ -98,11 +98,8 @@ while getopts :hcws option; do
 			;;
 	esac
 done
-
 shift $(( OPTIND - 1 ));
 
-
-# Options validation
 
 # Piped content uses exit status
 usePiped='false'
