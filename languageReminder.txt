@@ -193,6 +193,7 @@ pick
 - new EXIT STATUS
 
 glist
+- new EXIT STATUS
 
 gick
 
