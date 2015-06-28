@@ -5,7 +5,7 @@ NAME
     gickr -- search git remotes
 
 SYNOPSIS
-    gickr [-h] [--] [<substrings>...]
+    gickr [-ha] [--] [<substrings>...]
 
 DESCRIPTION
     Prints the first matching git remote searching with `pick` and the
@@ -17,10 +17,10 @@ DESCRIPTION
 
 OPTIONS
     -h  Prints this help output and quits the program.
+
+    -a  Prints all remotes that matches the search, instead of only the
+        first one.
 helpDoc
-
-
-# TODO add passtrhough options
 
 
 # Error codes
