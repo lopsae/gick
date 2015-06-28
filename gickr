@@ -28,8 +28,12 @@ error_invalidOptions=1
 error_noArguments=2
 
 
+# Options defaults
+pickOptions=''
+
+
 # Options parsing
-while getopts :hra option; do
+while getopts :ha option; do
 	case $option in
  		h)
 			# Print help
@@ -39,6 +43,11 @@ while getopts :hra option; do
 				echo "$helpDoc"
 			fi
 			exit 0
+			;;
+		[a])
+			# Pass through to pick
+			# all matches
+			pickOptions+=" -$option"
 			;;
 		?)
             echo "Invalid option: -$OPTARG" >&2
@@ -51,7 +60,7 @@ shift $(( OPTIND - 1 ));
 
 # No arguments option
 if [[ $# = 0 ]]; then
-	count=$(git remote | wc -l)
+	count=$(git remote | wc -l | tr -d [:blank:])
 	if [[ $count -eq 1 ]]; then
 		git remote
 		exit 0
@@ -61,5 +70,5 @@ if [[ $# = 0 ]]; then
 	fi
 fi
 
-git remote | pick "$@"
+git remote | pick $pickOptions -- "$@"
 
