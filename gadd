@@ -14,9 +14,6 @@ DESCRIPTION
 
     Only files with a workspace status are considered for selection.
 
-    If `<substrings>` is comprised of a single dot `.` the program will try
-    to stage all modified files present in the workspace.
-
     The program can also receive through standard input a list of files to
     stage, one filepath per line. When using standard input all given
     `<substrings>` are ignored and no search is performed.
@@ -49,7 +46,6 @@ error_noMatch=3
 
 
 # Options defaults
-dotCaseOptions=''
 gickOptions=''
 stageUntracked='false'
 usePlainPaths='false'
@@ -71,7 +67,6 @@ while getopts :hNpaD option; do
 		N)
 			# Stage untracked files
 			stageUntracked='true'
-			dotCaseOptions+=" -$option"
 			;;
 		p)
 			# Using plain paths
@@ -85,7 +80,6 @@ while getopts :hNpaD option; do
 		D)
 			# Dry run mode
 			run='false'
-			dotCaseOptions+=" -$option"
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -104,19 +98,6 @@ if [[ ! -t 0 ]]; then
 elif [[ $# = 0 ]]; then
 	echo 'No arguments given' >&2
 	exit $error_noArguments
-fi
-
-# Single dot special case
-if [[ $# = 1 && $1 = '.' ]]; then
-	if [[ $stageUntracked = 'false' ]]; then
-		fileList=$(glist -cw)
-	else
-		# TODO when glist support status selection, replace bellow
-		fileList=$(glist -w | grep "^.?" | cut -c 4-)
-	fi
-
-	echo "$fileList" | gadd $dotCaseOptions
-	exit $?
 fi
 
 
