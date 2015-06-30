@@ -74,7 +74,9 @@ EXIT STATUS
     0   If a matching line is found.
 
     >0  If no `<substrings>` are given, or no content is received through
-        standard input, or no matching line is found.
+        standard input.
+
+        If no matching line is found.
 helpDoc
 
 

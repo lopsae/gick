@@ -13,14 +13,14 @@ DESCRIPTION
 
     The status printed is based in the output of `git status --porcelain`
     and will comply with the following:
-     * One file status per line, following the format of: one leter for
-       stage status, one leter for workspace status, one space, and the
-       filepath.
-     * Filepaths are not quoted regardless of the presence of spaces
-       within and no special characters are escaped.
-     * No R status is ever printed, instead the status of both related
-       files are printed each on its own line following the normal format.
-     * When run from a subdirectory the filepaths are relative to it.
+      - One file status per line, following the format of: one leter for
+        stage status, one leter for workspace status, one space, and the
+        filepath.
+      - Filepaths are not quoted regardless of the presence of spaces
+        within and no special characters are escaped.
+      - No R status is ever printed, instead the status of both related
+        files are printed each on its own line following the normal format.
+      - When run from a subdirectory the filepaths are relative to it.
 
     If `<filepaths>` are provided only the status of those given files are
     printed.
@@ -43,7 +43,7 @@ EXIT STATUS
         repository has a git status.
 
         When run with `-s` or `-w` options, or both; if any file in the
-        repository has a stage, workspace, or any git status respestively.
+        repository has an appropiate git status.
 
         When filepaths are provided through arguments or standart input, or
         both; if and only if all the given filepaths have an appropiate git

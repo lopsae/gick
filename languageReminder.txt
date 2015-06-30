@@ -104,7 +104,14 @@ For programs that search and perform an action:
 
 EXIT STATUS sentences
 ---------------------
-TODO new format like the one in pick
+Exit status always start with the `0` option, the successful one.
+
+Each exis status is a list of statements usualy:
+	"If a given condition is fulfilled."
+	From `pick`: "0  If a matching line is found."
+
+When more that one condition can return the same exit status these are listed as a series of "ifs" or "when ...; if".
+	From `glist`: "0   When run without options nor arguments; if any file in the repository has a git status."
 
 
 Section sequence in helpdocs
