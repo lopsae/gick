@@ -14,9 +14,6 @@ DESCRIPTION
 
     Only files with a stage status are considered for selection.
 
-    If `<substrings>` is comprised of a single dot `.` the program will try
-    to unstage all modified files with a stage status.
-
     The program can also received through standard input a list of files
     to unstage, one filepath per line. When using standard input all given
     `<substrings>` are ignored and no search is performed.
@@ -42,7 +39,6 @@ error_noMatch=3
 
 
 # Options defaults
-dotCaseOptions=''
 gickOptions=''
 usePlainPaths='false'
 run='true'
@@ -72,7 +68,6 @@ while getopts :hpaD option; do
 		D)
 			# Dry run mode
 			run='false'
-			dotCaseOptions+=" -$option"
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -91,12 +86,6 @@ if [[ ! -t 0 ]]; then
 elif [[ $# = 0 ]]; then
 	echo 'No arguments given' >&2
 	exit $error_noArguments
-fi
-
-# Dot special case
-if [[ $# = 1 && $1 = '.' ]]; then
-	glist -cs | geset $dotCaseOptions
-	exit $?
 fi
 
 # Getting the list of files to use
