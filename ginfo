@@ -42,7 +42,10 @@ if [[ $# = 0 || $1 = 'help' || $1 = 'h' ]]; then
 	exit 0
 fi
 
-# TODO check that there are not any extra arguments
+if [[ $# -gt 1 ]]; then
+	echo 'Invalid arguments: `ginfo <subcommand>` does not accept any more arguments' >&2
+	exit $error_invalidArguments
+fi
 
 case $1 in
 	url|urls)

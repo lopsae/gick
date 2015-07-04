@@ -173,6 +173,9 @@ echo "Invalid option: -$OPTARG" >&2
 No arguments
 echo 'No arguments given' >&2
 
+Invalid arguments
+echo 'Invalid arguments: `command <subcommand>` does not accept any more arguments' >&2
+
 No files found
 echo 'No files found' >&2
 
