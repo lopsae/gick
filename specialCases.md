@@ -10,6 +10,14 @@ Remindner about special cases to test around
 * Files with MM status, changed staged and further changes done
 
 
+TODO Non MDA status
+===================
+T - for files that changed type, should this be just a M?
+UU - for files with conflict, what to do with these!?
+	this files can be reset, added, and have more that one index registed
+	should it be MM?
+
+
 Correct git status
 ==================
 
