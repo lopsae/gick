@@ -1,64 +1,68 @@
-gools
-=====
+gick
+====
 
 
 Quick setup
 -----------
 
-In your shell session run the following:
+Add it your bash `PATH`:
 
-	export GOOLS_DIFFTOOL='vimdiff'
-	export PATH="$PATH:/path/to/gools"
+	export PATH="$PATH:/path/to/gick"
 
-In any git repository you may try:
+In any git repository you can try:
 
-	# See the status
-	> gt
+	# Check the status
+	> git status --short --branch
 	## someBranch
-	 M some/folder/file
-	 M some/folder/otherFile
+	 M modifiedFile
+	 D deletedFile
+	M  stagedFile
 
-	# Print the tracking branch, but none yet
-	> gracking
+	# Stage a file with any part of the name
+	> gadd mod
+	added 'modifiedFile'
+	> gadd ted
+	removed 'deletedFile'
+
+	# Reset a file with any part of the name
+	> geset aged
+	reset 'stagedFile'
+	> geset fied
+	reset 'modifiedFile'
+
+	# Print any file name that has a git status with part of the name
+	> gick let
+	deletedFile
+
+	# And if you need it with status
+	> gick -x del
+	D  deletedFile
+
+	# Check the upstream branch, if there is one
+	> ginfo upstream
 	No tracking branch
 
-	# Add some files, you only need one or more substrings of the path printed in git status
-	> gad file
-	add 'some/folder/file'
-	> gad oth File
-	add 'some/folder/otherFile'
-
-	# Reset a file, also just with any piece of the path
-	> geset other
-	reset 'some/folder/otherFile'
-
-	# Commit
-	> gomit With this commit message.
-	[someBranch abcd123] With this commit message.
-	1 file changed, 2 insertions(+)
-
-	# Create a tracking branch and push
+	# If there is a single remote, push to a same named branch
 	> gush
-	...
-	to origin
-	 * [new branch] someBranch -> someBranch
-	Branch someBranch set up to track remote branch someBranch from origin.
-
-	# Now we are tracking something
-	> gracking
-	origin/someBranch
+	> git status --branch
+	## someBranch...origin/someBranch
 
 
 
 What is this?
 -------------
 
-Simple scripts and tools for git.
+`gick` is a simple program that prints files with a git status by providing just any part of the filename. Working with git means working with only the subset of files currently modified, narrowing the files you are interested in.
 
-To use the executable files found here either add the project location into your PATH enviroment variable, or use directly the scripts wherever they are.
+With this kind of fuzzy searching the comands to handle your files in git become extreme sort and very easy to think.
 
-Some of the scripts depend on the enviroment variable GOOLS_DIFFTOOL
-which is used as the --tool option for "git mergetool" and "git difftool".
+Instead of
+
+	git add someFolder/src/package/someModifiedFile
+
+Just use any part of the filename that is ambiguous enough
+
+	gadd mod
 
 
 
