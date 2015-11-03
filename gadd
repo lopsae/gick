@@ -57,11 +57,7 @@ while getopts :hNpaD option; do
 	case $option in
  		h)
 			# Print help
-			if [[ -t 0 ]]; then
-				echo "$helpDoc" | less
-			else
-				echo "$helpDoc"
-			fi
+			echo "$helpDoc" | less
 			exit 0
 			;;
 		N)
