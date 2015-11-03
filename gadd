@@ -73,7 +73,7 @@ while getopts :hNpaD option; do
 			# Dry run mode
 			run='false'
 			;;
-		'?')
+		'?') # Invalid option
 			echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;

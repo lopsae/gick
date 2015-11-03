@@ -42,16 +42,14 @@ run='true'
 # Options parsing
 while getopts :hD option; do
 	case $option in
- 		h)
-			# Print help
+ 		'h') # Print help
 			echo "$helpDoc" | less
 			exit 0
 			;;
-		D)
-			# Dry run mode
+		'D') # Dry run mode
 			run='false'
 			;;
-		?)
+		'?') # Invalid option
 			echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;
