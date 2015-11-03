@@ -44,8 +44,8 @@ while getopts :hD option; do
 	case $option in
  		h)
 			# Print help
-			if [[ -t 0 ]]; then
-				echo "$helpDoc" | less
+			if [[ -t 1 ]]; then
+				echo "$helpDoc" "with less" | less
 			else
 				echo "$helpDoc"
 			fi
