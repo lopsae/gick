@@ -23,6 +23,9 @@ DESCRIPTION
 OPTIONS
     -h  Prints this help output and quits the program.
 
+    -a  Reverts all files that match the search, instead of only the first
+        one.
+
     -D  Enables dry run mode and performs no changes to the workspace.
         Messages about files being reverted are still printed, and backup
         copies are still created.
@@ -36,11 +39,12 @@ error_noMatch=3
 
 
 # Options defaults
+gickOptions=''
 run='true'
 
 
 # Options parsing
-while getopts :hD option; do
+while getopts :haD option; do
 	case $option in
  		'h') # Print help
 			echo "$helpDoc" | less
@@ -48,6 +52,10 @@ while getopts :hD option; do
 			;;
 		'D') # Dry run mode
 			run='false'
+			;;
+		['a']) # Pass through to gick
+			# all matches
+			gickOptions+=" -$option"
 			;;
 		'?') # Invalid option
 			echo "Invalid option: -$OPTARG" >&2
@@ -72,7 +80,7 @@ fi
 if [[ $usePiped = true ]]; then
 	fileList="$piped"
 else
-	fileList=$(gick -- "$@" 2>/dev/null)
+	fileList=$(gick $gickOptions -- "$@" 2>/dev/null)
 
 	if [[ $? != 0 ]]; then
 		echo 'No files found' >&2
