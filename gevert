@@ -119,16 +119,17 @@ for fileName in $fileList; do
 			# Added files cannot be checkout since they are new
 			[[ $run = 'true' ]] && geset -p -- "$fileName" >/dev/null
 			[[ $run = 'true' ]] && rm "$fileName"
+			echo "deleted '$fileName'"
 			;;
 		[?])
 			[[ $run = 'true' ]] && rm "$fileName"
+			echo "deleted '$fileName'"
 			;;
 		*)
 			[[ $run = 'true' ]] && git checkout HEAD -- "$fileName"
+			echo "checked out '$fileName'"
 			;;
 	esac
-
-	echo "reverted '$fileName'"
 done
 unset IFS
 
