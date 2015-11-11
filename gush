@@ -50,7 +50,7 @@ run='true'
 
 
 # Options parsing
-while getopts :h option; do
+while getopts :hD option; do
 	case $option in
  		h)
 			# Print help
