@@ -41,13 +41,8 @@ pickOptions=''
 # Options parsing
 while getopts :hxwsa option; do
 	case $option in
- 		h)
-			# Print help
-			if [[ -t 0 ]]; then
-				echo "$helpDoc" | less
-			else
-				echo "$helpDoc"
-			fi
+ 		'h') # Print help
+			echo "$helpDoc" | less
 			exit 0
 			;;
 		x)

@@ -96,13 +96,8 @@ debugSearch='false'
 # Options parsing
 while getopts :hacdD option; do
 	case $option in
- 		h)
-			# Print help
-			if [[ -t 0 ]]; then
-				echo "$helpDoc" | less
-			else
-				echo "$helpDoc"
-			fi
+		'h') # Print help
+			echo "$helpDoc" | less
 			exit 0
 			;;
 		a)
@@ -118,7 +113,7 @@ while getopts :hacdD option; do
 			debugSearch='true'
 			;;
 		?)
-            echo "Invalid option: -$OPTARG" >&2
+			echo "Invalid option: -$OPTARG" >&2
 			exit $error_invalidOptions
 			;;
 	esac
