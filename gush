@@ -10,24 +10,24 @@ SYNOPSIS
 DESCRIPTION
     Performs automatically various common `git push` operations.
 
-    When the current branch is tracking a remote branch:
-      - Without any arguments the program will push into the tracking
+    When the current branch has as upstream a remote branch:
+      - Without any arguments the program will push into the upstream
         branch.
       - Otherwise a remote is selected with `gickr` and the given
         `<substrings>` and the program will push to a remote branch of the
         same name as the current.
-      - The tracking information of the current branch is not changed.
+      - The upstream information of the current branch is not changed.
 
-    When the current branch is not tracking a remote branch:
-      - Without any argments the program will push into a remote branch of
+    When the current branch does not have as upstream a remote branch:
+      - Without any arguments the program will push into a remote branch of
         the same name if the repository has a single remote. If the
         repository has more than one remote then arguments are mandatory
         to select a remote with `gickr` and the given `<substrings>`.
       - With arguments a remote is selected with `gickr` and the given
         <substrings>` and the program will push to a remote branch of the
         same name as the current.
-      - The current branch will be set to track the remote brach to which
-        it was pushed.
+      - The current branch upstream will be set the remote brach that was
+        pushed.
 
 OPTIONS
     -h  Prints this help output and quits the program.
@@ -81,11 +81,11 @@ if [[ $? != 0 ]]; then
 	exit $error_notInBranch
 fi
 
-# First check for the tracking branch
+# First check for the upstream branch
 setUpstream=''
-trackingBranch=$(ginfo tracking 2>/dev/null)
+upstreamBranch=$(ginfo upstream 2>/dev/null)
 if [[ $? = 0 ]]; then
-	# Tracking and no arguments, simply push
+	# Branch has upstream and no arguments, simply push
 	if [[ $# = 0 ]]; then
 		if [[ $run = 'true' ]]; then
 			git push
@@ -95,7 +95,7 @@ if [[ $? = 0 ]]; then
 		exit 0
 	fi
 else
-	# Having no tracking means we will set it
+	# Having no upstream means we will set it
 	setUpstream='--set-upstream'
 fi
 
