@@ -55,7 +55,7 @@ run='true'
 # Options parsing
 while getopts :hNpaD option; do
 	case $option in
- 		'h') # Print help
+		'h') # Print help
 			echo "$helpDoc" | less
 			exit 0
 			;;
