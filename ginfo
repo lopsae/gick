@@ -38,11 +38,7 @@ error_noTrackingBranch=4
 
 
 if [[ $# = 0 || $1 = 'help' || $1 = 'h' ]]; then
-	if [[ -t 0 ]]; then
-		echo "$helpDoc" | less
-	else
-		echo "$helpDoc"
-	fi
+	echo "$helpDoc" | less
 	exit 0
 fi
 
@@ -52,7 +48,7 @@ if [[ $# -gt 1 ]]; then
 fi
 
 case $1 in
-	url|urls)
+	'url'|'urls')
 		shift
 
 		remotes=$(gickr $@ 2> /dev/null)
@@ -66,11 +62,11 @@ case $1 in
 		exit 0
 		;;
 
-	user)
+	'user')
 		echo $(git config user.name) $(git config user.email)
 		;;
 
-	branch)
+	'branch')
 		branchRef=$(git symbolic-ref HEAD 2>/dev/null)
 		if [[ $? != 0 ]]; then
 			echo 'Not in a branch' >&2
@@ -80,7 +76,7 @@ case $1 in
 		echo ${branchRef#refs/heads/}
 		;;
 
-	tracking|upstream)
+	'tracking'|'upstream')
 		upstream=$(git rev-parse --symbolic-full-name @{upstream} 2>/dev/null)
 		if [[ $? != 0 ]]; then
 			echo 'No tracking branch' >&2
@@ -97,6 +93,7 @@ case $1 in
 
 	*)
 		echo 'Unknown ginfo subcommand' >&2
+		echo 'Use `ginfo help` for a list of available subcommands' >&2
 		exit $error_invalidArguments
 		;;
 esac
