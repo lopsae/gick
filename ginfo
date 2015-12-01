@@ -23,6 +23,10 @@ DESCRIPTION
 
     ginfo upstream|tracking
         Prints the current upstream branch.
+
+    ginfo size
+        Prints a human readable output of the repository object count and
+        size.
 helpDoc
 
 
