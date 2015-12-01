@@ -87,6 +87,10 @@ case $1 in
 		echo ${upstream#refs/remotes/}
 		;;
 
+	'size')
+		git count-objects --human-readable
+		;;
+
 	*)
 		echo 'Unknown ginfo subcommand' >&2
 		exit $error_invalidArguments
