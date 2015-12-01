@@ -12,21 +12,21 @@ DESCRIPTION
     ginfo [help]
         Prints this help output and quits the program.
 
-    ginfo url
-        Prints the push and fetch urls of each remote.
-
-    ginfo user
-        Prints the repository user and email.
-
     ginfo branch
         Prints the current branch checked out.
-
-    ginfo upstream|tracking
-        Prints the current upstream branch.
 
     ginfo size
         Prints a human readable output of the repository object count and
         size.
+
+    ginfo upstream|tracking
+        Prints the current upstream branch.
+
+    ginfo url
+        Prints the push and fetch urls of each remote.
+
+    ginfo user
+        Prints user and email configured for the repository.
 helpDoc
 
 
@@ -48,6 +48,31 @@ if [[ $# -gt 1 ]]; then
 fi
 
 case $1 in
+	'branch')
+		branchRef=$(git symbolic-ref HEAD 2>/dev/null)
+		if [[ $? != 0 ]]; then
+			echo 'Not in a branch' >&2
+			exit $error_notInABranch
+		fi
+		# Removing the initial "refs/heads/"
+		echo ${branchRef#refs/heads/}
+		;;
+
+	'size')
+		git count-objects --human-readable
+		;;
+
+	'tracking'|'upstream')
+		upstream=$(git rev-parse --symbolic-full-name @{upstream} 2>/dev/null)
+		if [[ $? != 0 ]]; then
+			echo 'No tracking branch' >&2
+			exit $error_noTrackingBranch
+		fi
+
+		# Removing the initial "refs/remotes/""
+		echo ${upstream#refs/remotes/}
+		;;
+
 	'url'|'urls')
 		shift
 
@@ -64,31 +89,6 @@ case $1 in
 
 	'user')
 		echo $(git config user.name) $(git config user.email)
-		;;
-
-	'branch')
-		branchRef=$(git symbolic-ref HEAD 2>/dev/null)
-		if [[ $? != 0 ]]; then
-			echo 'Not in a branch' >&2
-			exit $error_notInABranch
-		fi
-		# Removing the initial "refs/heads/"
-		echo ${branchRef#refs/heads/}
-		;;
-
-	'tracking'|'upstream')
-		upstream=$(git rev-parse --symbolic-full-name @{upstream} 2>/dev/null)
-		if [[ $? != 0 ]]; then
-			echo 'No tracking branch' >&2
-			exit $error_noTrackingBranch
-		fi
-
-		# Removing the initial "refs/remotes/""
-		echo ${upstream#refs/remotes/}
-		;;
-
-	'size')
-		git count-objects --human-readable
 		;;
 
 	*)
