@@ -33,7 +33,8 @@ OPTIONS
     -h  Prints this help output and quits the program.
 
     -D  Enables dry run mode and performs no changes nor pushes. The
-        `git push` command that would the run is printed instead.
+        `git push` command that would be run is printed instead along with
+        additional information.
 helpDoc
 
 
@@ -46,7 +47,7 @@ error_remoteBranchExists=5
 
 
 # Options defaults
-run='true'
+debug='false'
 
 
 # Options parsing
@@ -62,8 +63,8 @@ while getopts :hD option; do
 			exit 0
 			;;
 		D)
-			# Dry run mode
-			run='false'
+			# Debug / Dry run mode
+			debug='true'
 			;;
 		?)
 			[[ -t 1 ]] && echo "Invalid option: -$OPTARG" >&2
@@ -81,6 +82,9 @@ if [[ $? != 0 ]]; then
 	exit $error_notInBranch
 fi
 
+[[ $debug = 'true' ]] && echo "# Branch name: $branchName"
+
+
 # Get what remote will be used
 if [[ $# = 0 ]]; then
 	remote=$(gickr 2>/dev/null)
@@ -96,16 +100,21 @@ else
 	fi
 fi
 
+[[ $debug = 'true' ]] && echo "# Picked remote: $remote"
+
+
 # First check for the upstream branch
 setUpstream=''
 upstreamBranch=$(ginfo upstream 2>/dev/null)
 if [[ $? = 0 ]]; then
-	# Branch has upstream and no arguments
+	# Branch has upstream
+	[[ $debug = 'true' ]] && echo "# Current upstream branch: $upstreamBranch"
+
 	if [[ $# = 0 ]]; then
-		if [[ $run = 'true' ]]; then
-			git push "$remote" "$branchName"
-		else
+		if [[ $debug = 'true' ]]; then
 			echo git push "$remote" "$branchName"
+		else
+			git push "$remote" "$branchName"
 		fi
 		exit 0
 	fi
@@ -126,9 +135,9 @@ if [[ $setUpstream != '' ]]; then
 fi
 
 # All good so beam it up
-if [[ $run = 'true' ]]; then
-	git push "$setUpstream" "$remote" "$branchName"
-else
+if [[ $debug = 'true' ]]; then
 	echo git push "$setUpstream" "$remote" "$branchName"
+else
+	git push "$setUpstream" "$remote" "$branchName"
 fi
 
