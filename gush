@@ -136,8 +136,8 @@ fi
 
 # All good so beam it up
 if [[ $debug = 'true' ]]; then
-	echo git push "$setUpstream" "$remote" "$branchName"
+	echo git push $setUpstream "$remote" "$branchName"
 else
-	git push "$setUpstream" "$remote" "$branchName"
+	git push $setUpstream "$remote" "$branchName"
 fi
 
