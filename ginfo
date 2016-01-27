@@ -91,7 +91,7 @@ case $1 in
 
 		IFS=$'\n'
 		for currentRemote in $remotes; do
-			git remote show -n $currentRemote \
+			git remote show -n "$currentRemote" \
 			| grep --regexp "^*" --regexp "^\s*Fetch" --regexp "^\s*Push"
 		done
 		unset IFS
