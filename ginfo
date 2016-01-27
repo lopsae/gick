@@ -42,7 +42,9 @@ if [[ $# = 0 || $1 = 'help' || $1 = 'h' ]]; then
 	exit 0
 fi
 
-if [[ $# -gt 1 ]]; then
+# TODO setup some structure to define what subcommands can accept more arguments
+regex='^(url|urls)$'
+if [[ ! ( $1 =~ $regex ) && $# -gt 1 ]]; then
 	echo 'Invalid arguments: `ginfo <subcommand>` does not accept any more arguments' >&2
 	exit $error_invalidArguments
 fi
