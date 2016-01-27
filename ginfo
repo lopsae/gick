@@ -32,7 +32,7 @@ helpDoc
 
 # Error codes
 error_invalidArguments=1
-error_noRemoteFound=2
+error_noRemotesFound=2
 error_notInABranch=3
 error_noTrackingBranch=4
 
@@ -78,14 +78,24 @@ case $1 in
 	'url'|'urls')
 		shift
 
-		remotes=$(gickr $@ 2> /dev/null)
-		if [[ $? != 0 ]]; then
-			echo 'No remote found' >&2
-			exit $error_noRemoteFound
+		if [[ $# -gt 0 ]]; then
+			remotes=$(gickr $@ 2> /dev/null)
+		else
+			remotes=$(gickr -a . 2> /dev/null)
 		fi
 
-		git remote show -n $remotes \
-		| grep --regexp "^*" --regexp "^\s*Fetch" --regexp "^\s*Push"
+		if [[ $? != 0 ]]; then
+			echo 'No remotes found' >&2
+			exit $error_noRemotesFound
+		fi
+
+		IFS=$'\n'
+		for currentRemote in $remotes; do
+			git remote show -n $currentRemote \
+			| grep --regexp "^*" --regexp "^\s*Fetch" --regexp "^\s*Push"
+		done
+		unset IFS
+
 		exit 0
 		;;
 
