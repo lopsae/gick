@@ -5,8 +5,8 @@ NAME
     ginfo - print information about the git repository
 
 SYNOPSIS
-    ginfo [help]
-    ginfo url|user|branch|upstream
+    ginfo [-h|help]
+    ginfo branch|size|upstream|url|user
 
 DESCRIPTION
     ginfo [help]
@@ -22,8 +22,10 @@ DESCRIPTION
     ginfo upstream|tracking
         Prints the current upstream branch.
 
-    ginfo url
-        Prints the push and fetch urls of each remote.
+    ginfo url|urls [<substrings>...]
+        Prints the push and fetch urls of a remote selected with `gickr`
+        and the given `<substrings>`. If no `<substrings>` are given, the
+        info of all remotes is printed.
 
     ginfo user
         Prints user and email configured for the repository.
@@ -37,7 +39,7 @@ error_notInABranch=3
 error_noTrackingBranch=4
 
 
-if [[ $# = 0 || $1 = 'help' || $1 = 'h' ]]; then
+if [[ $# = 0 || $1 = 'help' || $1 = 'h' || $1 = '-h' ]]; then
 	echo "$helpDoc" | less
 	exit 0
 fi
