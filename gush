@@ -10,7 +10,7 @@ SYNOPSIS
 DESCRIPTION
     Performs automatically various common `git push` operations.
 
-    When the current branch has as upstream a remote branch:
+    When the current branch has a remote branch as upstream:
       - Without any arguments the program will push into the upstream
         branch.
       - Otherwise a remote is selected with `gickr` and the given
@@ -18,11 +18,12 @@ DESCRIPTION
         same name as the current.
       - The upstream information of the current branch is not changed.
 
-    When the current branch does not have as upstream a remote branch:
+    When the current branch does not have a remote branch as upstream:
       - Without any arguments the program will push into a remote branch of
         the same name if the repository has a single remote. If the
-        repository has more than one remote then arguments are mandatory
-        to select a remote with `gickr` and the given `<substrings>`.
+        repository has more than one remote then the `<substrings>`
+        argument is mandatory to select a remote with `gickr` and the given
+        `<substrings>`.
       - With arguments a remote is selected with `gickr` and the given
         <substrings>` and the program will push to a remote branch of the
         same name as the current.
@@ -85,59 +86,95 @@ fi
 [[ $debug = 'true' ]] && echo "# Branch name: $branchName"
 
 
-# Get what remote will be used
-if [[ $# = 0 ]]; then
-	remote=$(gickr 2>/dev/null)
-	if [[ $? != 0 ]]; then
-		echo 'No single remote found' >&2
-		exit $error_noSingleRemote
-	fi
-else
-	remote=$(gickr "$@" 2>/dev/null)
-	if [[ $? != 0 ]]; then
-		echo 'No remote match found' >&2
-		exit $error_noRemoteMatch
-	fi
-fi
-
-[[ $debug = 'true' ]] && echo "# Picked remote: $remote"
-
-
-# First check for the upstream branch
+# Check for the upstream branch
 setUpstream=''
-upstreamBranch=$(ginfo upstream 2>/dev/null)
+upstreamInfo=$(ginfo upstream 2>/dev/null)
 if [[ $? = 0 ]]; then
 	# Branch has upstream
-	[[ $debug = 'true' ]] && echo "# Current upstream branch: $upstreamBranch"
+	[[ $debug = 'true' ]] && echo "# Upstream info: $upstreamInfo"
 
-	if [[ $# = 0 ]]; then
-		if [[ $debug = 'true' ]]; then
-			echo git push "$remote" "$branchName"
-		else
-			git push "$remote" "$branchName"
+	upstreamRemote=${upstreamInfo%/*}
+	upstreamBranch=${upstreamInfo#*/}
+
+	[[ $debug = 'true' ]] && echo "# Upstream remote: $upstreamRemote"
+	[[ $debug = 'true' ]] && echo "# Upstream branch: $upstreamBranch"
+
+	# Check if we need to do picking
+	if [[ $# -gt 0 ]]; then
+		pickedRemote=$(gickr "$@" 2>/dev/null)
+		if [[ $? != 0 ]]; then
+			echo 'No remote match found' >&2
+			exit $error_noRemoteMatch
 		fi
-		exit 0
+
+		[[ $debug = 'true' ]] && echo "# Picked remote: $pickedRemote"
+
+		# In the case of arguments and an existing upstream
+		# Push into the picked remote with the current branch name
+		if [[ $debug = 'true' ]]; then
+			echo git push "$pickedRemote" "$branchName"
+		else
+			git push "$pickedRemote" "$branchName"
+		fi
+	else
+		# In the case of NO arguments and an existing upstream
+		# Push into the existing upstream
+		if [[ $debug = 'true' ]]; then
+			echo git push "$upstreamRemote" "$upstreamBranch"
+		else
+			git push "$upstreamRemote" "$upstreamBranch"
+		fi
 	fi
 else
 	# Having no upstream means we will set it
 	setUpstream='--set-upstream'
-fi
 
-# If the upstream will be set,
-# check the branch does not exist remotely
-if [[ $setUpstream != '' ]]; then
-	remoteBranchName="$remote/$branchName"
-	git branch -r | tr -d [:blank:] | grep "^$remoteBranchName$" >/dev/null
-	if [[ $? = 0 ]]; then
-		echo "Remote branch already exists '$remoteBranchName'" >&2
-		exit $error_remoteBranchExists
+	# Check if we need to do picking
+	if [[ $# -gt 0 ]]; then
+		pickedRemote=$(gickr "$@" 2>/dev/null)
+		if [[ $? != 0 ]]; then
+			echo 'No remote match found' >&2
+			exit $error_noRemoteMatch
+		fi
+
+		[[ $debug = 'true' ]] && echo "# Picked remote: $pickedRemote"
+
+		# In the case of arguments and an NO upstream
+		# Push into the picked remote with the current branch name
+		if [[ $debug = 'true' ]]; then
+			echo git push --set-upstream "$pickedRemote" "$branchName"
+		else
+			git push --set-upstream "$pickedRemote" "$branchName"
+		fi
+	else
+		# In the case of NO arguments and an NO upstream
+		# Check if there is a single remote and push with current branch name
+		singleRemote=$(gickr 2>/dev/null)
+		if [[ $? != 0 ]]; then
+			echo 'No single remote found' >&2
+			exit $error_noSingleRemote
+		fi
+
+		[[ $debug = 'true' ]] && echo "# Single remote: $singleRemote"
+
+		if [[ $debug = 'true' ]]; then
+			echo git push --set-upstream "$singleRemote" "$branchName"
+		else
+			git push --set-upstream "$singleRemote" "$branchName"
+		fi
 	fi
 fi
 
-# All good so beam it up
-if [[ $debug = 'true' ]]; then
-	echo git push $setUpstream "$remote" "$branchName"
-else
-	git push $setUpstream "$remote" "$branchName"
-fi
+
+# TODO do we want to still check if the remote branch exists?
+# If the upstream will be set,
+# check the branch does not exist remotely
+# if [[ $setUpstream != '' ]]; then
+# 	remoteBranchName="$remote/$branchName"
+# 	git branch -r | tr -d [:blank:] | grep "^$remoteBranchName$" >/dev/null
+# 	if [[ $? = 0 ]]; then
+# 		echo "Remote branch already exists '$remoteBranchName'" >&2
+# 		exit $error_remoteBranchExists
+# 	fi
+# fi
 
