@@ -93,12 +93,6 @@ if [[ $? = 0 ]]; then
 	# Branch has upstream
 	[[ $debug = 'true' ]] && echo "# Upstream info: $upstreamInfo"
 
-	upstreamRemote=${upstreamInfo%/*}
-	upstreamBranch=${upstreamInfo#*/}
-
-	[[ $debug = 'true' ]] && echo "# Upstream remote: $upstreamRemote"
-	[[ $debug = 'true' ]] && echo "# Upstream branch: $upstreamBranch"
-
 	# Check if we need to do picking
 	if [[ $# -gt 0 ]]; then
 		pickedRemote=$(gickr "$@" 2>/dev/null)
@@ -117,6 +111,12 @@ if [[ $? = 0 ]]; then
 			git push "$pickedRemote" "$branchName"
 		fi
 	else
+		upstreamRemote=${upstreamInfo%/*}
+		upstreamBranch=${upstreamInfo#*/}
+
+		[[ $debug = 'true' ]] && echo "# Upstream remote: $upstreamRemote"
+		[[ $debug = 'true' ]] && echo "# Upstream branch: $upstreamBranch"
+
 		# In the case of NO arguments and an existing upstream
 		# Push into the existing upstream
 		if [[ $debug = 'true' ]]; then
@@ -127,7 +127,6 @@ if [[ $? = 0 ]]; then
 	fi
 else
 	# Having no upstream means we will set it
-	setUpstream='--set-upstream'
 
 	# Check if we need to do picking
 	if [[ $# -gt 0 ]]; then
