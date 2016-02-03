@@ -95,7 +95,7 @@ if [[ $? = 0 ]]; then
 
 	# Check if we need to do picking
 	if [[ $# -gt 0 ]]; then
-		pickedRemote=$(gickr "$@" 2>/dev/null)
+		pickedRemote=$(gickr -- "$@" 2>/dev/null)
 		if [[ $? != 0 ]]; then
 			echo 'No remote match found' >&2
 			exit $error_noRemoteMatch
@@ -130,7 +130,7 @@ else
 
 	# Check if we need to do picking
 	if [[ $# -gt 0 ]]; then
-		pickedRemote=$(gickr "$@" 2>/dev/null)
+		pickedRemote=$(gickr -- "$@" 2>/dev/null)
 		if [[ $? != 0 ]]; then
 			echo 'No remote match found' >&2
 			exit $error_noRemoteMatch
