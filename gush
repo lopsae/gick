@@ -120,9 +120,9 @@ if [[ $? = 0 ]]; then
 		# In the case of NO arguments and an existing upstream
 		# Push into the existing upstream
 		if [[ $debug = 'true' ]]; then
-			echo git push "$upstreamRemote" "$upstreamBranch"
+			echo git push "$upstreamRemote" "$branchName:$upstreamBranch"
 		else
-			git push "$upstreamRemote" "$upstreamBranch"
+			git push "$upstreamRemote" "$branchName:$upstreamBranch"
 		fi
 	fi
 else
@@ -146,8 +146,6 @@ else
 			git push --set-upstream "$pickedRemote" "$branchName"
 		fi
 	else
-		# In the case of NO arguments and an NO upstream
-		# Check if there is a single remote and push with current branch name
 		singleRemote=$(gickr 2>/dev/null)
 		if [[ $? != 0 ]]; then
 			echo 'No single remote found' >&2
@@ -156,6 +154,8 @@ else
 
 		[[ $debug = 'true' ]] && echo "# Single remote: $singleRemote"
 
+		# In the case of NO arguments and an NO upstream
+		# Check if there is a single remote and push with current branch name
 		if [[ $debug = 'true' ]]; then
 			echo git push --set-upstream "$singleRemote" "$branchName"
 		else
