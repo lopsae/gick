@@ -111,8 +111,8 @@ if [[ $? = 0 ]]; then
 			git push "$pickedRemote" "$branchName"
 		fi
 	else
-		upstreamRemote=${upstreamInfo%/*}
-		upstreamBranch=${upstreamInfo#*/}
+		upstreamRemote=${upstreamInfo%%/*} # Remove longest trailing `/*`
+		upstreamBranch=${upstreamInfo#*/} # Remove shortest leading `*/`
 
 		[[ $debug = 'true' ]] && echo "# Upstream remote: $upstreamRemote"
 		[[ $debug = 'true' ]] && echo "# Upstream branch: $upstreamBranch"
