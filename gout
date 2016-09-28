@@ -5,7 +5,7 @@ NAME
     gout -- checks out a branch selected with `gickb`
 
 SYNOPSIS
-    gout [-hr] [--] <substrings>...
+    gout [-hrD] [--] <substrings>...
 
 DESCRIPTION
     Checks out a local branch selected with `gickb` and the given
@@ -14,7 +14,11 @@ DESCRIPTION
 OPTIONS
     -h  Prints this help output and quits the program.
 
-    -r  Searches through remote branches, instead of local.
+    -r  Searches through remote branches, instead of local, and creates a
+        local tracking branch.
+
+    -D  Deletes the previous local branch. The delete operation is skipped
+        if no branch change happens.
 helpDoc
 
 
@@ -26,11 +30,12 @@ error_ambiguousMatch=3
 
 # Options defaults
 useRemote='false'
+deletePrevious='false'
 gickbOptions=''
 
 
 # Options parsing
-while getopts :hr option; do
+while getopts :hrD option; do
 	case $option in
  		h)
 			# Print help
@@ -45,6 +50,10 @@ while getopts :hr option; do
 			# Searches remote branches
 			useRemote='true'
 			gickbOptions+=' -r'
+			;;
+		D)
+			# Deletes the previous branch
+			deletePrevious='true'
 			;;
 		?)
 			echo "Invalid option: -$OPTARG" >&2
@@ -73,10 +82,29 @@ fi
 # Otherwise there is single branch
 branchName=$branches
 
-# Clean up remote
+# Clean up remote prefix on branchName
 if [[ $useRemote = 'true' ]]; then
 	branchName=${branchName#*/}
 fi
 
+# Store previous branch
+if [[ $deletePrevious = 'true' ]]; then
+	previousBranchName=$(ginfo branch 2>/dev/null)
+
+	# Check previous branch was named
+	if [[ $? != 0 ]]; then
+		deletePrevious='false'
+	fi
+
+	# Check for actual branch change
+	if [[ $branchName = $previousBranchName ]]; then
+		deletePrevious='false'
+	fi
+fi
+
 git checkout "$branchName"
+
+if [[ $deletePrevious = 'true' ]]; then
+	git branch -D "$previousBranchName"
+fi
 
