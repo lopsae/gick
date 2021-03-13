@@ -44,9 +44,10 @@ DESCRIPTION
 
     By default if all `<substrings>` contain only lowercase letters the
     matching is done ignoring all case diferences. If any upper case is
-    used in the <substrings> the command will automatically switch to
-    consider cases. This behaviour can be overriden with the `-c` option,
-    which will force the command to always consider cases.
+    used in `<substrings>` the command will automatically switch to match
+    the letter case as provided. This behaviour can be overriden with the
+    `-c` option which will force the command to match letter case as
+    provided.
 
     E.g,
 
