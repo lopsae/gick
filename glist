@@ -2,7 +2,7 @@
 
 read -d '' helpDoc <<"helpDoc"
 NAME
-    glist -- git status for machine consumption
+    glist -- git status for script consumption
 
 SYNOPSIS
     glist [-hcsw] [--] [<filepaths>...]
@@ -13,9 +13,11 @@ DESCRIPTION
 
     The status printed is based in the output of `git status --porcelain`
     and will comply with the following:
-      - One file status per line, following the format of: one leter for
-        stage status, one leter for workspace status, one space, and the
-        filepath.
+      - One file status per line, with the following format:
+          - one leter for stage status
+          - one leter for workspace status
+          - one space
+          - and the filepath
       - Filepaths are not quoted regardless of the presence of spaces
         within and no special characters are escaped.
       - No R status is ever printed, instead the status of both related
