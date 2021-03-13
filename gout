@@ -17,8 +17,8 @@ OPTIONS
     -r  Searches through remote branches, instead of local, and creates a
         local tracking branch.
 
-    -D  Deletes the previous local branch. The delete operation is skipped
-        if no branch change happens.
+    -D  Deletes the previous local branch. The delete operation is
+        performed only if a branch checkout happens.
 helpDoc
 
 
